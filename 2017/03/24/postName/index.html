@@ -87,16 +87,19 @@
 
 
 
-<meta name="description" content="#概述UIDynamic是iOS 7引入的技术，隶属于UIKit框架，可以利用它来实现一些物理方面的效果，比如重力、碰撞。。">
+<meta name="description" content="纠结了很久要不要写一点东西，最后还是决定写下来一些东西，这个博客里边包括了我在学习iOS中一些方法的使用，算是自己的一个学习笔记吧。如果写的内容中有什么不对的地方欢迎指正和讨论。好了扯多了，现在就把主题拉回今天要写的东西UIDynamic。
+##概述UIDynamic是iOS 7引入的技术，隶属于UIKit框架，所以只要你引入的UIKit框架就可以利用它来实现一些物理方面的效果，比如重力、碰撞。U">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS 物理引擎 UIKit Dynamics 的简单使用">
 <meta property="og:url" content="http://yoursite.com/2017/03/24/postName/index.html">
 <meta property="og:site_name" content="张忠瑞的博客">
-<meta property="og:description" content="#概述UIDynamic是iOS 7引入的技术，隶属于UIKit框架，可以利用它来实现一些物理方面的效果，比如重力、碰撞。。">
-<meta property="og:updated_time" content="2017-03-24T07:37:59.000Z">
+<meta property="og:description" content="纠结了很久要不要写一点东西，最后还是决定写下来一些东西，这个博客里边包括了我在学习iOS中一些方法的使用，算是自己的一个学习笔记吧。如果写的内容中有什么不对的地方欢迎指正和讨论。好了扯多了，现在就把主题拉回今天要写的东西UIDynamic。
+##概述UIDynamic是iOS 7引入的技术，隶属于UIKit框架，所以只要你引入的UIKit框架就可以利用它来实现一些物理方面的效果，比如重力、碰撞。U">
+<meta property="og:updated_time" content="2017-03-24T14:43:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS 物理引擎 UIKit Dynamics 的简单使用">
-<meta name="twitter:description" content="#概述UIDynamic是iOS 7引入的技术，隶属于UIKit框架，可以利用它来实现一些物理方面的效果，比如重力、碰撞。。">
+<meta name="twitter:description" content="纠结了很久要不要写一点东西，最后还是决定写下来一些东西，这个博客里边包括了我在学习iOS中一些方法的使用，算是自己的一个学习笔记吧。如果写的内容中有什么不对的地方欢迎指正和讨论。好了扯多了，现在就把主题拉回今天要写的东西UIDynamic。
+##概述UIDynamic是iOS 7引入的技术，隶属于UIKit框架，所以只要你引入的UIKit框架就可以利用它来实现一些物理方面的效果，比如重力、碰撞。U">
 
 
 
@@ -321,7 +324,21 @@
       
 
       
-        <p>#概述<br>UIDynamic是iOS 7引入的技术，隶属于UIKit框架，可以利用它来实现一些物理方面的效果，比如重力、碰撞。。</p>
+        <p>纠结了很久要不要写一点东西，最后还是决定写下来一些东西，这个博客里边包括了我在学习iOS中一些方法的使用，算是自己的一个学习笔记吧。如果写的内容中有什么不对的地方欢迎指正和讨论。好了扯多了，现在就把主题拉回今天要写的东西UIDynamic。</p>
+<p>##概述<br>UIDynamic是iOS 7引入的技术，隶属于UIKit框架，所以只要你引入的UIKit框架就可以利用它来实现一些物理方面的效果，比如重力、碰撞。UIDynamic使用起来比较简单，不需要太多数学方面的知识，使用它只需要几个步骤：</p>
+<p>1.创建一个<strong>物理模型仿真器（UIDynamicAnimator）</strong>，设置它作用的视图。</p>
+<p>2.创建<strong>物理模型仿真行为（UIDynamicBehavior）</strong>，并添加元素。</p>
+<p>3.将仿真行为添加到仿真器中。</p>
+<p>就这么简单。写完了。</p>
+<p>UIDynamicAnimator是整个UIDynamic的核心部分，所有的行为（UIDynamicBehavior）都是需要添加到这里。每一个行为都是一种真实的物理行为。继承自UIDynamicBehavior主要的类有以下：</p>
+<p>&gt;<br><code>UIGravityBehavior</code><br>重力行为：用来代表重力，应该不用多说了。<br>&gt;<br><code>UICollisionBehavior</code><br>碰撞行为：可以让UIView之前产生碰撞的效果，或者让View与边界上产生碰撞<br>&gt;<br><code>UISnapBehavior</code><br>捕捉行为：他可以让你吸引各种View。<br>&gt;<br><code>UIPushBehavior</code><br>推动行为：这个就相当于你对所作用的view产生了一个推力，这个推力可以使持续的，也可以是瞬时的。<br>&gt;<br><code>UIAttachmentBehavior</code><br>附着行为：这个行为是将两个view连接在一起，或者使一个view连接到某个点。<br>&gt;<br><code>UIDynamicItemBehavior</code><br>动力元素行为：这个跟之前的都不太一样，这个类并不是代表某个特定的行为，应该说是一些物理单位？但是可以对behavior进行一些特定的调整。</p>
+<blockquote>
+<p>elasticity 弹性，范围是0.0~1.0，决定两个对象碰撞的弹性程度，值越大、弹性越大。</p>
+<p>friction 摩擦力，这个应该就不用多解释了吧。</p>
+<p>density 密度，这个值代表对象的质量，值越大、质量越大。</p>
+<p>resistance 阻力，对速度影响，这个值越大、速度衰减的越快。</p>
+<p>angularResistance 角速度阻力，对角速度影响，这个值越大、角速度衰减的越快。</p>
+</blockquote>
 
       
     </div>
