@@ -92,7 +92,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS 物理引擎 UIKit Dynamics 的简单使用">
 <meta property="og:url" content="http://yoursite.com/2017/03/24/iOS-UIDynamic物理引擎的简单使用/index.html">
-<meta property="og:site_name" content="张忠瑞的博客">
+<meta property="og:site_name" content="zhangzr's blog">
 <meta property="og:description" content="纠结了很久要不要写一点东西，最后还是决定写下来一些东西，这个博客里边包括了我在学习iOS中一些方法的使用，算是自己的一个学习笔记吧。如果写的内容中有什么不对的地方欢迎指正和讨论。好了扯多了，现在就把主题拉回今天要写的东西UIDynamic。
 概述UIDynamic是iOS 7引入的技术，隶属于UIKit框架，所以只要你引入的UIKit框架就可以利用它来实现一些物理方面的效果，比如重力、碰撞。UID">
 <meta property="og:image" content="http://yoursite.com/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIGravityBehavior.gif">
@@ -137,7 +137,7 @@
 
 
 
-  <title> iOS 物理引擎 UIKit Dynamics 的简单使用 | 张忠瑞的博客 </title>
+  <title> iOS 物理引擎 UIKit Dynamics 的简单使用 | zhangzr's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -183,7 +183,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">张忠瑞的博客</span>
+        <span class="site-title">zhangzr's blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -309,13 +309,13 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/24/iOS-UIDynamic物理引擎的简单使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="rshinich">
+      <meta itemprop="name" content="zhangzr">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="张忠瑞的博客">
+      <meta itemprop="name" content="zhangzr's blog">
     </span>
 
     
@@ -406,23 +406,23 @@
 <center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIGravityBehavior.gif" alt="logo"></center>
 
 <p>首先先要建立一个物理仿真器和一个小球作为实验的对象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@property (nonatomic ,strong) UIDynamicAnimator *animator;</div><div class="line"></div><div class="line">@property (nonatomic ,strong) UIView    *ballItem;</div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">strong</span>) <span class="built_in">UIDynamicAnimator</span> *animator;</div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">strong</span>) <span class="built_in">UIView</span>    *ballItem;</div></pre></td></tr></table></figure>
 <p>然后赋予当前物理仿真器的作用view</p>
 <p><code>self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];</code></p>
 <p>接下来创建一个重力效果，然后将小球赋予这个效果，最后将它加到物理仿真器中。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">UIGravityBehavior *gravity = [[UIGravityBehavior alloc] initWithItems:@[self.ballItem]];</div><div class="line"></div><div class="line">[self.animator addBehavior:gravity];</div></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">UIGravityBehavior *gravity = <span class="string">[[UIGravityBehavior alloc] initWithItems:@[self.ballItem]]</span>;</div><div class="line"></div><div class="line">[self.animator addBehavior:gravity];</div></pre></td></tr></table></figure>
 <p>好了，整个重力的部分就使用完了。<br>不过这样好像也有点奇怪，小球掉下去就没了，这是我们不想要的，那就在给他增加一个地面吧。没错，接下来就是要用到碰撞效果了。</p>
 <p>###碰撞效果 UICollisionBehavior</p>
 <center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UICollisionBehavior.gif" alt="logo"></center>
 
 <p>创建一个碰撞效果和创建一个重力效果一样简单。直接初始化后加到小球上边后添加到仿真器中，效果就实现了。唯一的区别是碰撞效果需要设定碰撞的范围也就是translatesReferenceBoundsIntoBoundary，它默认是作用于当前view的，也就是self.view。当然你也可以使用<code>setTranslatesReferenceBoundsIntoBoundaryWithInsets</code>设定一个你想要范围。如果更复杂一点还可以使用<code>addBoundaryWithIdentifier</code>来添加边界。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">UICollisionBehavior *collison = [[UICollisionBehavior alloc] initWithItems:@[self.ballItem]];</div><div class="line">collison.translatesReferenceBoundsIntoBoundary = YES;</div></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">UICollisionBehavior *collison = <span class="string">[[UICollisionBehavior alloc] initWithItems:@[self.ballItem]]</span>;</div><div class="line">collison.translatesReferenceBoundsIntoBoundary = YES;</div></pre></td></tr></table></figure>
 <p>OK，现在边界也有了，但是这个球感觉一点弹性都没有，就像一个铅球砸到地面上一样。我还希望它能有一些弹性，像一个皮球一样。仔细看上边的内容就会发现，那个特殊的物理效果类动力元素行为就可以实现这个功能了。</p>
 <p>###动力元素行为 UIDynamicItemBehavior</p>
 <center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIDynamicItemBehavior.gif" alt="logo"></center>
 
 <p>创建动力元素行为也和前边哥俩儿一个套路，直接初始化之后添加就可以了。设置elasticity就可以控制弹性了，范围是0~1，数值越接近1弹力越大。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">UIDynamicItemBehavior *behavior = [[UIDynamicItemBehavior alloc] initWithItems:@[self.ballItem]];</div><div class="line">behavior.elasticity = 0.5;</div></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">UIDynamicItemBehavior *behavior = <span class="string">[[UIDynamicItemBehavior alloc] initWithItems:@[self.ballItem]]</span>;</div><div class="line">behavior.elasticity = <span class="number">0.5</span>;</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -528,8 +528,8 @@
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
-               alt="rshinich" />
-          <p class="site-author-name" itemprop="name">rshinich</p>
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
           
@@ -605,7 +605,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">rshinich</span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
 </div>
 
 
