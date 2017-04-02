@@ -374,48 +374,63 @@
       
         
           
-            <p>纠结了很久要不要写一点东西，最后还是决定写下来一些东西，这个博客里边包括了我在学习iOS中一些方法的使用，算是自己的一个学习笔记吧。如果写的内容中有什么不对的地方欢迎指正和讨论。好了扯多了，现在就把主题拉回今天要写的东西UIDynamic。</p>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>UIDynamic是iOS 7引入的技术，隶属于UIKit框架，所以只要你引入的UIKit框架就可以利用它来实现一些物理方面的效果，比如重力、碰撞。UIDynamic使用起来比较简单，不需要太多数学方面的知识，使用它只需要几个步骤：</p>
-<p>1.创建一个<strong>物理模型仿真器（UIDynamicAnimator）</strong>，设置它作用的视图。</p>
-<p>2.创建<strong>物理模型仿真行为（UIDynamicBehavior）</strong>，并添加元素。</p>
-<p>3.将仿真行为添加到仿真器中。</p>
-<p>就这么简单。写完了。</p>
-<p>UIDynamicAnimator是整个UIDynamic的核心部分，所有的行为（UIDynamicBehavior）都是需要添加到这里。每一个行为都是一种真实的物理行为。继承自UIDynamicBehavior主要的类有以下：</p>
-<blockquote>
-<p><code>UIGravityBehavior</code><br>重力行为：用来代表重力，应该不用多说了。<br><code>UICollisionBehavior</code><br>碰撞行为：可以让UIView之前产生碰撞的效果，或者让View与边界上产生碰撞<br><code>UISnapBehavior</code><br>捕捉行为：他可以让你吸引各种View。<br><code>UIPushBehavior</code><br>推动行为：这个就相当于你对所作用的view产生了一个推力，这个推力可以使持续的，也可以是瞬时的。<br><code>UIAttachmentBehavior</code><br>附着行为：这个行为是将两个view连接在一起，或者使一个view连接到某个点。<br><code>UIDynamicItemBehavior</code><br>动力元素行为：这个跟之前的都不太一样，这个类并不是代表某个特定的行为，应该说是一些物理单位？但是可以对behavior进行一些特定的调整。</p>
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>UIKit Dynamic是在iOS 7中引入的技术，隶属于UIKit框架，所以只要你引入的UIKit框架就可以利用它来实现一些物理方面的效果，比如重力、碰撞。UIDynamic使用起来比较简单，不需要太多数学方面的知识，使用它只需要几个步骤：</p>
 <ul>
-<li><p>elasticity 弹性，范围是0.0~1.0，决定两个对象碰撞的弹性程度，值越大、弹性越大。</p>
+<li><p>1.创建一个物理模型仿真器<strong>UIDynamicAnimator</strong>，设置它作用的视图<strong>Reference View</strong>。</p>
 </li>
-<li><p>friction 摩擦力，这个应该就不用多解释了吧。</p>
+<li><p>2.创建物理模型仿真行为<strong>UIDynamicBehavior</strong>，并添加元素<strong>UIDynamicItem</strong>。</p>
 </li>
-<li><p>density 密度，这个值代表对象的质量，值越大、质量越大。</p>
-</li>
-<li><p>resistance 阻力，对速度影响，这个值越大、速度衰减的越快。</p>
-</li>
-<li><p>angularResistance 角速度阻力，对角速度影响，这个值越大、角速度衰减的越快。</p>
+<li><p>3.将仿真行为添加到仿真器中。</p>
 </li>
 </ul>
-</blockquote>
-<p>好了，接下来废话不多说，上demo。</p>
-<p>##Demo</p>
-<p>###重力效果 UIGravityBehavior</p>
+<p>就这么简单。写完了。</p>
+<h3 id="UIDynamicAnimator"><a href="#UIDynamicAnimator" class="headerlink" title="UIDynamicAnimator"></a>UIDynamicAnimator</h3><p><strong>UIDynamicAnimator</strong>是整个UIKit Dynamic的核心部分，他有一个他影响的view<strong>Reference View</strong>,所有的行为<strong>UIDynamicBehavior</strong>都是需要添加到这里。</p>
+<h3 id="UIDynamicBehavior"><a href="#UIDynamicBehavior" class="headerlink" title="UIDynamicBehavior"></a>UIDynamicBehavior</h3><p><strong>UIDynamicBehavior</strong>是我们通常所用到的物理表现形式，主要有6个动作行为:</p>
+<ul>
+<li><p><code>UIGravityBehavior</code><br>重力行为：用来代表重力，应该不用多说了。</p>
+</li>
+<li><p><code>UICollisionBehavior</code><br>碰撞行为：可以让UIView之前产生碰撞的效果，或者让View与边界上产生碰撞</p>
+</li>
+<li><p><code>UISnapBehavior</code><br>捕捉行为：他可以让你吸引各种View。</p>
+</li>
+<li><p><code>UIPushBehavior</code><br>推动行为：这个就相当于你对所作用的view产生了一个推力，这个推力可以使持续的，也可以是瞬时的。</p>
+</li>
+<li><p><code>UIAttachmentBehavior</code><br>附着行为：这个行为是将两个view连接在一起，或者使一个view连接到某个点。</p>
+</li>
+<li><p><code>UIDynamicItemBehavior</code><br>动力元素行为：这个跟之前的都不太一样，这个类并不是代表某个特定的行为，应该说是一些物理单位？但是可以对behavior进行一些特定的调整。</p>
+</li>
+</ul>
+<h3 id="UIDynamicItem"><a href="#UIDynamicItem" class="headerlink" title="UIDynamicItem"></a>UIDynamicItem</h3><p><code>UIDynamicItem</code>是动力的基本作用单位。</p>
+<p>说了这么多，来点实际的，让我们先用起来。</p>
+<h2 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h2><h3 id="构建环境-UIDynamicAnimator"><a href="#构建环境-UIDynamicAnimator" class="headerlink" title="构建环境 UIDynamicAnimator"></a>构建环境 UIDynamicAnimator</h3><p>首先，建立一个物理仿真器。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> ViewController ()</div><div class="line"><span class="variable">@property</span> (nonatomic ,strong) UIDynamicAnimator *animator;</div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.animator = [[<span class="built_in">UIDynamicAnimator</span> alloc] initWithReferenceView:<span class="keyword">self</span>.view];</div></pre></td></tr></table></figure>
+<p>这里边的referenceView就是指所影响到的view，我们可以把它比作我们所创造的世界。</p>
+<h3 id="构建元素-UIDynamicItem"><a href="#构建元素-UIDynamicItem" class="headerlink" title="构建元素 UIDynamicItem"></a>构建元素 UIDynamicItem</h3><p>接下来，我们就创建一个作用元素。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> ViewController ()</div><div class="line"><span class="variable">@property</span> (nonatomic ,strong) UIView    *ballItem;</div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.ballItem = [[<span class="built_in">UIView</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>([<span class="built_in">UIScreen</span> mainScreen].bounds.size.width/<span class="number">2</span><span class="number">-15</span>, <span class="number">0</span>, <span class="number">30</span>, <span class="number">30</span>)];</div><div class="line"><span class="keyword">self</span>.ballItem.backgroundColor = [<span class="built_in">UIColor</span> redColor];</div><div class="line"><span class="keyword">self</span>.ballItem.layer.borderWidth = <span class="number">1</span>;</div><div class="line"><span class="keyword">self</span>.ballItem.layer.borderColor = [<span class="built_in">UIColor</span> clearColor].CGColor;</div><div class="line"><span class="keyword">self</span>.ballItem.layer.cornerRadius = <span class="number">15</span>;</div><div class="line"><span class="keyword">self</span>.ballItem.layer.masksToBounds = <span class="literal">YES</span>;</div><div class="line">[<span class="keyword">self</span>.view addSubview:<span class="keyword">self</span>.ballItem];</div></pre></td></tr></table></figure>
+<p>我们创建了一个小球，我们把UIDynamicBehavior添加上去之后它就会像是现实世界中的小球一样了。</p>
+<h3 id="重力效果-UIGravityBehavior"><a href="#重力效果-UIGravityBehavior" class="headerlink" title="重力效果 UIGravityBehavior"></a>重力效果 UIGravityBehavior</h3><p>接下来创建一个重力效果，然后将小球赋予这个效果，最后将它加到物理仿真器中。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">UIGravityBehavior *gravity = <span class="string">[[UIGravityBehavior alloc] initWithItems:@[self.ballItem]]</span>;</div><div class="line">[self.animator addBehavior:gravity];</div></pre></td></tr></table></figure>
+<p>这样我们就给我们的小球添加了一个重力作用，现实世界中我们的重力加速度g=9.8m/s2，在iOS设备中也遵循了这个数值，只不过我们不是m，而是像素点了。</p>
 <center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIGravityBehavior.gif" alt="logo"></center>
 
-<p>首先先要建立一个物理仿真器和一个小球作为实验的对象</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">strong</span>) <span class="built_in">UIDynamicAnimator</span> *animator;</div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">strong</span>) <span class="built_in">UIView</span>    *ballItem;</div></pre></td></tr></table></figure>
-<p>然后赋予当前物理仿真器的作用view</p>
-<p><code>self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];</code></p>
-<p>接下来创建一个重力效果，然后将小球赋予这个效果，最后将它加到物理仿真器中。</p>
-<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">UIGravityBehavior *gravity = <span class="string">[[UIGravityBehavior alloc] initWithItems:@[self.ballItem]]</span>;</div><div class="line"></div><div class="line">[self.animator addBehavior:gravity];</div></pre></td></tr></table></figure>
-<p>好了，整个重力的部分就使用完了。<br>不过这样好像也有点奇怪，小球掉下去就没了，这是我们不想要的，那就在给他增加一个地面吧。没错，接下来就是要用到碰撞效果了。</p>
-<p>###碰撞效果 UICollisionBehavior</p>
+<p>另外，也可以通过设置重力的大小、方向。这里的方向使用的是弧度制，并且遵循坐标系，即屏幕右侧方向为0、2π，下方为π/2，左侧方向为π，上方为3π/2。</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">UIGravityBehavior *<span class="keyword">gravity</span> = [[UIGravityBehavior alloc] initWithItems:@[self.ballItem]];</div><div class="line"><span class="keyword">gravity</span>.magnitude = <span class="number">10.0</span>;       <span class="comment">//设置重力的大小</span></div><div class="line"><span class="keyword">gravity</span>.<span class="keyword">angle</span> = M_PI_4;         <span class="comment">//设置重力的方向</span></div></pre></td></tr></table></figure>
+<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIGravityBehavior2.gif" alt="logo"></center>
+
+
+<h3 id="碰撞效果-UICollisionBehavior"><a href="#碰撞效果-UICollisionBehavior" class="headerlink" title="碰撞效果 UICollisionBehavior"></a>碰撞效果 UICollisionBehavior</h3><p>创建一个碰撞效果和创建一个重力效果一样简单。直接初始化后加到小球上边后添加到仿真器中，效果就实现了。唯一的区别是碰撞效果需要设定碰撞的范围也就是translatesReferenceBoundsIntoBoundary，它默认是作用于当前view的，也就是self.view。当然你也可以使用</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">UICollisionBehavior *collison = <span class="string">[[UICollisionBehavior alloc] initWithItems:@[self.ballItem]]</span>;</div><div class="line">collison.translatesReferenceBoundsIntoBoundary = YES;</div><div class="line">[self.animator addBehavior:collison];</div></pre></td></tr></table></figure>
 <center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UICollisionBehavior.gif" alt="logo"></center>
 
-<p>创建一个碰撞效果和创建一个重力效果一样简单。直接初始化后加到小球上边后添加到仿真器中，效果就实现了。唯一的区别是碰撞效果需要设定碰撞的范围也就是translatesReferenceBoundsIntoBoundary，它默认是作用于当前view的，也就是self.view。当然你也可以使用<code>setTranslatesReferenceBoundsIntoBoundaryWithInsets</code>设定一个你想要范围。如果更复杂一点还可以使用<code>addBoundaryWithIdentifier</code>来添加边界。</p>
-<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">UICollisionBehavior *collison = <span class="string">[[UICollisionBehavior alloc] initWithItems:@[self.ballItem]]</span>;</div><div class="line">collison.translatesReferenceBoundsIntoBoundary = YES;</div></pre></td></tr></table></figure>
+<p>我们还可以通过设置collisionMode来控制元素之间碰撞的模式。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readwrite</span>) <span class="built_in">UICollisionBehaviorMode</span> collisionMode;</div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="built_in">NS_OPTIONS</span>(<span class="built_in">NSUInteger</span>, <span class="built_in">UICollisionBehaviorMode</span>) &#123;</div><div class="line">    <span class="built_in">UICollisionBehaviorModeItems</span>        = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,  <span class="comment">//元素之间碰撞</span></div><div class="line">    <span class="built_in">UICollisionBehaviorModeBoundaries</span>   = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,  <span class="comment">//边界碰撞</span></div><div class="line">    <span class="built_in">UICollisionBehaviorModeEverything</span>   = <span class="built_in">NSUIntegerMax</span>  <span class="comment">//碰撞所有</span></div><div class="line">&#125; <span class="built_in">NS_ENUM_AVAILABLE_IOS</span>(<span class="number">7</span>_0);</div></pre></td></tr></table></figure>
+<p>还可以通过<code>setTranslatesReferenceBoundsIntoBoundaryWithInsets</code>设定一个你想要范围。如果更复杂一点还可以使用<code>addBoundaryWithIdentifier</code>来添加边界。<br>碰撞行为中还有一些代理用来检测不同的元素之间的碰撞</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">UICollisionBehaviorDelegate</span> &lt;<span class="title">NSObject</span>&gt;</span></div><div class="line"><span class="keyword">@optional</span></div><div class="line"><span class="comment">// 当一个两个动态元素之间发生碰撞时调用</span></div><div class="line">- (<span class="keyword">void</span>)collisionBehavior:(<span class="built_in">UICollisionBehavior</span> *)behavior beganContactForItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item1 withItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item2 atPoint:(<span class="built_in">CGPoint</span>)p;</div><div class="line"><span class="comment">// 当一个两个动态元素之间碰撞结束时调用</span></div><div class="line">- (<span class="keyword">void</span>)collisionBehavior:(<span class="built_in">UICollisionBehavior</span> *)behavior endedContactForItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item1 withItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item2;</div><div class="line"><span class="comment">// 当一个动态元素与边界发生碰撞时调用</span></div><div class="line">- (<span class="keyword">void</span>)collisionBehavior:(<span class="built_in">UICollisionBehavior</span>*)behavior beganContactForItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item withBoundaryIdentifier:(<span class="keyword">nullable</span> <span class="keyword">id</span> &lt;<span class="built_in">NSCopying</span>&gt;)identifier atPoint:(<span class="built_in">CGPoint</span>)p;</div><div class="line"><span class="comment">// 当一个动态元素与边界碰撞结束时调用</span></div><div class="line">- (<span class="keyword">void</span>)collisionBehavior:(<span class="built_in">UICollisionBehavior</span>*)behavior endedContactForItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item withBoundaryIdentifier:(<span class="keyword">nullable</span> <span class="keyword">id</span> &lt;<span class="built_in">NSCopying</span>&gt;)identifier;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <p>OK，现在边界也有了，但是这个球感觉一点弹性都没有，就像一个铅球砸到地面上一样。我还希望它能有一些弹性，像一个皮球一样。仔细看上边的内容就会发现，那个特殊的物理效果类动力元素行为就可以实现这个功能了。</p>
-<p>###动力元素行为 UIDynamicItemBehavior</p>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIDynamicItemBehavior.gif" alt="logo"></center>
+<h3 id="动力元素行为-UIDynamicItemBehavior"><a href="#动力元素行为-UIDynamicItemBehavior" class="headerlink" title="动力元素行为 UIDynamicItemBehavior"></a>动力元素行为 UIDynamicItemBehavior</h3><center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIDynamicItemBehavior.gif" alt="logo"></center>
 
 <p>创建动力元素行为也和前边哥俩儿一个套路，直接初始化之后添加就可以了。设置elasticity就可以控制弹性了，范围是0~1，数值越接近1弹力越大。</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">UIDynamicItemBehavior *behavior = <span class="string">[[UIDynamicItemBehavior alloc] initWithItems:@[self.ballItem]]</span>;</div><div class="line">behavior.elasticity = <span class="number">0.5</span>;</div></pre></td></tr></table></figure>
