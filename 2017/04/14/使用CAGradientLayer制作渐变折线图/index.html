@@ -1,0 +1,776 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="之前写了一下UIBezierPath的简单使用，这次就写写UIBezierPath的具体使用吧。
+如果平时我们遇到一些需要做图表的需求时，使用UIBezierPath就再适合不过了，今天我就打算使用它来绘制一个折线图。先上效果图：
+
+
+绘制背景首先我们先来绘制一下背景，背景比较简单，一个背景色上边加上五条细细的线就可以了。首先我们先用UIBezierPath来画一条直线，然后把它给到CAShape">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用CAGradientLayer制作渐变折线图">
+<meta property="og:url" content="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="之前写了一下UIBezierPath的简单使用，这次就写写UIBezierPath的具体使用吧。
+如果平时我们遇到一些需要做图表的需求时，使用UIBezierPath就再适合不过了，今天我就打算使用它来绘制一个折线图。先上效果图：
+
+
+绘制背景首先我们先来绘制一下背景，背景比较简单，一个背景色上边加上五条细细的线就可以了。首先我们先用UIBezierPath来画一条直线，然后把它给到CAShape">
+<meta property="og:image" content="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/finally_effect .gif">
+<meta property="og:image" content="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/background.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/afterdrawLine.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayer.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayer2.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayer3.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayerLine.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/finally_effect2.gif">
+<meta property="og:updated_time" content="2017-04-14T03:09:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用CAGradientLayer制作渐变折线图">
+<meta name="twitter:description" content="之前写了一下UIBezierPath的简单使用，这次就写写UIBezierPath的具体使用吧。
+如果平时我们遇到一些需要做图表的需求时，使用UIBezierPath就再适合不过了，今天我就打算使用它来绘制一个折线图。先上效果图：
+
+
+绘制背景首先我们先来绘制一下背景，背景比较简单，一个背景色上边加上五条细细的线就可以了。首先我们先用UIBezierPath来画一条直线，然后把它给到CAShape">
+<meta name="twitter:image" content="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/finally_effect .gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/"/>
+
+
+
+
+
+  <title> 使用CAGradientLayer制作渐变折线图 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用CAGradientLayer制作渐变折线图
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-14T10:15:34+08:00">
+                2017-04-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前写了一下UIBezierPath的<a href="http://zhangzr.cn/2017/04/05/iOS-UIBezierPath%E7%BB%98%E5%88%B6%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" target="_blank" rel="external">简单使用</a>，这次就写写UIBezierPath的具体使用吧。</p>
+<p>如果平时我们遇到一些需要做图表的需求时，使用UIBezierPath就再适合不过了，今天我就打算使用它来绘制一个折线图。先上效果图：</p>
+<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/finally_effect .gif" alt="logo"></center>
+
+<h2 id="绘制背景"><a href="#绘制背景" class="headerlink" title="绘制背景"></a>绘制背景</h2><p>首先我们先来绘制一下背景，背景比较简单，一个背景色上边加上五条细细的线就可以了。<br>首先我们先用UIBezierPath来画一条直线，然后把它给到CAShapeLayer，最后把CAShapeLayer添加到当前view的sublayer中就可以了。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">for</span>(int i = <span class="number">0</span> <span class="comment">; i &lt; 5 ; i++)</span></div><div class="line">&#123;</div><div class="line">    UIBezierPath *<span class="keyword">bgPath </span>= [UIBezierPath <span class="keyword">bezierPath];</span></div><div class="line">    [<span class="keyword">bgPath </span><span class="keyword">moveToPoint:CGPointMake(30, </span>HEIGHT/<span class="number">2</span>-<span class="number">100</span>+i*<span class="number">30</span>)]<span class="comment">;</span></div><div class="line">    [<span class="keyword">bgPath </span><span class="keyword">addLineToPoint:CGPointMake(WIDTH-30, </span>HEIGHT/<span class="number">2</span>-<span class="number">100</span>+i*<span class="number">30</span>)]<span class="comment">;</span></div><div class="line">    </div><div class="line">    CAShapeLayer *<span class="keyword">bgPathLayer </span>= [CAShapeLayer layer]<span class="comment">;</span></div><div class="line">    <span class="keyword">bgPathLayer.path </span>= <span class="keyword">bgPath.CGPath;</span></div><div class="line">    <span class="keyword">bgPathLayer.lineWidth </span>= <span class="number">1</span><span class="comment">;</span></div><div class="line">    <span class="keyword">bgPathLayer.fillColor </span>= [UIColor clearColor].CGColor<span class="comment">;</span></div><div class="line">    <span class="keyword">bgPathLayer.strokeColor </span>= [UIColor colorWithRed:<span class="number">70</span>/<span class="number">255</span>.<span class="number">0</span> green:<span class="number">94</span>/<span class="number">255</span>.<span class="number">0</span> <span class="keyword">blue:116/255.0 </span>alpha:<span class="number">0</span>.<span class="number">3</span>].CGColor<span class="comment">;</span></div><div class="line">    <span class="keyword">bgPathLayer.frame </span>= CGRectMake(<span class="number">0</span>, <span class="number">0</span>, WIDTH, HEIGHT)<span class="comment">;</span></div><div class="line">    </div><div class="line">    </div><div class="line">    [<span class="keyword">self.layer </span><span class="keyword">addSublayer:bgPathLayer];</span></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实现了上边的代码之后就会看到这样的：</p>
+<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/background.png" alt="logo"></center>
+
+<h2 id="绘制曲线"><a href="#绘制曲线" class="headerlink" title="绘制曲线"></a>绘制曲线</h2><p>接下来我们需要来绘制折线图的主要部分。。。折线。我之前绘制背景的时候使用了5根线所以在这边我使用随机函数<code>arc4random()</code>随机生成每个点的位置。所以可能生成的折线图会与最开始的效果图有一点不同。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIBezierPath</span> *linePath = [<span class="built_in">UIBezierPath</span> bezierPath];</div><div class="line"></div><div class="line"><span class="built_in">NSInteger</span> i = arc4random()%<span class="number">5</span>;</div><div class="line">[linePath moveToPoint:<span class="built_in">CGPointMake</span>(<span class="number">30</span>, HEIGHT/<span class="number">2</span><span class="number">-100</span>+i*<span class="number">30</span>)];</div><div class="line"></div><div class="line"><span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span> ; j &lt; <span class="number">30</span> ; j++)</div><div class="line">&#123;</div><div class="line">    i = arc4random()%<span class="number">5</span>;</div><div class="line">    </div><div class="line">    [linePath addLineToPoint:<span class="built_in">CGPointMake</span>(<span class="number">30</span> + (WIDTH<span class="number">-60</span>)*j/<span class="number">30</span>, HEIGHT/<span class="number">2</span><span class="number">-100</span>+i*<span class="number">30</span>)];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">CAShapeLayer</span> *linePathLayer = [<span class="built_in">CAShapeLayer</span> layer];</div><div class="line">linePathLayer.path = linePath.CGPath;</div><div class="line">linePathLayer.lineWidth = <span class="number">3</span>;</div><div class="line">linePathLayer.fillColor = [<span class="built_in">UIColor</span> clearColor].CGColor;</div><div class="line">linePathLayer.strokeColor = [<span class="built_in">UIColor</span> whiteColor].CGColor;</div><div class="line">linePathLayer.lineCap = kCALineCapRound;</div><div class="line">linePathLayer.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, WIDTH, HEIGHT);</div><div class="line"></div><div class="line"></div><div class="line">[<span class="keyword">self</span>.layer addSublayer:linePathLayer];</div></pre></td></tr></table></figure>
+<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/afterdrawLine.png" alt="logo"></center>
+
+<p>到这里我们折线图的部分基本就已经完成了，接下来我们要实现他的渐变色和动画的功能。</p>
+<h2 id="绘制渐变"><a href="#绘制渐变" class="headerlink" title="绘制渐变"></a>绘制渐变</h2><h3 id="CAGradientLayer"><a href="#CAGradientLayer" class="headerlink" title="CAGradientLayer"></a>CAGradientLayer</h3><h4 id="两种颜色"><a href="#两种颜色" class="headerlink" title="两种颜色"></a>两种颜色</h4><p>绘制渐变色我们需要使用到<code>CAGradientLayer</code>，他是用来生成两种或更多颜色平滑渐变的。</p>
+<p>我们先简单使用<code>CAGradientLayer</code>来绘制一个对角线渐变的颜色。首先我们要赋予<code>colors</code>属性。这个数组接受的是<code>CGColorRef</code>类型的值，所以我们需要通过<code>bridge</code>转换他。</p>
+<p><code>CAGradientLayer</code>也有<code>startPoint</code>和<code>endPoint</code>属性，这两个属性决定了渐变的方向。其中代表左上角的坐标为{0，0}，代表右下角的坐标为{1,1}。</p>
+<p>运行这样一段代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">CAGradientLayer</span> *gradientLayer = [<span class="built_in">CAGradientLayer</span> layer];</div><div class="line">gradientLayer.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, WIDTH, HEIGHT);</div><div class="line">[gradientLayer setColors:@[(__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> blueColor].CGColor,</div><div class="line">                           (__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> redColor].CGColor</div><div class="line">                           ]];</div><div class="line">[gradientLayer setStartPoint:<span class="built_in">CGPointMake</span>(<span class="number">0</span>, <span class="number">0</span>)];</div><div class="line">[gradientLayer setEndPoint:<span class="built_in">CGPointMake</span>(<span class="number">1</span>, <span class="number">0</span>)];</div><div class="line"></div><div class="line"></div><div class="line">[<span class="keyword">self</span>.layer addSublayer:gradientLayer];</div></pre></td></tr></table></figure>
+<p>我们就会看到一个从左到右的蓝色渐变为红色的样式。</p>
+<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayer.png" alt="logo"></center>
+
+<h4 id="多种颜色"><a href="#多种颜色" class="headerlink" title="多种颜色"></a>多种颜色</h4><p>当然了，我们也可以给<code>colors</code>添加更多的颜色，然后使用<code>locations</code>属性来调整空间。同样的也是以0.0代表开始、1.0代表结束。</p>
+<p><code>locations</code>数组不是一定要设置的，但是如果你设置了他，就一定要和<code>colors</code>的大小保持一致，否则会出现一个空白的渐变。</p>
+<p>像这样一段代码，我在之前的基础上多加了一个绿色，并且通过<code>locations</code>将他们设置成了三等分。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">CAGradientLayer</span> *gradientLayer = [<span class="built_in">CAGradientLayer</span> layer];</div><div class="line">gradientLayer.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, WIDTH, HEIGHT);</div><div class="line">[gradientLayer setColors:@[(__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> blueColor].CGColor,</div><div class="line">                           (__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> redColor].CGColor,</div><div class="line">                           (__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> greenColor].CGColor</div><div class="line">                           ]];</div><div class="line">[gradientLayer setLocations:@[@<span class="number">0.0</span>,</div><div class="line">                              @<span class="number">0.5</span>,</div><div class="line">                              @<span class="number">1.0</span></div><div class="line">                              ]];</div><div class="line">[gradientLayer setStartPoint:<span class="built_in">CGPointMake</span>(<span class="number">0</span>, <span class="number">0</span>)];</div><div class="line">[gradientLayer setEndPoint:<span class="built_in">CGPointMake</span>(<span class="number">1</span>, <span class="number">0</span>)];</div><div class="line"></div><div class="line">[<span class="keyword">self</span>.layer addSublayer:gradientLayer];</div></pre></td></tr></table></figure>
+<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayer2.png" alt="logo"></center>
+
+<p>如果想让渐变看起来自然一些，可以使用一些相近的颜色。比如黄色、橙色、红色。</p>
+<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayer3.png" alt="logo"></center>
+
+<h3 id="绘制蒙层"><a href="#绘制蒙层" class="headerlink" title="绘制蒙层"></a>绘制蒙层</h3><p>渐变也有了，折线图也有了，接下来只要把渐变的颜色设置到折线图上就可以了。我们可以使用<code>setMask</code>来设置一个遮罩层。</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CALayer *gradientSuperLayer = <span class="string">[CALayer layer]</span>;</div><div class="line"><span class="string">[gradientSuperLayer addSublayer:gradientLayer]</span>;</div><div class="line"><span class="string">[gradientSuperLayer setMask:linePathLayer]</span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="string">[self.layer addSublayer:gradientSuperLayer]</span>;</div></pre></td></tr></table></figure>
+<p>这样一来，渐变的折线图就做出来了。</p>
+<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayerLine.png" alt="logo"></center>
+
+<h2 id="动画的实现"><a href="#动画的实现" class="headerlink" title="动画的实现"></a>动画的实现</h2><p>样式已经好了，接下来我们只要使用<code>CABasicAnimation</code>来设置一个简单的动画就可以实现功能了。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">CABasicAnimation *drawAnimation = [CABasicAnimation animationWithKeyPath:@<span class="string">"strokeEnd"</span>]<span class="comment">;</span></div><div class="line">drawAnimation.duration = <span class="number">2</span> <span class="comment">;        //动画时间</span></div><div class="line">drawAnimation.fromValue = @<span class="number">0</span><span class="comment">;</span></div><div class="line">drawAnimation.toValue= @<span class="number">1</span><span class="comment">;</span></div><div class="line">drawAnimation.fillMode = kCAFillModeForwards<span class="comment">;</span></div><div class="line">drawAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]<span class="comment">;    //动画播放的方式</span></div><div class="line">[layer <span class="keyword">addAnimation:drawAnimation </span>forKey:@<span class="string">"draw"</span>]<span class="comment">;</span></div></pre></td></tr></table></figure>
+<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/finally_effect2.gif" alt="logo"></center>
+
+
+<p>以上就是渐变色折线图的简单实现方式，仅作为个人学习笔记，如果有什么地方写的不对还请大神们批评指教。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/05/iOS-UIBezierPath绘制的简单使用/" rel="next" title="iOS-UIBezierPath绘制的简单使用">
+                <i class="fa fa-chevron-left"></i> iOS-UIBezierPath绘制的简单使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#绘制背景"><span class="nav-number">1.</span> <span class="nav-text">绘制背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#绘制曲线"><span class="nav-number">2.</span> <span class="nav-text">绘制曲线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#绘制渐变"><span class="nav-number">3.</span> <span class="nav-text">绘制渐变</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CAGradientLayer"><span class="nav-number">3.1.</span> <span class="nav-text">CAGradientLayer</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#两种颜色"><span class="nav-number">3.1.1.</span> <span class="nav-text">两种颜色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多种颜色"><span class="nav-number">3.1.2.</span> <span class="nav-text">多种颜色</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绘制蒙层"><span class="nav-number">3.2.</span> <span class="nav-text">绘制蒙层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动画的实现"><span class="nav-number">4.</span> <span class="nav-text">动画的实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
