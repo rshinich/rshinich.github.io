@@ -1,0 +1,782 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="还记得大二决心要学习iOS开发的时候曾经看过斯坦福大学公开课中白胡子老头的经典视频。不过因为当时对iOS还不是非常了解，导致看着看着就扔下了。现在毕业也有将近一年的时间了，决定重新刷一遍这个经典的公开课视频，并且写下学习笔记放到这里。
+简介MVC设计模式，全名为 Model-View-Controller，是模型（Model）-视图（View）-控制器（Controller）的缩写。它将一个程序分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="斯坦福大学iOS公开课学习笔记（1）---iOS的MVC框架">
+<meta property="og:url" content="http://yoursite.com/2017/04/26/斯坦福大学iOS公开课学习笔记（1）-iOS的MVC框架/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="还记得大二决心要学习iOS开发的时候曾经看过斯坦福大学公开课中白胡子老头的经典视频。不过因为当时对iOS还不是非常了解，导致看着看着就扔下了。现在毕业也有将近一年的时间了，决定重新刷一遍这个经典的公开课视频，并且写下学习笔记放到这里。
+简介MVC设计模式，全名为 Model-View-Controller，是模型（Model）-视图（View）-控制器（Controller）的缩写。它将一个程序分">
+<meta property="og:image" content="http://yoursite.com/2017/04/26/斯坦福大学iOS公开课学习笔记（1）-iOS的MVC框架/MVC.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/26/斯坦福大学iOS公开课学习笔记（1）-iOS的MVC框架/MVC_together.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/26/斯坦福大学iOS公开课学习笔记（1）-iOS的MVC框架/NO_MVC_together.png">
+<meta property="og:updated_time" content="2017-04-26T08:52:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="斯坦福大学iOS公开课学习笔记（1）---iOS的MVC框架">
+<meta name="twitter:description" content="还记得大二决心要学习iOS开发的时候曾经看过斯坦福大学公开课中白胡子老头的经典视频。不过因为当时对iOS还不是非常了解，导致看着看着就扔下了。现在毕业也有将近一年的时间了，决定重新刷一遍这个经典的公开课视频，并且写下学习笔记放到这里。
+简介MVC设计模式，全名为 Model-View-Controller，是模型（Model）-视图（View）-控制器（Controller）的缩写。它将一个程序分">
+<meta name="twitter:image" content="http://yoursite.com/2017/04/26/斯坦福大学iOS公开课学习笔记（1）-iOS的MVC框架/MVC.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/26/斯坦福大学iOS公开课学习笔记（1）-iOS的MVC框架/"/>
+
+
+
+
+
+  <title> 斯坦福大学iOS公开课学习笔记（1）---iOS的MVC框架 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/26/斯坦福大学iOS公开课学习笔记（1）-iOS的MVC框架/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                斯坦福大学iOS公开课学习笔记（1）---iOS的MVC框架
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-26T15:34:44+08:00">
+                2017-04-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>还记得大二决心要学习iOS开发的时候曾经看过斯坦福大学公开课中白胡子老头的经典<a href="http://open.163.com/special/opencourse/ios7.html?referered=http%3A%2F%2Fopen.163.com%2Fspecial%2Fopencourse%2Fios7.html" target="_blank" rel="external">视频</a>。不过因为当时对iOS还不是非常了解，导致看着看着就扔下了。现在毕业也有将近一年的时间了，决定重新刷一遍这个经典的公开课视频，并且写下学习笔记放到这里。</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>MVC设计模式，全名为 Model-View-Controller，是模型（Model）-视图（View）-控制器（Controller）的缩写。它将一个程序分为了三个阵营。图片来自于<a href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewPodcast?id=480479762" target="_blank" rel="external">课件</a></p>
+<center> <img src="/2017/04/26/斯坦福大学iOS公开课学习笔记（1）-iOS的MVC框架/MVC.png" alt="logo"></center>
+
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li>模型（Model）：负责封装、存储和处理数据。</li>
+<li>视图（View）：负责展示数据，监听用户的动作。</li>
+<li>控制器（Controller）：负责处理逻辑业务，响应事件，加工数据。</li>
+</ul>
+<h2 id="通信"><a href="#通信" class="headerlink" title="通信"></a>通信</h2><h3 id="控制器（Controller）与视图（View）"><a href="#控制器（Controller）与视图（View）" class="headerlink" title="控制器（Controller）与视图（View）"></a>控制器（Controller）与视图（View）</h3><h4 id="控制器（Controller）-gt-视图（View）：完全控制"><a href="#控制器（Controller）-gt-视图（View）：完全控制" class="headerlink" title="控制器（Controller） -&gt; 视图（View）：完全控制"></a>控制器（Controller） -&gt; 视图（View）：完全控制</h4><p>控制器可以完全知道视图的所有行为，具有完全控制权。</p>
+<p>这里提到了 <code>outlet</code>，outlet（输出口）是一种特殊的OC属性，用关键字<code>IBOutlet</code>声明，输出口是在控制器类的头文件中声明</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span>  (<span class="keyword">nonatomic</span>,<span class="keyword">retain</span>)    <span class="keyword">IBOutlet</span> <span class="built_in">UIButton</span>    *mybutton;</div></pre></td></tr></table></figure>
+<p>上边代码中就声明了一个<code>mybutton</code>的输出口，可以设置它指向IB中的任何一个button，通过<code>mybutton</code>这个对象，我们就可以获得到该button的相关属性。</p>
+<h4 id="视图（View）-gt-控制器（Controller）：盲的通信"><a href="#视图（View）-gt-控制器（Controller）：盲的通信" class="headerlink" title="视图（View） -&gt; 控制器（Controller）：盲的通信"></a>视图（View） -&gt; 控制器（Controller）：盲的通信</h4><p>因为View是通用的，所以他不知道调用他的Controller，所以他只能通过盲通信的方式与Controller通信。</p>
+<ul>
+<li><p><strong>target 通信</strong></p>
+<p>控制器本身有一个目标方法（target），然后将这个目标给视图的行为方法（action）,当视图中触发这个行为时，视图会发送消息给控制器的目标告诉控制器有人对他进行了操作。比如按钮的点击事件、滑动条的滑动事件。</p>
+</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIButton</span> *myBtn = [[<span class="built_in">UIButton</span> alloc] init];</div><div class="line">[myBtn addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(myBtnClicked) forControlEvents:<span class="built_in">UIControlEventTouchUpInside</span>];</div></pre></td></tr></table></figure>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>myBtnClicked</div><div class="line">&#123;</div><div class="line">    NSLog<span class="params">(@<span class="string">"myBtn clicked"</span>)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>比如上边两段代码就表示了一个按钮设置target为<code>self</code>，并且设置行为为<code>myBtnClicked</code>,所以当用户点击了这个按钮时，我们就会打印出 myBtn clicked 。</p>
+<ul>
+<li><p><strong>代理（Delegate）与数据源（DataSource）通讯</strong></p>
+<p>代理（Delegate），视图向控制器询问一些自己无法决定的事情的时候，或者让控制器帮忙来完成一些他自己无法完成的事情的时候会用到代理方法。比如通过一些关键字（will、should、did）来描述视图当前的情况，控制器就可以通过情况进行判断。比如<code>UITableView</code>中就有许多代理方法来告诉控制器视图当前的状态。</p>
+<p>数据源（DataSource），视图不该持有他的数据，如果视图持有了数据就违背了他的通用性。数据应该属于在模型中，他与UI无关，所以控制器必须有方法告诉视图他有多少数据。数据源是一种特殊的代理。还是拿<code>UITableView</code>举例子，他就有数据源方法来获取数据。</p>
+</li>
+</ul>
+<h3 id="控制器（Controller）与-模型（Model）"><a href="#控制器（Controller）与-模型（Model）" class="headerlink" title="控制器（Controller）与 模型（Model）"></a>控制器（Controller）与 模型（Model）</h3><h4 id="控制器（Controller）-gt-模型（Model）：完全控制"><a href="#控制器（Controller）-gt-模型（Model）：完全控制" class="headerlink" title="控制器（Controller） -&gt; 模型（Model）：完全控制"></a>控制器（Controller） -&gt; 模型（Model）：完全控制</h4><p>控制器可以完成控制模型，可以知道模型中的一切。</p>
+<h4 id="模型（Model）-gt-控制器（Controller）-广播通知"><a href="#模型（Model）-gt-控制器（Controller）-广播通知" class="headerlink" title="模型（Model） -&gt; 控制器（Controller）: 广播通知"></a>模型（Model） -&gt; 控制器（Controller）: 广播通知</h4><p>通常情况下，模型是不可以和控制器通信的，不过当模型中的数据发生了改变，他就需要告知控制器，我的数据变了。模型可以像电台一样发布广播，控制器中可以接收到模型发出的信号并进行处理。</p>
+<ul>
+<li><p><strong>通知（Notification）</strong></p>
+<p>一般来说，控制器中会注册成为监听者</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">addObserver:</span>(id)observer <span class="string">selector:</span>(SEL)aSelector <span class="string">name:</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>当模型中的值发生改变时，模型会发出通知</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>postNotification:<span class="params">(NSNotification *)</span>notification;</div><div class="line"></div><div class="line">- <span class="params">(void)</span>postNotificationName:<span class="params">(NSString *)</span>aName object:<span class="params">(id)</span>anObject;</div></pre></td></tr></table></figure>
+<p>成为监听者的控制器就会接受到来自模型的信号，做出相应的改变。</p>
+<ul>
+<li><p><strong>KVO（键值对观察）</strong></p>
+<p>与通知一样，在控制器中注册成为观察者，实现回调方法，在模型发生改变的时候可以通过激活回调方法让控制器做出一些动作。</p>
+</li>
+</ul>
+<h3 id="模型（Model）与视图（View）：不能"><a href="#模型（Model）与视图（View）：不能" class="headerlink" title="模型（Model）与视图（View）：不能"></a>模型（Model）与视图（View）：不能</h3><p>很明显，最开始的图片中，模型和视图中间是双黄线。模型是完全独立于UI的，所以模型和视图是完全不可以通信的。</p>
+<h3 id="多个MVC结构同时作用"><a href="#多个MVC结构同时作用" class="headerlink" title="多个MVC结构同时作用"></a>多个MVC结构同时作用</h3><center> <img src="/2017/04/26/斯坦福大学iOS公开课学习笔记（1）-iOS的MVC框架/MVC_together.png" alt="logo"></center>
+
+<h3 id="一定不要写成的样子"><a href="#一定不要写成的样子" class="headerlink" title="一定不要写成的样子"></a>一定不要写成的样子</h3><center> <img src="/2017/04/26/斯坦福大学iOS公开课学习笔记（1）-iOS的MVC框架/NO_MVC_together.png" alt="logo"></center>
+
+
+
+<h2 id="Objective-C"><a href="#Objective-C" class="headerlink" title="Objective-C"></a>Objective-C</h2><p>第一节课中还讲了一些OC中的属性和知识点。</p>
+<h3 id="类文件类型"><a href="#类文件类型" class="headerlink" title="类文件类型"></a>类文件类型</h3><ul>
+<li>.h文件：公开API，其他类可以调用，告诉其他类我能做什么 <em>what I can do</em></li>
+<li>.m文件：私有API，其他类不可用，实现.h文件中的方法<em>how to do</em></li>
+</ul>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
+<li>strong：在堆中保持所指向的东西，只要有一个强指针指向就会存在，否则就会释放。</li>
+<li>weak：如果没有强指针指向的话，会被设置成nil指针。</li>
+<li>nonatomic：非原子性，保证线程安全，不能让两个线程同时设置该属性。</li>
+</ul>
+<h2 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h2><p>第一节课讲的东西比较基础，但是现在回来再看会发现还是会学到一些新的知识。这节课重点介绍了MVC架构，合理的使用MVC可以降低类之间的耦合性，提高代码质量。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/24/使用UIBezierPath绘制波浪/" rel="next" title="使用UIBezierPath绘制波浪">
+                <i class="fa fa-chevron-left"></i> 使用UIBezierPath绘制波浪
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">2.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通信"><span class="nav-number">3.</span> <span class="nav-text">通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#控制器（Controller）与视图（View）"><span class="nav-number">3.1.</span> <span class="nav-text">控制器（Controller）与视图（View）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#控制器（Controller）-gt-视图（View）：完全控制"><span class="nav-number">3.1.1.</span> <span class="nav-text">控制器（Controller） -> 视图（View）：完全控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#视图（View）-gt-控制器（Controller）：盲的通信"><span class="nav-number">3.1.2.</span> <span class="nav-text">视图（View） -> 控制器（Controller）：盲的通信</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#控制器（Controller）与-模型（Model）"><span class="nav-number">3.2.</span> <span class="nav-text">控制器（Controller）与 模型（Model）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#控制器（Controller）-gt-模型（Model）：完全控制"><span class="nav-number">3.2.1.</span> <span class="nav-text">控制器（Controller） -> 模型（Model）：完全控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模型（Model）-gt-控制器（Controller）-广播通知"><span class="nav-number">3.2.2.</span> <span class="nav-text">模型（Model） -> 控制器（Controller）: 广播通知</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型（Model）与视图（View）：不能"><span class="nav-number">3.3.</span> <span class="nav-text">模型（Model）与视图（View）：不能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多个MVC结构同时作用"><span class="nav-number">3.4.</span> <span class="nav-text">多个MVC结构同时作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一定不要写成的样子"><span class="nav-number">3.5.</span> <span class="nav-text">一定不要写成的样子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Objective-C"><span class="nav-number">4.</span> <span class="nav-text">Objective-C</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类文件类型"><span class="nav-number">4.1.</span> <span class="nav-text">类文件类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性"><span class="nav-number">4.2.</span> <span class="nav-text">属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结束"><span class="nav-number">5.</span> <span class="nav-text">结束</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
