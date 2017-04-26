@@ -376,7 +376,7 @@
           
             <p>我们经常会在一些应用里边见到波浪的动画，比如之前淘宝个人中心顶部的双波浪，今天我们就来看一下这个效果是怎么实现的。</p>
 <h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><h4 id="绘制波浪"><a href="#绘制波浪" class="headerlink" title="绘制波浪"></a>绘制波浪</h4><p>实际上这个波浪就是使用正弦曲线公式 <code>y=Asin(wx+u)+K</code>绘制出来的，具体样式如图。</p>
-<center><img src="/2017/04/24/使用UIBezierPath绘制波浪/y=Asin(wx+u" alt="logo">+K.png)</center>
+<center><img src="/2017/04/24/使用UIBezierPath绘制波浪/sin.png" alt="logo"></center>
 
 <p>各个参数代表的意义如下：</p>
 <ul>
@@ -390,7 +390,7 @@
 <p>这里推荐使用<code>CADisplayLink</code> 因为它可以保持较高的刷新率，刷新率为每秒60次。</p>
 <p>在使用<code>CADisplayLink</code>时调用UIView中的<code>drawRect</code>方法不停地重绘页面。就可以实现动画的样式。</p>
 <p>实现的效果就是这样：</p>
-<center><img src="/2017/04/24/使用UIBezierPath绘制波浪/wave.gif" alt="logo"></center>
+<center><img src="/2017/04/24/使用UIBezierPath绘制波浪/Wave.gif" alt="logo"></center>
 
 
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>首先我们先创建一个<code>UIView</code>并且注册一个<code>CADisplayLink</code>定时器，并把它加入到<code>NSMainRunLoop</code>中。</p>
