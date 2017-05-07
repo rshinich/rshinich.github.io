@@ -297,6 +297,178 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/07/斯坦福大学iOS公开课学习笔记（3）-完成翻纸牌游戏/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/07/斯坦福大学iOS公开课学习笔记（3）-完成翻纸牌游戏/" itemprop="url">
+                  斯坦福大学iOS公开课学习笔记（3）-完成翻纸牌游戏
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-07T22:25:04+08:00">
+                2017-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>第三课没有太多的知识点，主要是完成前两节课中的一个小的纸牌游戏。因为上课的时间有限，所以课上并没有太多复杂的逻辑，主要是通过这样的一个小demo来加深对MVC架构的理解。</p>
+<h2 id="设计需求"><a href="#设计需求" class="headerlink" title="设计需求"></a>设计需求</h2><ul>
+<li>显示多张卡牌，点击任意一张卡牌可以翻过卡牌</li>
+<li>匹配两张卡牌的内容，花色或数字相同即为匹配成功，并且将按钮置于不能点击的状态，而且有不同的对应分值。若匹配不成功则将卡牌扣回</li>
+<li>每次点击卡牌都会消耗分值</li>
+<li>每次分值改变（翻卡牌）之后都要更新UI</li>
+</ul>
+<center><img src="/2017/05/07/斯坦福大学iOS公开课学习笔记（3）-完成翻纸牌游戏/CardMatchingGame.png" alt="logo"></center>
+
+
+
+<h2 id="结构设计"><a href="#结构设计" class="headerlink" title="结构设计"></a>结构设计</h2><h3 id="Card（卡牌）"><a href="#Card（卡牌）" class="headerlink" title="Card（卡牌）"></a>Card（卡牌）</h3><p>包含公共变量三个，内容<code>contents</code>，选中状态<code>chosen</code>，匹配状态<code>matched</code>。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">strong</span>) <span class="built_in">NSString</span>          *contents;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">assign</span>) <span class="built_in">BOOL</span>               chosen;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">assign</span>) <span class="built_in">BOOL</span>               matched;</div></pre></td></tr></table></figure>
+<p>一个公共方法用来判断是否匹配。这个方法比较简单粗暴，直接判断两个字符串是否相等。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">int</span>)<span class="string">match:</span>(NSArray *)otherCards</div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> score = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">for</span>(Card *card <span class="keyword">in</span> otherCards)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span>([card.contents <span class="string">isEqualToString:</span>self.contents])</div><div class="line">        &#123;</div><div class="line">            score = <span class="number">1</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> score;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Deck（牌堆）"><a href="#Deck（牌堆）" class="headerlink" title="Deck（牌堆）"></a>Deck（牌堆）</h3><p>只有一个私有变量<code>cards</code>用来存放Card。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">strong</span>) <span class="built_in">NSMutableArray</span>     *cards;</div></pre></td></tr></table></figure>
+<p>另外有三个公有方法，其中两个是添加卡牌到牌堆，还有一个是随机抽取一张卡牌。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">- (<span class="type">Card</span> *)drawRandomCard</div><div class="line">&#123;</div><div class="line">    <span class="type">Card</span> *randomCard = <span class="literal">nil</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>([<span class="keyword">self</span>.cards <span class="built_in">count</span>])</div><div class="line">    &#123;</div><div class="line">        unsigned index = arc4random() % [<span class="keyword">self</span>.cards <span class="built_in">count</span>];</div><div class="line">        randomCard = <span class="keyword">self</span>.cards[index];</div><div class="line">        [<span class="keyword">self</span>.cards removeObjectAtIndex:index];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> randomCard;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="PlayingCard（扑克牌）"><a href="#PlayingCard（扑克牌）" class="headerlink" title="PlayingCard（扑克牌）"></a>PlayingCard（扑克牌）</h3><p>继承于<code>Card</code>类，是扑克牌的具体化表现。有花色和大小两个公有变量</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">strong</span>) <span class="built_in">NSString</span>       *suit;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">assign</span>) <span class="built_in">NSUInteger</span>      rank;</div></pre></td></tr></table></figure>
+<p>在这里重写了父类中<code>match:</code>方法，实现了需求中对花色和大小进行判断的条件。</p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">- (int)match:(NSArray *)otherCards</div><div class="line">&#123;</div><div class="line">    int <span class="built_in">score</span> = <span class="number">0</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>([otherCards <span class="built_in">count</span>] == <span class="number">1</span>)</div><div class="line">    &#123;</div><div class="line">        PlayingCard *otherCard = [otherCards firstObject];</div><div class="line">        <span class="keyword">if</span>([self.suit isEqualToString:otherCard.suit])</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">score</span> = <span class="number">1</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(self.<span class="built_in">rank</span> == otherCard.<span class="built_in">rank</span>)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">score</span> = <span class="number">4</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    return <span class="built_in">score</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="PlayingCardDeck（扑克牌堆）"><a href="#PlayingCardDeck（扑克牌堆）" class="headerlink" title="PlayingCardDeck（扑克牌堆）"></a>PlayingCardDeck（扑克牌堆）</h3><p>继承与<code>Deck</code>，这里只是在初始化的时候生成全部52张扑克牌。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">instancetype</span>)init</div><div class="line">&#123;</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="built_in">NSString</span> *suit <span class="keyword">in</span> [PlayingCard validSuits])</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">for</span>(<span class="built_in">NSUInteger</span> rank = <span class="number">1</span> ; rank &lt;= [PlayingCard maxRank] ; rank++)</div><div class="line">            &#123;</div><div class="line">                PlayingCard *card = [[PlayingCard alloc] init];</div><div class="line">                card.suit = suit;</div><div class="line">                card.rank = rank;</div><div class="line">                </div><div class="line">                [<span class="keyword">self</span> addCard:card];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="CardMatchingGame-（卡牌匹配）"><a href="#CardMatchingGame-（卡牌匹配）" class="headerlink" title="CardMatchingGame （卡牌匹配）"></a>CardMatchingGame （卡牌匹配）</h3><p>这是整个游戏的核心部分，完成卡牌匹配的判断工作。这里重写了初始化函数，因为简单的<code>init</code>方法已经不够实现我们需要的功能，这里在初始化函数中添加了数量和牌堆的属性。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">instancetype</span>)initWithCardCount:(<span class="built_in">NSUInteger</span>)count usingDeck:(Deck *)deck</div><div class="line">&#123;</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; count ; i++)</div><div class="line">        &#123;</div><div class="line">            Card *card = [deck drawRandomCard];</div><div class="line">            <span class="keyword">if</span>(card)</div><div class="line">            &#123;</div><div class="line">                [<span class="keyword">self</span>.cards addObject:card];</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">else</span></div><div class="line">            &#123;</div><div class="line">                <span class="keyword">self</span> = <span class="literal">nil</span>;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;    </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后有一个核心匹配方法<code>chooseCardAtIndex:</code>用来实现整个游戏的功能。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)chooseCardAtIndex:(<span class="built_in">NSUInteger</span>)index</div><div class="line">&#123;</div><div class="line">    Card *card = [<span class="keyword">self</span> cardAtIndex:index];</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(!card.matched)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span>(card.chosen)</div><div class="line">        &#123;</div><div class="line">            card.chosen = <span class="literal">NO</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">for</span>(Card *otherCard <span class="keyword">in</span> <span class="keyword">self</span>.cards)</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">if</span>(otherCard.chosen &amp;&amp; !otherCard.matched)</div><div class="line">                &#123;</div><div class="line">                    <span class="keyword">int</span> macthScore = [card match:@[otherCard]];</div><div class="line">                    <span class="keyword">if</span>(macthScore)</div><div class="line">                    &#123;</div><div class="line">                        <span class="keyword">self</span>.score += macthScore * MACTH_BOUNS;</div><div class="line">                        card.matched = <span class="literal">YES</span>;</div><div class="line">                        otherCard.matched = <span class="literal">YES</span>;</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">else</span></div><div class="line">                    &#123;</div><div class="line">                        <span class="keyword">self</span>.score -= MISMACTH_PENALTY;</div><div class="line">                        otherCard.chosen = <span class="literal">NO</span>;</div><div class="line">                    &#125;</div><div class="line">                    </div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            card.chosen = <span class="literal">YES</span>;</div><div class="line">            <span class="keyword">self</span>.score -= COST_TO_CHOOSE;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这里使用了常量并且介绍了两种常量的使用方式</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MISMACTH_PENALTY 2</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> MISMACTH_PENALTY = <span class="number">2</span>;</div></pre></td></tr></table></figure>
+<p>其中<code>#define</code> 只是简单的使用 <strong>2</strong> 来替换 <strong>MISMACTH_PENALTY</strong>关键字，并没有指定的类型，而<code>static const int MISMACTH_PENALTY</code>有指定的类型，并不是简单的替换。</p>
+<p>而且对于分数<code>score</code>属性在共有和私有中做了不同的处理。在公有中使用了<code>readonly</code>关键字来修饰，在私有中使用了<code>readwrite</code>关键字来修饰。来防止外部对分数的修改。达到外部只能看到分数而不能插手干预分数的目的。</p>
+<h3 id="MatchingGameViewController（控制器）"><a href="#MatchingGameViewController（控制器）" class="headerlink" title="MatchingGameViewController（控制器）"></a>MatchingGameViewController（控制器）</h3><p>作为整个应用的控制器，<code>MatchingGameViewController</code>负责接受UI的事件，并告诉Model，Model根据收到的信息对自身数据进行改变后再通知控制器，控制器再根据数据更新UI。</p>
+<p>具体实现如下：</p>
+<ul>
+<li>控制器接收到按钮的点击事件触发<code>touchCardButton:</code>方法</li>
+<li>控制器使用<code>CardMatchingGame</code>类中的<code>chooseCardAtInde:</code>方法告诉Model点击的卡牌，由Model对匹配进行处理</li>
+<li>使用<code>updateUI</code>方法对UI进行更新</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">IBAction</span>)touchCardButton:(<span class="built_in">UIButton</span> *)sender</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSUInteger</span> cardIndex = [<span class="keyword">self</span>.cardButtons indexOfObject:sender];</div><div class="line">    [<span class="keyword">self</span>.game chooseCardAtIndex:cardIndex];</div><div class="line">    [<span class="keyword">self</span> updateUI];</div><div class="line">    </div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)updateUI</div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="built_in">UIButton</span> *cardButton <span class="keyword">in</span> <span class="keyword">self</span>.cardButtons)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">NSUInteger</span> cardIndex = [<span class="keyword">self</span>.cardButtons indexOfObject:cardButton];</div><div class="line">        Card *card = [<span class="keyword">self</span>.game cardAtIndex:cardIndex];</div><div class="line">        [cardButton setTitle:[<span class="keyword">self</span> titleForCard:card] forState:<span class="built_in">UIControlStateNormal</span>];</div><div class="line">        [cardButton setBackgroundImage:[<span class="keyword">self</span> backgroundForCard:card] forState:<span class="built_in">UIControlStateNormal</span>];</div><div class="line">        cardButton.enabled = !card.matched;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.ScoreLabel.text = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"Score: %ld"</span>,(<span class="keyword">long</span>)<span class="keyword">self</span>.game.score];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里使用了<code>titleForCard:</code>和<code>backgroundForCard:</code>提炼了对卡牌的设置</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (NSString *)titleForCard:(<span class="keyword">Card</span> *)<span class="keyword">card</span></div><div class="line">&#123;</div><div class="line">    return <span class="keyword">card</span>.chosen ? <span class="keyword">card</span>.contents : @<span class="string">""</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (UIImage *)backgroundForCard:(<span class="keyword">Card</span> *)<span class="keyword">card</span></div><div class="line">&#123;</div><div class="line">    return [UIImage imageNamed:<span class="keyword">card</span>.chosen ? @<span class="string">"RectanglecardFace"</span>:@<span class="string">"cardBcak"</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>至此这个纸牌游戏的Demo就完成了，具体功能样式如下图：</p>
+<center><img src="/2017/05/07/斯坦福大学iOS公开课学习笔记（3）-完成翻纸牌游戏/FinalCardMatchingGame.gif" alt="logo"></center>
+
+
+
+<h2 id="其他小知识"><a href="#其他小知识" class="headerlink" title="其他小知识"></a>其他小知识</h2><h3 id="数组中第一个元素和最后一个元素的选择"><a href="#数组中第一个元素和最后一个元素的选择" class="headerlink" title="数组中第一个元素和最后一个元素的选择"></a>数组中第一个元素和最后一个元素的选择</h3><p>一共有三种方法来定位数组中的第一个元素</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="string">PlayingCard</span> <span class="meta">*otherCard</span> <span class="string">=</span> <span class="string">[otherCards</span> <span class="string">firstObject];</span></div><div class="line"></div><div class="line"><span class="string">PlayingCard</span> <span class="meta">*otherCard</span> <span class="string">=</span> <span class="string">otherCards[0];</span></div><div class="line"></div><div class="line"><span class="string">PlayingCard</span> <span class="meta">*otherCard</span> <span class="string">=</span> <span class="string">[otherCards</span> <span class="attr">objectAtIndex:0];</span></div></pre></td></tr></table></figure>
+<p>其中建议使用第一种方法，因为如果当数组为空的时候，使用第一种方法只会得到一个nil的元素，而并不会引起崩溃。但是第二第三种方法则会因为数组下标越界而引起崩溃。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这一课中大的知识点并不多，主要还是强调了MVC的重要性，并且在代码编写的过程中不断强调要优雅的实现功能。而且要对自己的代码进行一些保护，增强代码的健壮性。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/04/斯坦福大学iOS公开课学习笔记（2）-初始化和翻纸牌小Demo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1650,7 +1822,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
