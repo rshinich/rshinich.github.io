@@ -427,7 +427,28 @@
 <figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">PlayingCard *otherCard = [otherCards firstObject]<span class="comment">;</span></div><div class="line">[otherCard play]<span class="comment">;</span></div></pre></td></tr></table></figure>
 <p>添加了类型保护机制之后就不会出现这样的问题了，这时候通过isKindOfClass确认之后。我们给card发送消息的时候，就不会发生崩溃了。</p>
 <figure class="highlight inform7"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">PlayingCard *otherCard = <span class="comment">[otherCards firstObject]</span>;</div><div class="line">id card = <span class="comment">[otherCards firstObjct]</span>;</div><div class="line">if (<span class="comment">[card isKindOfClass:<span class="comment">[PlayingCard class]</span>]</span>)</div><div class="line">&#123;</div><div class="line">   PlayingCard *otherCard = (PlaytingCard *)card;</div><div class="line">   <span class="comment">[otherCard play]</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Foundation"><a href="#Foundation" class="headerlink" title="Foundation"></a>Foundation</h2>
+<h2 id="Foundation"><a href="#Foundation" class="headerlink" title="Foundation"></a>Foundation</h2><p>Foundtion这里并没有讲太多东西，都是一些基础的数据类型，所以这里也就不详细写出来了。</p>
+<h3 id="NSObject"><a href="#NSObject" class="headerlink" title="NSObject"></a>NSObject</h3><p>所有的类都继承于NSObject，他有一个很重要的方法</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (NSString *)description<span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>当我们使用NSLog的时候，就会调用到<code>description</code>函数。</p>
+<h3 id="NSArray"><a href="#NSArray" class="headerlink" title="NSArray"></a>NSArray</h3><p>不可变数组。可以使用@[]方法创建新的数组。</p>
+<h3 id="NSMutableArray"><a href="#NSMutableArray" class="headerlink" title="NSMutableArray"></a>NSMutableArray</h3><p>可变数组，能够使用NSArray中的所有方法，并且可以添加和移除数组里的元素。</p>
+<h3 id="NSNumber"><a href="#NSNumber" class="headerlink" title="NSNumber"></a>NSNumber</h3><p>用于存放所有原始类型，整形、浮点型、布尔类型等等。可以直接使用 @3 这种格式来声明。</p>
+<h3 id="NSDara"><a href="#NSDara" class="headerlink" title="NSDara"></a>NSDara</h3><p>二进制文件</p>
+<h3 id="NSDate"><a href="#NSDate" class="headerlink" title="NSDate"></a>NSDate</h3><p>日期相关的东西会使用到这个，还可以使用<code>NSCalendar</code>来处理日历，<code>NSDateFormatter</code>来处理日期格式，还有<code>NSDateComponets</code>。</p>
+<h3 id="NSDictionary"><a href="#NSDictionary" class="headerlink" title="NSDictionary"></a>NSDictionary</h3><p>字典，仅次于数组的最重要的一种类型。由键值对组成。</p>
+<h3 id="NSMutableDictionary"><a href="#NSMutableDictionary" class="headerlink" title="NSMutableDictionary"></a>NSMutableDictionary</h3><p>可变字典，与数组和可变数组的关系一样，可以使用字典的所有功能，并且可以添加删除元素。</p>
+<h3 id="NSUserDefaults"><a href="#NSUserDefaults" class="headerlink" title="NSUserDefaults"></a>NSUserDefaults</h3><p>他是一种共享字典，在程序里一直可以保存，但是他不能保存很大的东西，比如图片啊什么的，他可以存储一些字符串或者数字等一些小东西。</p>
+<p>在设置完数据之后一定要记得使用<code>synchronize</code>来同步，如果不同步的话，之前设置的内容在程序杀掉之后就不会存在了，所以一定要记得使用<code>synchronize</code>同步数据。</p>
+<h3 id="NSRange"><a href="#NSRange" class="headerlink" title="NSRange"></a>NSRange</h3><p>用来表示一个范围，他是一个结构体,用来表示一个起始位置和长度。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span>&#123;</div><div class="line">    <span class="built_in">NSUInteger</span> location;</div><div class="line">    <span class="built_in">NSUInteger</span> length;</div><div class="line">&#125;<span class="built_in">NSRange</span>;</div></pre></td></tr></table></figure>
+<h2 id="Fonts-字体"><a href="#Fonts-字体" class="headerlink" title="Fonts 字体"></a>Fonts 字体</h2><p>这里提到，如果你只会使用一种设置字体的方法，那么一定就是这个方法：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIFont</span> *font = [<span class="built_in">UIFont</span> preferredFontForTextStyle:<span class="built_in">UIFontTextStyleBody</span>];</div></pre></td></tr></table></figure>
+<p>后边的参数有很多种，可以根据使用的场景选择不同的字体类型。</p>
+<p>并且还说明了最好不要使用系统字体来设置字体。</p>
+<h3 id="NSAttributedString"><a href="#NSAttributedString" class="headerlink" title="NSAttributedString"></a>NSAttributedString</h3><p>这是一个神奇的字符串，你可以对他进行很多设置，但是要记住，这个字符串的内容是不可变的。可以通过<code>NSRange</code>来对部分字符串进行修改。</p>
+<p>这个类的具体使用会在下一节课中写一个Demo来着重讲解。所以这里就先不多啰嗦，等到下节课的笔记中再详细介绍如何使用它。</p>
+
           
         
       
