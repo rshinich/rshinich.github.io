@@ -1,0 +1,773 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="这一节课主要讲了ViewController的生命周期，在课程的后半部分还讲了通知Notification。在这两个知识点中间使用了一个字符串属性设置的demo进行知识点的进一步认识。
+字符串属性Demo这个部分主要通过在UITexeView上显示一段文字，然后在Demo中展示了使用按钮设置文字的轮廓以及去除轮廓和点击按钮将文字设置为按钮的背景色。
+
+
+设置字符串属性一般情况下是使用可变字符串NS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="斯坦福大学iOS公开课笔记（5）--ViewController生命周期和通知">
+<meta property="og:url" content="http://yoursite.com/2017/05/20/斯坦福大学iOS公开课笔记（5）-ViewController生命周期和通知/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="这一节课主要讲了ViewController的生命周期，在课程的后半部分还讲了通知Notification。在这两个知识点中间使用了一个字符串属性设置的demo进行知识点的进一步认识。
+字符串属性Demo这个部分主要通过在UITexeView上显示一段文字，然后在Demo中展示了使用按钮设置文字的轮廓以及去除轮廓和点击按钮将文字设置为按钮的背景色。
+
+
+设置字符串属性一般情况下是使用可变字符串NS">
+<meta property="og:image" content="http://yoursite.com/2017/05/20/斯坦福大学iOS公开课笔记（5）-ViewController生命周期和通知/Atttibutor.png">
+<meta property="og:image" content="http://yoursite.com/2017/05/20/斯坦福大学iOS公开课笔记（5）-ViewController生命周期和通知/AttributedGif.gif">
+<meta property="og:updated_time" content="2017-05-20T14:56:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="斯坦福大学iOS公开课笔记（5）--ViewController生命周期和通知">
+<meta name="twitter:description" content="这一节课主要讲了ViewController的生命周期，在课程的后半部分还讲了通知Notification。在这两个知识点中间使用了一个字符串属性设置的demo进行知识点的进一步认识。
+字符串属性Demo这个部分主要通过在UITexeView上显示一段文字，然后在Demo中展示了使用按钮设置文字的轮廓以及去除轮廓和点击按钮将文字设置为按钮的背景色。
+
+
+设置字符串属性一般情况下是使用可变字符串NS">
+<meta name="twitter:image" content="http://yoursite.com/2017/05/20/斯坦福大学iOS公开课笔记（5）-ViewController生命周期和通知/Atttibutor.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/20/斯坦福大学iOS公开课笔记（5）-ViewController生命周期和通知/"/>
+
+
+
+
+
+  <title> 斯坦福大学iOS公开课笔记（5）--ViewController生命周期和通知 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/20/斯坦福大学iOS公开课笔记（5）-ViewController生命周期和通知/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                斯坦福大学iOS公开课笔记（5）--ViewController生命周期和通知
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-20T22:05:57+08:00">
+                2017-05-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这一节课主要讲了ViewController的生命周期，在课程的后半部分还讲了通知Notification。在这两个知识点中间使用了一个字符串属性设置的demo进行知识点的进一步认识。</p>
+<h2 id="字符串属性Demo"><a href="#字符串属性Demo" class="headerlink" title="字符串属性Demo"></a>字符串属性Demo</h2><p>这个部分主要通过在<code>UITexeView</code>上显示一段文字，然后在Demo中展示了使用按钮设置文字的轮廓以及去除轮廓和点击按钮将文字设置为按钮的背景色。</p>
+<center><img src="/2017/05/20/斯坦福大学iOS公开课笔记（5）-ViewController生命周期和通知/Atttibutor.png" alt="logo"></center>
+
+<p>设置字符串属性一般情况下是使用可变字符串<code>NSMutableAttributedString</code>，修改<code>UITextView</code>中的字符串属性，一般是通过使用它的<code>textStrong</code>属性，在其中添加属性和控制的范围<code>NSRange</code>。</p>
+<p>比如说修改选定字符串的颜色：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">IBAction</span>)changeBodySelectionColorToMatchBackgroundOfButton:(<span class="built_in">UIButton</span> *)sender</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">self</span>.body.textStorage addAttribute:<span class="built_in">NSForegroundColorAttributeName</span></div><div class="line">                                  value:sender.backgroundColor</div><div class="line">                                  range:<span class="keyword">self</span>.body.selectedRange];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>还有使用<code>NSMutableAttributedString</code>来设置一段字符串的属性</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSMutableAttributedString</span> *title =</div><div class="line">[[<span class="built_in">NSMutableAttributedString</span> alloc] initWithString:<span class="keyword">self</span>.outlineButton.currentTitle];</div><div class="line"></div><div class="line">[title addAttributes:@&#123;<span class="built_in">NSStrokeWidthAttributeName</span> : @<span class="number">3</span>,</div><div class="line">                       <span class="built_in">NSStrokeColorAttributeName</span> : <span class="keyword">self</span>.outlineButton.tintColor&#125;</div><div class="line">                                            range : <span class="built_in">NSMakeRange</span>(<span class="number">0</span>, [title length])];</div><div class="line"></div><div class="line">[<span class="keyword">self</span>.outlineButton setAttributedTitle:title forState:<span class="built_in">UIControlStateNormal</span>];</div></pre></td></tr></table></figure>
+<p>其中<code>NSForegroundColorAttributeName</code>属性为要修改的字符串属性类型，后边的<code>value</code>即为对应的值，<code>range</code>后跟着的是需要修改的范围，比如上边例子中需要修改的就是选中的部分 <code>self.body.selectedRange</code>。</p>
+<p>除了颜色之外，Demo中还讲了其他两种属性，</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSForegroundColorAttributeName</span> <span class="comment">//属性字符串字符的颜色</span></div><div class="line"><span class="built_in">NSStrokeColorAttributeName</span> <span class="comment">//属性字符串字符轮廓的颜色</span></div><div class="line"><span class="built_in">NSStrokeWidthAttributeName</span> <span class="comment">//属性字符串字符轮廓的宽度</span></div></pre></td></tr></table></figure>
+<h2 id="ViewController-生命周期"><a href="#ViewController-生命周期" class="headerlink" title="ViewController 生命周期"></a>ViewController 生命周期</h2><p>ViewController（以下简称VC）的生命周期在iOS开发中起到了至关重要的作用，他主要是在程序运行的过程中，在不同的时期使用不同的方法，理解并合理的根据VC的生命周期进行代码编写设计可以起到很好的作用。</p>
+<h3 id="viewDidLoad"><a href="#viewDidLoad" class="headerlink" title="viewDidLoad"></a>viewDidLoad</h3><p>在整个VC的创建过程中只调用一次，所以适合放置一些<code>init</code>方法。</p>
+<p>因为此时页面中的几何方法还没有确定下来，所以不适合处理一些几何方面的东西。</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)viewDidLoad</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="viewWillAppear"><a href="#viewWillAppear" class="headerlink" title="viewWillAppear"></a>viewWillAppear</h3><p>每当VC即将显示在屏幕上给用户看之前都会调用的方法，所以可以调用一些几何相关的代码进行设置，而且只要调用了<code>viewWillAppear</code>就一定会显示界面给用户。</p>
+<p>因为会调用多次，所以并不适合放置一些<code>init</code>方法。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">viewWillAppear:</span>(BOOL)animated</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> <span class="string">viewWillAppear:</span>animated];</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="viewWillDisappear"><a href="#viewWillDisappear" class="headerlink" title="viewWillDisappear"></a>viewWillDisappear</h3><p>当页面即将离开屏幕时调用，因为即将离开，所以可以在这里调用一些销毁对象、停止动画的方法，来节省系统资源的占用。并且可以进行一些数据方面的保存。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">viewWillDisappear:</span>(BOOL)animated</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> <span class="string">viewWillDisappear:</span>animated];</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="viewDidAppear"><a href="#viewDidAppear" class="headerlink" title="viewDidAppear"></a>viewDidAppear</h3><p>对应<code>viewWillAppear</code>，在页面出现在屏幕上之后调用。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">viewDidAppear:</span>(BOOL)animated</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> <span class="string">viewDidAppear:</span>animated];</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="viewDidDisappear"><a href="#viewDidDisappear" class="headerlink" title="viewDidDisappear"></a>viewDidDisappear</h3><p>对应<code>viewWillDisappear</code>，在页面从屏幕上离开后调用</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">viewDidDisappear:</span>(BOOL)animated</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> <span class="string">viewDidDisappear:</span>animated];</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="viewWillLayoutSubViews-amp-viewDidLayoutSubViews"><a href="#viewWillLayoutSubViews-amp-viewDidLayoutSubViews" class="headerlink" title="viewWillLayoutSubViews &amp; viewDidLayoutSubViews"></a>viewWillLayoutSubViews &amp; viewDidLayoutSubViews</h3><p>相对于<code>viewWillAppear</code>，更适合于对几何相关的操作的方法。</p>
+<h3 id="didReceiveMemoryWarning"><a href="#didReceiveMemoryWarning" class="headerlink" title="didReceiveMemoryWarning"></a>didReceiveMemoryWarning</h3><p>当内存占用过高时，会调用此方法，可以在此方法中添加一些释放占用内存大的对象，比如图片、声音、视频等等。如果你的应用时候内存过高但是又不释放内存，iOS会将你的应用杀掉！</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)didReceiveMemoryWarning &#123;</div><div class="line">    [<span class="keyword">super</span> didReceiveMemoryWarning];</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Notification-通知"><a href="#Notification-通知" class="headerlink" title="Notification 通知"></a>Notification 通知</h2><p>通知是MVC中很重要的一部分，用于发送信号告诉其他人我的值发生了改变，监听者接收到通知之后会做出一些处理。</p>
+<h3 id="注册通知"><a href="#注册通知" class="headerlink" title="注册通知"></a>注册通知</h3><p>注册一个通知需要用到4个参数：</p>
+<ul>
+<li>observer：通知的接受者，一般为viewController，所以我们将通知的注册写在控制器中时，这个值对应为<code>self</code>。</li>
+<li>selector：observer中的方法，接收到广播时调用。</li>
+<li>name：广播的名字。</li>
+<li>object：当广播特定对某个对象作用的时候使用。</li>
+</ul>
+<p>下边这个方法就是注册一个监听系统字体发生改变的通知，当用户在修改设置中iOS字体的大小时，就会调用<code>preferredFontsChangeed:</code>方法进行相应的处理。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[[NSNotificationCenter defaultCenter]</span> <span class="selector-tag">addObserver</span><span class="selector-pseudo">:self</span></div><div class="line">                                         <span class="selector-tag">selector</span>:@<span class="selector-tag">selector</span>(<span class="attribute">preferredFontsChangeed</span>:)</div><div class="line">                                             <span class="selector-tag">name</span><span class="selector-pseudo">:UIContentSizeCategoryDidChangeNotification</span></div><div class="line">                                           <span class="selector-tag">object</span><span class="selector-pseudo">:nil</span>];</div></pre></td></tr></table></figure>
+<h3 id="移除通知"><a href="#移除通知" class="headerlink" title="移除通知"></a>移除通知</h3><p>当我们离开这个页面的时候，我们需要将注册过的通知移除掉，以免我们的程序发生问题,这里的参数基本与注册通知时一致。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[[NSNotificationCenter defaultCenter]</span> <span class="selector-tag">removeObserver</span><span class="selector-pseudo">:self</span></div><div class="line">                                                <span class="selector-tag">name</span><span class="selector-pseudo">:UIContentSizeCategoryDidChangeNotification</span></div><div class="line">                                              <span class="selector-tag">object</span><span class="selector-pseudo">:nil</span>];</div></pre></td></tr></table></figure>
+<center><img src="/2017/05/20/斯坦福大学iOS公开课笔记（5）-ViewController生命周期和通知/AttributedGif.gif" alt="logo"></center>
+
+
+
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/09/斯坦福大学iOS公开课笔记（4）-objective-C知识和Foundation框架/" rel="next" title="斯坦福大学iOS公开课笔记（4）-objective-C知识和Foundation框架">
+                <i class="fa fa-chevron-left"></i> 斯坦福大学iOS公开课笔记（4）-objective-C知识和Foundation框架
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串属性Demo"><span class="nav-number">1.</span> <span class="nav-text">字符串属性Demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewController-生命周期"><span class="nav-number">2.</span> <span class="nav-text">ViewController 生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#viewDidLoad"><span class="nav-number">2.1.</span> <span class="nav-text">viewDidLoad</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#viewWillAppear"><span class="nav-number">2.2.</span> <span class="nav-text">viewWillAppear</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#viewWillDisappear"><span class="nav-number">2.3.</span> <span class="nav-text">viewWillDisappear</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#viewDidAppear"><span class="nav-number">2.4.</span> <span class="nav-text">viewDidAppear</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#viewDidDisappear"><span class="nav-number">2.5.</span> <span class="nav-text">viewDidDisappear</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#viewWillLayoutSubViews-amp-viewDidLayoutSubViews"><span class="nav-number">2.6.</span> <span class="nav-text">viewWillLayoutSubViews & viewDidLayoutSubViews</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#didReceiveMemoryWarning"><span class="nav-number">2.7.</span> <span class="nav-text">didReceiveMemoryWarning</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Notification-通知"><span class="nav-number">3.</span> <span class="nav-text">Notification 通知</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注册通知"><span class="nav-number">3.1.</span> <span class="nav-text">注册通知</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除通知"><span class="nav-number">3.2.</span> <span class="nav-text">移除通知</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
