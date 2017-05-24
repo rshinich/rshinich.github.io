@@ -297,6 +297,164 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/21/斯坦福大学iOS公开课笔记（6）-多态与多个MVC的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/21/斯坦福大学iOS公开课笔记（6）-多态与多个MVC的使用/" itemprop="url">
+                  多态与多个MVC的使用
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-21T22:23:08+08:00">
+                2017-05-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这节课主要介绍了多态的概念和使用，还有多个MVC使用，在这之中介绍了UINavigationController和UITabbarController的使用。</p>
+<h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><p>多态是面向对象程序设计中类的三大特征之一，另外两个是继承和封装。objective-c是一个面向对象的开发语言，所以了解如何使用多态是非常有必要的。</p>
+<p>在将多态的时候有一个概念不得不提—抽象。</p>
+<h3 id="抽象"><a href="#抽象" class="headerlink" title="抽象"></a>抽象</h3><p>抽象表示这个类不能被实例化使用，他只能用于作为具体类的超类。简单来说抽象就相当于概念车。我们把车具体化给他四个轮子，他可能就是汽车🚗，给他两个轮子，他可能就是自行车🚲。这就是抽象。</p>
+<h3 id="如何实现"><a href="#如何实现" class="headerlink" title="如何实现"></a>如何实现</h3><p>这里我们对之前写的Machismo纸牌配对游戏进行了修改，不了解这个游戏的请先看<a href="http://zhangzr.cn/2017/05/07/%E6%96%AF%E5%9D%A6%E7%A6%8F%E5%A4%A7%E5%AD%A6iOS%E5%85%AC%E5%BC%80%E8%AF%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%883%EF%BC%89-%E5%AE%8C%E6%88%90%E7%BF%BB%E7%BA%B8%E7%89%8C%E6%B8%B8%E6%88%8F/" target="_blank" rel="external">这里</a>,使得它可以对任何种类的卡牌进行配对游戏。</p>
+<p>首先，我们之前的代码是这样的：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">- (CardMatchingGame *)game</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(!_game)</div><div class="line">    &#123;</div><div class="line">        _game = <span class="string">[[CardMatchingGame alloc] initWithCardCount:[self.cardButtons count] usingDeck:[self createDeck]]</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> _game;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (Deck *)createDeck</div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> <span class="string">[[PlayingCardDeck alloc] init];    </span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里的<code>return [[PlayingCardDeck alloc] init];</code>代表我们只会返回<code>PlayingCardDeck</code>这个牌堆中的排，如果想要把他抽象，我们首先要把这里改成<code>return nil;</code>。这样他就变成了一个抽象类。</p>
+<p>然后我们将<code>- (Deck *)createDeck;</code>这个方法放置到.h公有文件中，并且写一些注释来说明他就是这个抽象类具体化时所需要用到的方法。</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//用来返回不同种类的卡牌</span></div><div class="line">- <span class="comment">(Deck *)</span>createDeck;       <span class="comment">//abstract</span></div></pre></td></tr></table></figure>
+<p>接下来我们新建一个controller继承之前抽象好的控制器，然后重写<code>createDeck</code>方法，返回正确的卡牌，就完成了我们的多态。这样，我们可以创建很多控制器返回不同的卡牌类型，并且使用同一套逻辑进行游戏。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">PlayingCardViewController</span> : <span class="title">ViewController</span></span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"PlayingCardViewController.h"</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">"PlayingCardDeck.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">PlayingCardViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">PlayingCardViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)didReceiveMemoryWarning</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> didReceiveMemoryWarning];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (Deck *)createDeck</div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> [[PlayingCardDeck alloc] init];</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>对了，这里要注意，如果你是使用storyboard创建的界面，别忘了把控制器的Class改成刚刚具体化的类。</p>
+<h2 id="多个MVC协作"><a href="#多个MVC协作" class="headerlink" title="多个MVC协作"></a>多个MVC协作</h2><h3 id="UINavigationController"><a href="#UINavigationController" class="headerlink" title="UINavigationController"></a>UINavigationController</h3><p>UINavigationController导航栏，它本身也算作是一个MVC，他的view就是顶部的导航栏。他有一个rootViewController作为输出口指向其他MVC。</p>
+<p>导航栏拥有一个自己的容器，这个容器使用的是栈结构，每次我们在执行进入下一个页面或者返回到上一个页面的时候都是一个栈空间压入和弹出的功能的执行。</p>
+<p>每次我们压入新的MVC的时候，系统都会从storyboard生成一个新的文件，然后显示出来。而当我们弹出的时候，页面消失，这部分也会被释放掉。这时候如果你有需要持久化使用的数据，你就要把他保存起来。</p>
+<h4 id="如何压入一个MVC"><a href="#如何压入一个MVC" class="headerlink" title="如何压入一个MVC"></a>如何压入一个MVC</h4><p>答案是使用<code>segue</code>。他是storyboard和Xcode之间唯一联系的地方，我们通过<code>segue</code>的标示符来判断跳到哪一个MVC。</p>
+<h4 id="如何弹出一个MVC"><a href="#如何弹出一个MVC" class="headerlink" title="如何弹出一个MVC"></a>如何弹出一个MVC</h4><p>通过方法</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="section">[self.navigationController popViewControllerWithAnimated:YES]</span><span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>就可以弹出当前的MVC</p>
+<h4 id="如何使用segue"><a href="#如何使用segue" class="headerlink" title="如何使用segue"></a>如何使用segue</h4><p>我们需要让Xcode知道当我要调到下一个页面的时候我选择的是什么类型的东西，比如我们要从日历中的月份跳到日期的时候，我们需要知道我点击的是几号的日期。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">prepareForSegue:</span>(UIStroyboardSegue *)segue <span class="string">sender:</span> (id)sender</div><div class="line">&#123;</div><div class="line">  <span class="keyword">if</span> ([segue.identifier <span class="string">isEqualToString:</span>@<span class="string">"DoSomething"</span>])</div><div class="line">  &#123; </div><div class="line">      <span class="keyword">if</span> ([segue.destinationViewController <span class="string">isKindOfClass:</span>[DoSomethingVC <span class="class"><span class="keyword">class</span>]])&#123;</span></div><div class="line">      </div><div class="line">       DoSomethingVC *doVC = (DoSomethingVC *)segue.desitinationViewController；</div><div class="line">       doVC.infoString = ...</div><div class="line">      &#125;</div><div class="line">      </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="多个MVC协作的Demo"><a href="#多个MVC协作的Demo" class="headerlink" title="多个MVC协作的Demo"></a>多个MVC协作的Demo</h2><p>这里我们使用到了上节课使用的项目Attributor.在这次的课中我们给他添加一个新的MVC，并要求这个MVC可以获得上一个MVC的数据然后分析出有多少个字符改变了颜色或者多少个字符添加了边框。</p>
+<p>在storyboard中我们使用导航栏来控制各个MVC</p>
+<center><img src="/2017/05/21/斯坦福大学iOS公开课笔记（6）-多态与多个MVC的使用/storyBoardScreen.png" alt="logo"></center>
+
+
+<h3 id="设置页面传值"><a href="#设置页面传值" class="headerlink" title="设置页面传值"></a>设置页面传值</h3><p>如果想要分析上一个页面中设置字符的颜色，就一定要拿到上一个页面中修改过的字符串信息。这里就要用到页面传值的功能。页面传值简单来说就是在头文件中添加一个公有的属性，然后在跳转页面的时候讲值传给他。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> <span class="attribute">TextStatsViewController </span>: UIViewController</div><div class="line"></div><div class="line"><span class="variable">@property</span> (nonatomic ,strong) NSAttributedString        *textToAnalyze;</div><div class="line"></div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">prepareForSegue:</span>(UIStoryboardSegue *)segue <span class="string">sender:</span>(id)sender</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>([segue.identifier <span class="string">isEqualToString:</span>@<span class="string">"Analyzer Text"</span>])</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span>([segue.destinationViewController <span class="string">isKindOfClass:</span>[TextStatsViewController <span class="class"><span class="keyword">class</span>]])</span></div><div class="line">        &#123;</div><div class="line">            TextStatsViewController *tsvc = (TextStatsViewController *)segue.destinationViewController;</div><div class="line">            tsvc.textToAnalyze = self.body.textStorage;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="处理字符串"><a href="#处理字符串" class="headerlink" title="处理字符串"></a>处理字符串</h3><p>处理字符串主要是把上个页面穿过来的字符串通过<code>NSRange</code>一个一个字符的分析，看看他有没有使用颜色变化或者边框变化。</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">- (NSAttributedString *)chaactersWithAttributtr:(NSString *)attributName</div><div class="line">&#123;</div><div class="line">    NSMutableAttributedString *characters = [[NSMutableAttributedString alloc] init];</div><div class="line">    </div><div class="line">    <span class="built_in">int</span> <span class="built_in">index</span> = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (<span class="built_in">index</span> &lt; [self.textToAnalyze length])</div><div class="line">    &#123;</div><div class="line">        NSRange <span class="built_in">range</span>;</div><div class="line">        </div><div class="line">        id <span class="keyword">value</span> = [self.textToAnalyze attribute:attributName atIndex:<span class="built_in">index</span> effectiveRange:&amp;<span class="built_in">range</span>];</div><div class="line">        </div><div class="line">        <span class="keyword">if</span>(<span class="keyword">value</span>)</div><div class="line">        &#123;</div><div class="line">            [characters  appendAttributedString:[self.textToAnalyze attributedSubstringFromRange:<span class="built_in">range</span>]];</div><div class="line">            <span class="built_in">index</span> = <span class="built_in">range</span>.length + <span class="built_in">range</span>.location;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span></div><div class="line">        &#123;</div><div class="line">            <span class="built_in">index</span>++;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> characters;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (void)updateUI</div><div class="line">&#123;</div><div class="line">    self.colorfulCharachersLabel.text = [NSString stringWithFormat:@<span class="string">"%ld colorful characters"</span>,<span class="string">[[self chaactersWithAttributtr:NSForegroundColorAttributeName] length]]</span>;</div><div class="line">    </div><div class="line">    self.outletCharachersLabel.text = [NSString stringWithFormat:@<span class="string">"%ld outline characters"</span>,<span class="string">[[self chaactersWithAttributtr:NSStrokeWidthAttributeName] length]]</span>;</div><div class="line">       </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>写好之后就可以统计上一个页面的字符串啦。</p>
+<center><img src="/2017/05/21/斯坦福大学iOS公开课笔记（6）-多态与多个MVC的使用/characterAttributtr.gif" alt="logo"></center>
+
+
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/20/斯坦福大学iOS公开课笔记（5）-ViewController生命周期和通知/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1763,250 +1921,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/24/iOS-UIDynamic物理引擎的简单使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhangzr">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zhangzr's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/" itemprop="url">
-                  iOS 物理引擎 UIKit Dynamics 的简单使用
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-24T13:42:08+08:00">
-                2017-03-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>UIKit Dynamic是在iOS 7中引入的技术，隶属于UIKit框架，所以只要你引入的UIKit框架就可以利用它来实现一些物理方面的效果，比如重力、碰撞。UIDynamic使用起来比较简单，不需要太多数学方面的知识，使用它只需要几个步骤：</p>
-<ul>
-<li><p>1.创建一个物理模型仿真器<strong>UIDynamicAnimator</strong>，设置它作用的视图<strong>Reference View</strong>。</p>
-</li>
-<li><p>2.创建物理模型仿真行为<strong>UIDynamicBehavior</strong>，并添加元素<strong>UIDynamicItem</strong>。</p>
-</li>
-<li><p>3.将仿真行为添加到仿真器中。</p>
-</li>
-</ul>
-<p>就这么简单。写完了。</p>
-<h3 id="UIDynamicAnimator"><a href="#UIDynamicAnimator" class="headerlink" title="UIDynamicAnimator"></a>UIDynamicAnimator</h3><p><strong>UIDynamicAnimator</strong>是整个UIKit Dynamic的核心部分，他有一个他影响的view<strong>Reference View</strong>,所有的行为<strong>UIDynamicBehavior</strong>都是需要添加到这里。</p>
-<h3 id="UIDynamicBehavior"><a href="#UIDynamicBehavior" class="headerlink" title="UIDynamicBehavior"></a>UIDynamicBehavior</h3><p><strong>UIDynamicBehavior</strong>是我们通常所用到的物理表现形式，主要有6个动作行为:</p>
-<ul>
-<li><p><code>UIGravityBehavior</code><br>重力行为：用来代表重力，应该不用多说了。</p>
-</li>
-<li><p><code>UICollisionBehavior</code><br>碰撞行为：可以让UIView之前产生碰撞的效果，或者让View与边界上产生碰撞</p>
-</li>
-<li><p><code>UISnapBehavior</code><br>捕捉行为：他可以让你吸引各种View。</p>
-</li>
-<li><p><code>UIPushBehavior</code><br>推动行为：这个就相当于你对所作用的view产生了一个推力，这个推力可以使持续的，也可以是瞬时的。</p>
-</li>
-<li><p><code>UIAttachmentBehavior</code><br>附着行为：这个行为是将两个view连接在一起，或者使一个view连接到某个点。</p>
-</li>
-<li><p><code>UIDynamicItemBehavior</code><br>动力元素行为：这个跟之前的都不太一样，这个类并不是代表某个特定的行为，应该说是一些物理单位？但是可以对behavior进行一些特定的调整。</p>
-</li>
-</ul>
-<h3 id="UIDynamicItem"><a href="#UIDynamicItem" class="headerlink" title="UIDynamicItem"></a>UIDynamicItem</h3><p><code>UIDynamicItem</code>是动力的基本作用单位。</p>
-<p>说了这么多，来点实际的，让我们先用起来。</p>
-<h2 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h2><h3 id="构建环境-UIDynamicAnimator"><a href="#构建环境-UIDynamicAnimator" class="headerlink" title="构建环境 UIDynamicAnimator"></a>构建环境 UIDynamicAnimator</h3><p>首先，建立一个物理仿真器。</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> ViewController ()</div><div class="line"><span class="variable">@property</span> (nonatomic ,strong) UIDynamicAnimator *animator;</div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.animator = [[<span class="built_in">UIDynamicAnimator</span> alloc] initWithReferenceView:<span class="keyword">self</span>.view];</div></pre></td></tr></table></figure>
-<p>这里边的referenceView就是指所影响到的view，我们可以把它比作我们所创造的世界。</p>
-<h3 id="构建元素-UIDynamicItem"><a href="#构建元素-UIDynamicItem" class="headerlink" title="构建元素 UIDynamicItem"></a>构建元素 UIDynamicItem</h3><p>接下来，我们就创建一个作用元素。</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> ViewController ()</div><div class="line"><span class="variable">@property</span> (nonatomic ,strong) UIView    *ballItem;</div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.ballItem = [[<span class="built_in">UIView</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>([<span class="built_in">UIScreen</span> mainScreen].bounds.size.width/<span class="number">2</span><span class="number">-15</span>, <span class="number">0</span>, <span class="number">30</span>, <span class="number">30</span>)];</div><div class="line"><span class="keyword">self</span>.ballItem.backgroundColor = [<span class="built_in">UIColor</span> redColor];</div><div class="line"><span class="keyword">self</span>.ballItem.layer.borderWidth = <span class="number">1</span>;</div><div class="line"><span class="keyword">self</span>.ballItem.layer.borderColor = [<span class="built_in">UIColor</span> clearColor].CGColor;</div><div class="line"><span class="keyword">self</span>.ballItem.layer.cornerRadius = <span class="number">15</span>;</div><div class="line"><span class="keyword">self</span>.ballItem.layer.masksToBounds = <span class="literal">YES</span>;</div><div class="line">[<span class="keyword">self</span>.view addSubview:<span class="keyword">self</span>.ballItem];</div></pre></td></tr></table></figure>
-<p>我们创建了一个小球，我们把UIDynamicBehavior添加上去之后它就会像是现实世界中的小球一样了。</p>
-<h3 id="重力效果-UIGravityBehavior"><a href="#重力效果-UIGravityBehavior" class="headerlink" title="重力效果 UIGravityBehavior"></a>重力效果 UIGravityBehavior</h3><p>接下来创建一个重力效果，然后将小球赋予这个效果，最后将它加到物理仿真器中。</p>
-<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">UIGravityBehavior *gravity = <span class="string">[[UIGravityBehavior alloc] initWithItems:@[self.ballItem]]</span>;</div><div class="line">[self.animator addBehavior:gravity];</div></pre></td></tr></table></figure>
-<p>这样我们就给我们的小球添加了一个重力作用，现实世界中我们的重力加速度g=9.8m/s2，在iOS设备中也遵循了这个数值，只不过我们不是m，而是像素点了。</p>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIGravityBehavior.gif" alt="logo"></center>
-
-<p>另外，也可以通过设置重力的大小、方向。这里的方向使用的是弧度制，并且遵循坐标系，即屏幕右侧方向为0、2π，下方为π/2，左侧方向为π，上方为3π/2。</p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">UIGravityBehavior *<span class="keyword">gravity</span> = [[UIGravityBehavior alloc] initWithItems:@[self.ballItem]];</div><div class="line"><span class="keyword">gravity</span>.magnitude = <span class="number">10.0</span>;       <span class="comment">//设置重力的大小</span></div><div class="line"><span class="keyword">gravity</span>.<span class="keyword">angle</span> = M_PI_4;         <span class="comment">//设置重力的方向</span></div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIGravityBehavior2.gif" alt="logo"></center>
-
-
-
-<h3 id="碰撞效果-UICollisionBehavior"><a href="#碰撞效果-UICollisionBehavior" class="headerlink" title="碰撞效果 UICollisionBehavior"></a>碰撞效果 UICollisionBehavior</h3><p>创建一个碰撞效果和创建一个重力效果一样简单。直接初始化后加到小球上边后添加到仿真器中，效果就实现了。唯一的区别是碰撞效果需要设定碰撞的范围也就是translatesReferenceBoundsIntoBoundary，它默认是作用于当前view的，也就是self.view。当然你也可以使用</p>
-<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">UICollisionBehavior *collison = <span class="string">[[UICollisionBehavior alloc] initWithItems:@[self.ballItem]]</span>;</div><div class="line">collison.translatesReferenceBoundsIntoBoundary = YES;</div><div class="line">[self.animator addBehavior:collison];</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UICollisionBehavior.gif" alt="logo"></center>
-
-<p>我们还可以通过设置collisionMode来控制元素之间碰撞的模式。我们再添加一个蓝色的小球并把它赋予碰撞效果，然后来看一下不同collisionMode下他们的表现状态。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readwrite</span>) <span class="built_in">UICollisionBehaviorMode</span> collisionMode;</div></pre></td></tr></table></figure>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="built_in">NS_OPTIONS</span>(<span class="built_in">NSUInteger</span>, <span class="built_in">UICollisionBehaviorMode</span>) &#123;</div><div class="line">    <span class="built_in">UICollisionBehaviorModeItems</span>        = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,  <span class="comment">//元素之间碰撞</span></div><div class="line">    <span class="built_in">UICollisionBehaviorModeBoundaries</span>   = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,  <span class="comment">//边界碰撞</span></div><div class="line">    <span class="built_in">UICollisionBehaviorModeEverything</span>   = <span class="built_in">NSUIntegerMax</span>  <span class="comment">//碰撞所有</span></div><div class="line">&#125; <span class="built_in">NS_ENUM_AVAILABLE_IOS</span>(<span class="number">7</span>_0);</div></pre></td></tr></table></figure>
-<h4 id="元素之间的碰撞"><a href="#元素之间的碰撞" class="headerlink" title="元素之间的碰撞"></a>元素之间的碰撞</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UICollisionBehavior</span> *collison = [[<span class="built_in">UICollisionBehavior</span> alloc] initWithItems:@[<span class="keyword">self</span>.ballItem,<span class="keyword">self</span>.anOtherBallItem]];</div><div class="line">collison.collisionMode = <span class="built_in">UICollisionBehaviorModeItems</span>;    </div><div class="line">[<span class="keyword">self</span>.animator addBehavior:collison];</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UICollisionBehaviorModeItems.gif" alt="logo"></center>
-
-<h4 id="边界碰撞"><a href="#边界碰撞" class="headerlink" title="边界碰撞"></a>边界碰撞</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UICollisionBehavior</span> *collison = [[<span class="built_in">UICollisionBehavior</span> alloc] initWithItems:@[<span class="keyword">self</span>.ballItem,<span class="keyword">self</span>.anOtherBallItem]];</div><div class="line">collison.collisionMode = <span class="built_in">UICollisionBehaviorModeBoundaries</span>;    </div><div class="line">[<span class="keyword">self</span>.animator addBehavior:collison];</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UICollisionBehaviorModeBoundaries.gif" alt="logo"></center>
-
-
-<h4 id="碰撞所有"><a href="#碰撞所有" class="headerlink" title="碰撞所有"></a>碰撞所有</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="built_in">UICollisionBehavior</span> *collison = [[<span class="built_in">UICollisionBehavior</span> alloc] initWithItems:@[<span class="keyword">self</span>.ballItem,<span class="keyword">self</span>.anOtherBallItem]];</div><div class="line">collison.collisionMode = <span class="built_in">UICollisionBehaviorModeEverything</span>;    </div><div class="line">[<span class="keyword">self</span>.animator addBehavior:collison];</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UICollisionBehaviorModeEverything.gif" alt="logo"></center>
-
-<p>可以看到，无论是那种情况，我们如果没有设置<code>translatesReferenceBoundsIntoBoundary = YES</code>的话都是不会与边界发生碰撞的，如果我们设置了<code>translatesReferenceBoundsIntoBoundary</code>之后就会出现这样的情况。</p>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UICollisionBehavior2.gif" alt="logo"></center>
-
-<p>当然，我们还可以通过<code>setTranslatesReferenceBoundsIntoBoundaryWithInsets</code>设定一个你想要范围。如果更复杂一点还可以使用<code>addBoundaryWithIdentifier</code>来添加边界。这里就不展开使用了。</p>
-<p>碰撞行为中还有一些代理用来检测不同的元素之间的碰撞。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">UICollisionBehaviorDelegate</span> &lt;<span class="title">NSObject</span>&gt;</span></div><div class="line"><span class="keyword">@optional</span></div><div class="line"><span class="comment">// 当一个两个动态元素之间发生碰撞时调用</span></div><div class="line">- (<span class="keyword">void</span>)collisionBehavior:(<span class="built_in">UICollisionBehavior</span> *)behavior beganContactForItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item1 withItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item2 atPoint:(<span class="built_in">CGPoint</span>)p;</div><div class="line"><span class="comment">// 当一个两个动态元素之间碰撞结束时调用</span></div><div class="line">- (<span class="keyword">void</span>)collisionBehavior:(<span class="built_in">UICollisionBehavior</span> *)behavior endedContactForItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item1 withItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item2;</div><div class="line"><span class="comment">// 当一个动态元素与边界发生碰撞时调用</span></div><div class="line">- (<span class="keyword">void</span>)collisionBehavior:(<span class="built_in">UICollisionBehavior</span>*)behavior beganContactForItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item withBoundaryIdentifier:(<span class="keyword">nullable</span> <span class="keyword">id</span> &lt;<span class="built_in">NSCopying</span>&gt;)identifier atPoint:(<span class="built_in">CGPoint</span>)p;</div><div class="line"><span class="comment">// 当一个动态元素与边界碰撞结束时调用</span></div><div class="line">- (<span class="keyword">void</span>)collisionBehavior:(<span class="built_in">UICollisionBehavior</span>*)behavior endedContactForItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;)item withBoundaryIdentifier:(<span class="keyword">nullable</span> <span class="keyword">id</span> &lt;<span class="built_in">NSCopying</span>&gt;)identifier;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
-<h3 id="捕捉效果-UISnapBehavior"><a href="#捕捉效果-UISnapBehavior" class="headerlink" title="捕捉效果 UISnapBehavior"></a>捕捉效果 UISnapBehavior</h3><p>捕捉效果就是使影响到的item捕捉到动作到达某个点，也可以理解为一种吸附力。到达指定的点后还有一个弹簧的效果，可以通过<code>damping</code>来调节弹簧的大小，范围为0.0~1.0，数值越大，弹性越小，默认的弹性大小为0.5。我们添加一个捕捉效果动作并且添加一个点击手势<code>UITapGestureRecognizer</code>。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.snap = [[<span class="built_in">UISnapBehavior</span> alloc] initWithItem:<span class="keyword">self</span>.ballItem snapToPoint:<span class="built_in">CGPointMake</span>(WIDTH/<span class="number">2</span>, HEIGHT/<span class="number">2</span>)];</div><div class="line"><span class="keyword">self</span>.snap.damping = <span class="number">0.5</span>;</div><div class="line">[<span class="keyword">self</span>.animator addBehavior:<span class="keyword">self</span>.snap];</div><div class="line"></div><div class="line"><span class="built_in">UITapGestureRecognizer</span> *tapGR = [[<span class="built_in">UITapGestureRecognizer</span> alloc] initWithTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(tapGR:)];</div><div class="line">[<span class="keyword">self</span>.view addGestureRecognizer:tapGR];</div></pre></td></tr></table></figure>
-<p>在点击的响应事件当中，我们修改捕捉效果的<code>snapPoint</code>让小球到达我们点击的点。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)tapGR:(<span class="built_in">UITapGestureRecognizer</span> *)gesture</div><div class="line">&#123;</div><div class="line">    <span class="built_in">CGPoint</span> point = [gesture locationInView:<span class="keyword">self</span>.view];</div><div class="line">    <span class="keyword">self</span>.snap.snapPoint = point;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UISnapBehavior.gif" alt="logo"></center>
-
-
-
-<h3 id="推力行为-UIPushBehavior"><a href="#推力行为-UIPushBehavior" class="headerlink" title="推力行为 UIPushBehavior"></a>推力行为 UIPushBehavior</h3><p>推力行为顾名思义，就是给元素一个推动力，这个推动的力可以是持续的，也可以是瞬间的。<br>推力的初始化时会加入一个mode：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSInteger</span>, <span class="built_in">UIPushBehaviorMode</span>) &#123;</div><div class="line">    <span class="built_in">UIPushBehaviorModeContinuous</span>,			<span class="comment">//持续的推力</span></div><div class="line">    <span class="built_in">UIPushBehaviorModeInstantaneous</span>		<span class="comment">//瞬间的推力</span></div><div class="line">&#125; <span class="built_in">NS_ENUM_AVAILABLE_IOS</span>(<span class="number">7</span>_0);</div></pre></td></tr></table></figure>
-<h4 id="持续推力"><a href="#持续推力" class="headerlink" title="持续推力"></a>持续推力</h4><p>为了看的更明显一些，我给他们也加入了边框碰撞效果和弹性效果。并且为了使角度的参数看的更加明显，我用了小方块儿代替小球。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIPushBehavior</span> *push = [[<span class="built_in">UIPushBehavior</span> alloc]initWithItems:@[<span class="keyword">self</span>.ballItem] mode: <span class="built_in">UIPushBehaviorModeContinuous</span>];</div><div class="line">push.magnitude = <span class="number">1</span>;     <span class="comment">//推力大小</span></div><div class="line">[<span class="keyword">self</span>.animator addBehavior:push];</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIPushBehavior1.gif" alt="logo"></center>
-
-
-<h4 id="瞬间推力"><a href="#瞬间推力" class="headerlink" title="瞬间推力"></a>瞬间推力</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIPushBehavior</span> *push = [[<span class="built_in">UIPushBehavior</span> alloc]initWithItems:@[<span class="keyword">self</span>.ballItem] mode: <span class="built_in">UIPushBehaviorModeInstantaneous</span>];</div><div class="line">push.magnitude = <span class="number">1</span>;     <span class="comment">//推力大小</span></div><div class="line">[<span class="keyword">self</span>.animator addBehavior:push];</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIPushBehavior2.gif" alt="logo"></center>
-
-<h4 id="推力方向"><a href="#推力方向" class="headerlink" title="推力方向"></a>推力方向</h4><p>同时我们还可以通过向量或者角度来控制推力作用的方向，这一个属性基本上与<code>重力效果 UIGravityBehavior</code>差不多。接下来我们来看下推力方向的角度设置。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIPushBehavior</span> *push = [[<span class="built_in">UIPushBehavior</span> alloc]initWithItems:@[<span class="keyword">self</span>.ballItem] mode:<span class="built_in">UIPushBehaviorModeInstantaneous</span>];</div><div class="line">push.angle = M_PI_2;       <span class="comment">//推力角度</span></div><div class="line">push.magnitude = <span class="number">1</span>;     <span class="comment">//推力大小 </span></div><div class="line">[<span class="keyword">self</span>.animator addBehavior:push];</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIPushBehavior3.gif" alt="logo"></center>
-
-<h4 id="偏移量"><a href="#偏移量" class="headerlink" title="偏移量"></a>偏移量</h4><p>我们还可以通过选择力对元素的作用点来改变物体的运动状态，比如我将偏移量设置为<code>(15,15)</code></p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIPushBehavior</span> *push = [[<span class="built_in">UIPushBehavior</span> alloc]initWithItems:@[<span class="keyword">self</span>.ballItem] mode:<span class="built_in">UIPushBehaviorModeInstantaneous</span>];</div><div class="line">push.angle = M_PI_2;       <span class="comment">//推力角度</span></div><div class="line">push.magnitude = <span class="number">1</span>;     <span class="comment">//推力大小</span></div><div class="line">[push setTargetOffsetFromCenter:<span class="built_in">UIOffsetMake</span>(<span class="number">15</span>, <span class="number">15</span>) forItem:<span class="keyword">self</span>.ballItem]; </div><div class="line">[<span class="keyword">self</span>.animator addBehavior:push];</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIPushBehavior4.gif" alt="logo"></center>
-
-
-<h3 id="附着行为-UIAttachmentBehavior"><a href="#附着行为-UIAttachmentBehavior" class="headerlink" title="附着行为 UIAttachmentBehavior"></a>附着行为 UIAttachmentBehavior</h3><p>附着行为，就是会以某个点或者以某个元素为作用点，距离此点或元素为一定距离的行为。<br>附着行为中可以设置链接的位置为点或者是某个其他元素，其中间的距离可以调节，连接的方式也可以分为刚性或者弹性两种情况，刚性就是两者之间用一根棒子连接起来，弹性就是两者之间好像是用橡皮筋链接起来。</p>
-<h4 id="以某个点为作用点"><a href="#以某个点为作用点" class="headerlink" title="以某个点为作用点"></a>以某个点为作用点</h4><p>我们可以设置<code>length</code>属性来表示元素与点之间的距离。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIAttachmentBehavior</span> * attachmentBehavior = [[<span class="built_in">UIAttachmentBehavior</span> alloc] initWithItem:<span class="keyword">self</span>.ballItem attachedToAnchor:<span class="built_in">CGPointMake</span>(WIDTH/<span class="number">2</span>+<span class="number">30</span>, <span class="number">400</span>)];</div><div class="line">attachmentBehavior.length = <span class="number">30</span>;</div><div class="line">[<span class="keyword">self</span>.animator addBehavior:attachmentBehavior];</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIAttachmentBehavior.gif" alt="logo"></center>
-
-<h4 id="以某个元素为作用点"><a href="#以某个元素为作用点" class="headerlink" title="以某个元素为作用点"></a>以某个元素为作用点</h4><p>我们先添加一个蓝色的小球作为作用的元素，为了让效果更加明显一点，我给边界添加了一个碰撞，并且只给红色的小球添加重力。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIAttachmentBehavior</span> *attachmentBehavior2 = [[<span class="built_in">UIAttachmentBehavior</span> alloc] initWithItem:<span class="keyword">self</span>.ballItem attachedToItem:<span class="keyword">self</span>.ballItem2];</div><div class="line">attachmentBehavior2.length = <span class="number">100</span>;</div><div class="line">[<span class="keyword">self</span>.animator addBehavior:attachmentBehavior2];</div></pre></td></tr></table></figure>
-<center><img src="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/UIAttachmentBehavior2.gif" alt="logo"></center>
-
-
-
-<h3 id="动力元素行为-UIDynamicItemBehavior"><a href="#动力元素行为-UIDynamicItemBehavior" class="headerlink" title="动力元素行为 UIDynamicItemBehavior"></a>动力元素行为 UIDynamicItemBehavior</h3><p>动力元素行为比较特殊，他没有前边几个行为有那么明显的表象，但是他提供了一些自然界中存在的一些动力学现象，比如弹力、摩擦力、密度。。。和其他行为混合使用可以发挥出意想不到的效果。</p>
-<h4 id="弹性-elasticity"><a href="#弹性-elasticity" class="headerlink" title="弹性 elasticity"></a>弹性 elasticity</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">readwrite</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> elasticity;</div></pre></td></tr></table></figure>
-<p>主要用于碰撞行为中元素之间碰撞之后的弹力，比如设置之后就可以让落地的小球更像一个铅球或者是一个皮球。他的默认值为0.0，即没有弹力，范围是0.0~1.0，数值越大，弹性效果也就越大。</p>
-<h4 id="摩擦力-friction"><a href="#摩擦力-friction" class="headerlink" title="摩擦力 friction"></a>摩擦力 friction</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">readwrite</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> friction;</div></pre></td></tr></table></figure>
-<p>摩擦力作用于两个元素之间的摩擦。默认值为0.0，即没有摩擦，数值越高摩擦力越大。</p>
-<h4 id="密度-density"><a href="#密度-density" class="headerlink" title="密度 density"></a>密度 density</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">readwrite</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> density;</div></pre></td></tr></table></figure>
-<p>密度的大小会对元素的摩擦力、弹性、推力大小都有影响。默认值为1.0</p>
-<h4 id="线速度阻尼-resistance"><a href="#线速度阻尼-resistance" class="headerlink" title="线速度阻尼 resistance"></a>线速度阻尼 resistance</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">readwrite</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> resistance;</div></pre></td></tr></table></figure>
-<p>用于处理动态元素的线速度阻尼大小。默认值是0.0，当数值为1.0时会受到非常大的阻力，运动中的元素会马上停止。</p>
-<h4 id="角速度阻尼-angularResistance"><a href="#角速度阻尼-angularResistance" class="headerlink" title="角速度阻尼 angularResistance"></a>角速度阻尼 angularResistance</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">readwrite</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> angularResistance;</div></pre></td></tr></table></figure>
-<p>同理于线速度阻尼。</p>
-<h4 id="电荷-charge"><a href="#电荷-charge" class="headerlink" title="电荷 charge"></a>电荷 charge</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">readwrite</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> charge <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">9</span>_0);</div></pre></td></tr></table></figure>
-<p>这个属性太专业了。。。不太懂，如果有大牛知道是什么用处还请指教。</p>
-<h4 id="是否固定-anchored"><a href="#是否固定-anchored" class="headerlink" title="是否固定 anchored"></a>是否固定 anchored</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">getter</span> = isAnchored) <span class="built_in">BOOL</span> anchored <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">9</span>_0);</div></pre></td></tr></table></figure>
-<p>固定元素，当元素被固定后仍然可以设置行为，行为会影响到元素只是不会使元素发生位移。比如在碰撞行为中，元素会被碰撞但是不会碰撞后发生位移。默认值为NO。</p>
-<p>以上就是UIKit Dynamic的简单使用，仅作为个人学习笔记，如果有什么地方写的不对还请大神们批评指教。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2056,7 +1970,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
