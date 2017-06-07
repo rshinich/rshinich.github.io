@@ -297,6 +297,213 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/04/斯坦福大学iOS公开课笔记（8）-代理、block、动画/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/04/斯坦福大学iOS公开课笔记（8）-代理、block、动画/" itemprop="url">
+                  斯坦福大学iOS公开课笔记（8）--代理、block、动画
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-04T20:21:06+08:00">
+                2017-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这一节课主要讲了代理、block和动画，并且在课程的最后部分编写了一个类似俄罗斯方块的游戏 Dropit!来使大家更加理解这些知识。代理和block都是平时开发时需要用到的很重要的知识，这节课可能会比较难理解一些，不过内容都是十分重要的。</p>
+<h2 id="协议-Protocol"><a href="#协议-Protocol" class="headerlink" title="协议 Protocol"></a>协议 Protocol</h2><h3 id="声明一个协议"><a href="#声明一个协议" class="headerlink" title="声明一个协议"></a>声明一个协议</h3><p>和<code>@interface</code>一样，我们在声明一个协议的时候也是说明他的变量和方法，只不过在声明的时候把关键字换成了<code>@protocol</code>。</p>
+<p>但是协议只是写他的声明部分，而没有实现部分，所以<code>@protocol</code>没有对应的<code>@implementation</code>。</p>
+<p><strong>注意：在协议中的方法默认是必须实现的</strong>，但是可以通过<code>@optional</code>来声明它之后的方法为可选的。同样的也可以使用<code>@required</code>来声明他之后的方法是必须实现的。</p>
+<p>和类差不多，我们也可以在声明的时候增加一个 <code>&lt;xyzzy&gt;</code> 来表示他继承了<code>xyzzy</code>中的所有方法，所以实现的时候也要实现<code>xyzzy</code>中的全部方法。当然我们也可以同时继承多个协议<code>&lt;xyzzy,NSObject&gt;</code></p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@protocol</span> Foo&lt;Xyzzy,NSObject&gt;</div><div class="line"></div><div class="line">- (void)someMethod;</div><div class="line"></div><div class="line"><span class="variable">@opational</span> <span class="comment">//之后的方法为可选择实现的</span></div><div class="line"></div><div class="line">- (void)<span class="attribute">methodWithArgument</span>:(BOOL)argument;</div><div class="line"></div><div class="line"><span class="variable">@required</span> <span class="comment">//之后的方法必须实现</span></div><div class="line"></div><div class="line"><span class="variable">@property</span> (readonly) int readonlyProperty;</div><div class="line"><span class="variable">@property</span> NSString *readwriteProperty;</div><div class="line"></div><div class="line"><span class="selector-tag">-</span> (int)<span class="selector-tag">methodThatReturnSomething</span>;</div><div class="line">@<span class="selector-tag">end</span></div></pre></td></tr></table></figure>
+<h3 id="Protocol放在哪里？"><a href="#Protocol放在哪里？" class="headerlink" title="Protocol放在哪里？"></a>Protocol放在哪里？</h3><ul>
+<li><p>放在自己的头文件中</p>
+<p>  比如Foo协议的头文件就是Foo.h。</p>
+</li>
+</ul>
+<ul>
+<li><p>放在某个相关类的头文件中</p>
+<p>   比如<code>UIScrollViewDelegate</code>可以放在使用<code>UIScrollView</code>的文件中。</p>
+</li>
+</ul>
+<h3 id="Protocol有什么用？"><a href="#Protocol有什么用？" class="headerlink" title="Protocol有什么用？"></a>Protocol有什么用？</h3><p>Protocol可以让你和编译器都知道声明的这个对象遵循哪个协议，意味着他一定实现了必须实现的方法。</p>
+<h3 id="Protocol主要用来做什么"><a href="#Protocol主要用来做什么" class="headerlink" title="Protocol主要用来做什么"></a>Protocol主要用来做什么</h3><ul>
+<li><p>第一个用途就是作为委托<code>Delegate</code>和数据源<code>DataSource</code>。就是用于当MVC中视图像控制器发送消息的时候就会用到他们。</p>
+</li>
+<li><p>其他地方比如动画当中。</p>
+</li>
+</ul>
+<h2 id="block"><a href="#block" class="headerlink" title="block"></a>block</h2><p>block就是一段代码块，可以嵌入到其他代码中，进行参数的传递，存储在数组中。</p>
+<p>block经常以<code>^</code>开头，然后会制定一个返回类型，然后是一对大括号<code>{}</code>中间的内容就是block的内容。</p>
+<h3 id="block-1"><a href="#block-1" class="headerlink" title="__block"></a>__block</h3><p>block中的变量都是是<code>readonly</code>只读的，所以在block中我们没有办法修改他的值。这时候我们需要借助到<code>__block</code>关键字。使用了<code>__block</code>关键字之后，系统会自动生成一段代码，将stoppedEarly从栈中移动到堆中，这样就可以在block中使用了，然后，在block结束的时候再将信息复制会堆中，再放回到栈上。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">__block <span class="built_in">BOOL</span> stoppedEarly = <span class="literal">NO</span>;</div><div class="line"><span class="keyword">double</span> stopValue = <span class="number">53.5</span>;</div><div class="line">[aDictionary enumerateKeysAndObjectsUsingBlock:^(<span class="keyword">id</span> key, <span class="keyword">id</span> value, <span class="built_in">BOOL</span> *stop)&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"value for key %@ is %@"</span>,key,value);</div><div class="line"></div><div class="line">    <span class="keyword">if</span>([<span class="string">@"ENOUGH"</span> isEqualToString:key] || [value doubleValue] == stopValue)</div><div class="line">    &#123;</div><div class="line">        *stop = <span class="literal">YES</span>;</div><div class="line">        stoppedEarly = <span class="literal">YES</span>; <span class="comment">//这里可以修改外部的变量</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<h3 id="weak"><a href="#weak" class="headerlink" title="__weak"></a>__weak</h3><p>因为每次向block中的对象发送消息时，系统就会创建一个指向该对象的强指针，该指针会一直保持到block超出范围以后。所以只要block存在，系统中的对象就会被一个强指针指着。这样就会照成一个问题，会照成循环引用。比如下面一段代码：</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[<span class="name">self.myBlocks</span> addObject:^&#123;</div><div class="line">    [<span class="name">self</span> doSomething]<span class="comment">;</span></div><div class="line">&#125;]<span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>block会有一个强指针指向self，而且重点是self也会有一个强指针指向block，现在他们都互相强引用，谁也不会先释放谁，这就照成了循环引用。</p>
+<p>解决他们的办法就是使用局部变量，当block作用的部分结束之后，局部变量不再被引用，他就会释放，这样就解决了循环引用的问题。</p>
+<p>但是局部变量也是强指针类型的，这时候我们可以使用<code>__weak</code>修饰符来修饰他，让他变成弱类型。弱类型不会在堆中保存该对象，如果没有元素指向他，他就会释放。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">__weak</span> MyClass *weakSelf = <span class="keyword">self;</span></div><div class="line"></div><div class="line">[<span class="keyword">self.myBlocks </span><span class="keyword">addObject:^&#123;</span></div><div class="line">    [<span class="keyword">self </span>doSomething]<span class="comment">;</span></div><div class="line">&#125;]<span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>在使用ARC的情况下，大多数只有这种情况下会造成循环引用。</p>
+<h2 id="Animation-动画"><a href="#Animation-动画" class="headerlink" title="Animation 动画"></a>Animation 动画</h2><h3 id="UIView-Animation"><a href="#UIView-Animation" class="headerlink" title="UIView Animation"></a>UIView Animation</h3><p>UIView Animation是<code>UIView</code>的一个类方法，用来改变</p>
+<ul>
+<li>frame（位置）</li>
+<li>transfrom（缩放比例，旋转情况）</li>
+<li>alpha（透明度）</li>
+</ul>
+<p>当我们对他添加一个动画，他立即就会变换成目标的样式，只不过显示的时候会显示出一个慢慢变化的动画。比如我将一个view的frame从(10,10)变为(100,100)，那么系统会在执行到这里时立刻做出这个变化，然后在视图上慢慢改变frame来达到一个动画的效果。</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[UIView animateWithDuration:(<span class="name">NSTimeInterval</span>)duration</div><div class="line">                      delay:(<span class="name">NSTimeInterval</span>)delay</div><div class="line">                    options:(<span class="name">UIViewAnimationOptions</span>)options</div><div class="line">                 animations:<span class="comment">^&#123;</span></div><div class="line">                     ...    //需要改变的值</div><div class="line">                 &#125;</div><div class="line">                 completion:^(<span class="name">BOOL</span> finished) &#123;</div><div class="line">                     ...    //完成动画后做的事情</div><div class="line">                 &#125;]<span class="comment">;</span></div></pre></td></tr></table></figure>
+<ul>
+<li><code>duration</code>表示需要多少时间来执行。</li>
+<li><code>delay</code>表示等待多久开始执行。</li>
+<li><code>options</code>动画的运行状态，iOS中提供了很多种options，他是一个枚举值，具体的值可以在文档中查看。</li>
+<li><code>animations</code>他是一个block，没有参数也没有返回值，可以在这修改需要的值。</li>
+<li><code>completion</code>也是一个block， 当动画完成之后调用这个block。这里的<code>finished</code>表示动画是否完成，因为当出发这个方法的时候，实际上的值已经改变了，但是在执行动画的过程中有可能会被打断，比如突然改变了<code>alpha</code>，这样的话在调用<code>completion</code>的时候就可以通过<code>finish</code>来判断是否动画被打断来改变他的状态。</li>
+</ul>
+<p>当我想要修改整个视图的状态的时候，我们可以用到这个类方法</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+ (<span class="keyword">void</span>)transitionWithView:(<span class="built_in">UIView</span> *)view</div><div class="line">                  duration:(<span class="built_in">NSTimeInterval</span>)duration</div><div class="line">                   options:(<span class="built_in">UIViewAnimationOptions</span>)options</div><div class="line">                animations:(<span class="keyword">void</span> (^ __<span class="keyword">nullable</span>)(<span class="keyword">void</span>))animations</div><div class="line">                completion:(<span class="keyword">void</span> (^ __<span class="keyword">nullable</span>)(<span class="built_in">BOOL</span> finished))completion;</div></pre></td></tr></table></figure>
+<ul>
+<li><code>view</code>你想要改变的目标view，比如playingCardView。<br>其他的参数与之前的参数基本一致，只是options用的是不同的options。</li>
+</ul>
+<h3 id="Dynamic-Animation"><a href="#Dynamic-Animation" class="headerlink" title="Dynamic Animation"></a>Dynamic Animation</h3><p>物理引擎动画，他主要是用作对视图进行物理效果的动画，比如重力、碰撞、弹性等等。<br>关于物理引擎的更多使用可以点击<a href="http://zhangzr.cn/2017/03/24/iOS-UIDynamic%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" target="_blank" rel="external">这里</a>看我的另外一篇博客。</p>
+<h2 id="Demo-Dropit"><a href="#Demo-Dropit" class="headerlink" title="Demo Dropit"></a>Demo Dropit</h2><p>最后的部分是一个小游戏的demo，这个小游戏类似于简化版的俄罗斯方块。要求点击了之后掉落一个正方形的小方块。当小方块填充满一整行之后“炸掉”这一行。这个demo结合了<code>Dynamic Animation</code>和<code>UIView Animation</code>。</p>
+<center><img src="/2017/06/04/斯坦福大学iOS公开课笔记（8）-代理、block、动画/Dropit.gif" alt="logo"></center>
+
+
+<p>因为这节课没有设置一个边界，所以当铺满整个屏幕之后的判断会失效导致并没有显示出一个爆炸的效果，在下一节课中，我们会学习<code>Auto Layout</code>这个功能来限制边框，从而修复判断失效的问题。</p>
+<h3 id="添加点击掉落手势"><a href="#添加点击掉落手势" class="headerlink" title="添加点击掉落手势"></a>添加点击掉落手势</h3><p>首先我们给页面添加一个手势<code>tap</code>,并且在点击之后响应随机出现一个方块。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">IBAction</span>)tap:(<span class="built_in">UITapGestureRecognizer</span> *)sender</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">self</span> drop];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)drop</div><div class="line">&#123;</div><div class="line">    <span class="built_in">CGRect</span> frame;</div><div class="line">    frame.origin = <span class="built_in">CGPointZero</span>;</div><div class="line">    frame.size = DROP_SIZE;</div><div class="line">    </div><div class="line">    <span class="comment">//设置随机出现的横坐标</span></div><div class="line">    <span class="keyword">int</span> x = (arc4random()%(<span class="keyword">int</span>)<span class="keyword">self</span>.gameView.bounds.size.width) / DROP_SIZE.width;</div><div class="line">    frame.origin.x = x * DROP_SIZE.width;</div><div class="line">    </div><div class="line">    <span class="built_in">UIView</span> *dropView = [[<span class="built_in">UIView</span> alloc] initWithFrame:frame];</div><div class="line">    dropView.backgroundColor = [<span class="keyword">self</span> randColor];</div><div class="line">    [<span class="keyword">self</span>.gameView addSubview:dropView]; <span class="comment">//设置随机方块颜色    </span></div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">- (<span class="built_in">UIColor</span> *)randColor</div><div class="line">&#123;</div><div class="line">    <span class="keyword">switch</span> (arc4random()%<span class="number">5</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">case</span> <span class="number">0</span>: <span class="keyword">return</span> [<span class="built_in">UIColor</span> greenColor];</div><div class="line">        <span class="keyword">case</span> <span class="number">1</span>: <span class="keyword">return</span> [<span class="built_in">UIColor</span> blueColor];</div><div class="line">        <span class="keyword">case</span> <span class="number">2</span>: <span class="keyword">return</span> [<span class="built_in">UIColor</span> orangeColor];</div><div class="line">        <span class="keyword">case</span> <span class="number">3</span>: <span class="keyword">return</span> [<span class="built_in">UIColor</span> redColor];</div><div class="line">        <span class="keyword">case</span> <span class="number">4</span>: <span class="keyword">return</span> [<span class="built_in">UIColor</span> purpleColor];</div><div class="line">            </div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> [<span class="built_in">UIColor</span> blackColor];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<center><img src="/2017/06/04/斯坦福大学iOS公开课笔记（8）-代理、block、动画/randomShowView.gif" alt="logo"></center>
+
+<h3 id="设置重力和碰撞"><a href="#设置重力和碰撞" class="headerlink" title="设置重力和碰撞"></a>设置重力和碰撞</h3><p>需要掉落的view已经有了，接下来我们需要给整个页面添加一个重力，和一个碰撞的属性，在课程中一开始这里是分开写的，后来新建了一个类来调用他，这边我们就直接新建一个类然后调用他。</p>
+<p>首先先创建一个继承<code>UIDynamicBehavior</code>的类<code>DropitBehavior</code>；<br>然后给他添加两个方法</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">DropitBehavior</span> : <span class="title">UIDynamicBehavior</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)addItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;) item;</div><div class="line">- (<span class="keyword">void</span>)removeItem:(<span class="keyword">id</span> &lt;<span class="built_in">UIDynamicItem</span>&gt;) item;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>然后添加碰撞和重力方法</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> DropitBehavior()</div><div class="line"></div><div class="line"><span class="variable">@property</span> (nonatomic, strong) UIGravityBehavior *gravity;</div><div class="line"><span class="variable">@property</span> (nonatomic, strong) UICollisionBehavior *collision;</div><div class="line"></div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
+<p>使用懒加载方法实现并实现之前的添加和移除方法以及初始化的方法</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">DropitBehavior</span></span></div><div class="line"></div><div class="line"></div><div class="line">- (<span class="built_in">UIGravityBehavior</span> *)gravity</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(!_gravity)</div><div class="line">    &#123;</div><div class="line">        _gravity = [[<span class="built_in">UIGravityBehavior</span> alloc] init];</div><div class="line">        _gravity.magnitude = <span class="number">0.9</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> _gravity;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">UICollisionBehavior</span> *)collision</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(!_collision)</div><div class="line">    &#123;</div><div class="line">        _collision = [[<span class="built_in">UICollisionBehavior</span> alloc] init];</div><div class="line">        _collision.translatesReferenceBoundsIntoBoundary = <span class="literal">YES</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> _collision;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)addItem:(<span class="keyword">id</span>&lt;<span class="built_in">UIDynamicItem</span>&gt;)item</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">self</span>.gravity addItem:item];</div><div class="line">    [<span class="keyword">self</span>.collision addItem:item];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)removeItem:(<span class="keyword">id</span>&lt;<span class="built_in">UIDynamicItem</span>&gt;)item</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">self</span>.gravity removeItem:item];</div><div class="line">    [<span class="keyword">self</span>.collision removeItem:item];</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">- (<span class="keyword">instancetype</span>)init</div><div class="line">&#123;</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>)</div><div class="line">    &#123;</div><div class="line">        [<span class="keyword">self</span> addChildBehavior:<span class="keyword">self</span>.gravity];</div><div class="line">        [<span class="keyword">self</span> addChildBehavior:<span class="keyword">self</span>.collision];</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>这样我们的类就封装好了。接下来在控制器里我们实现这个动画并将<code>DropitBehavior</code>添加进来。</p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">- (UIDynamicAnimator *)animator</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(!<span class="variable">_animator</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="variable">_animator</span> = [[UIDynamicAnimator alloc] initWithReferenceView:self.gameView];</div><div class="line">    &#125;</div><div class="line">    return <span class="variable">_animator</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">- (DropitBehavior *)dropitBehavior</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(!<span class="variable">_dropitBehavior</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="variable">_dropitBehavior</span> = [[DropitBehavior alloc] init];</div><div class="line">        [self.animator addBehavior:<span class="variable">_dropitBehavior</span>];</div><div class="line">    &#125;</div><div class="line">    return <span class="variable">_dropitBehavior</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后需要在<code>drop</code>方法里，给生成的view添加<code>dropitBehavior</code>属性。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="section">[self.dropitBehavior addItem:dropView]</span><span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>这样就基本实现了我们需要的功能。</p>
+<center><img src="/2017/06/04/斯坦福大学iOS公开课笔记（8）-代理、block、动画/afterAddBehavior.gif" alt="logo"></center>
+
+
+<p>###设置炸掉一整行的动画</p>
+<p>炸掉一整行的动画其实就是改变这一整行中所有view的位置，让他的横坐标位置随机，纵坐标位置为负数即可。</p>
+<p>这里快速写了一段判断是否排满整行的代码，原理就是从屏幕的最下边开始，检测每一个应该出现方块的中心位置是否有方块。如果都有则表示这一行排满了，则执行爆炸动画。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)removeCompletedRows</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSMutableArray</span> *dropToRemove = [[<span class="built_in">NSMutableArray</span> alloc] init];</div><div class="line">    </div><div class="line">    <span class="keyword">for</span>(<span class="built_in">CGFloat</span> y = <span class="keyword">self</span>.gameView.bounds.size.height-DROP_SIZE.height/<span class="number">2</span> ; y &gt; <span class="number">0</span> ; y -= DROP_SIZE.height)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">BOOL</span> rowIsComplete = <span class="literal">YES</span>;</div><div class="line">        <span class="built_in">NSMutableArray</span> *dropsFound = [[<span class="built_in">NSMutableArray</span> alloc] init];</div><div class="line">        <span class="keyword">for</span>(<span class="built_in">CGFloat</span> x = DROP_SIZE.width/<span class="number">2</span> ; x &lt;= <span class="keyword">self</span>.gameView.bounds.size.width-DROP_SIZE.width/<span class="number">2</span> ; x += DROP_SIZE.width)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">UIView</span> *hitView = [<span class="keyword">self</span>.gameView hitTest:<span class="built_in">CGPointMake</span>(x, y) withEvent:<span class="literal">NULL</span>];</div><div class="line">            <span class="keyword">if</span>([hitView superview] == <span class="keyword">self</span>.gameView)</div><div class="line">            &#123;</div><div class="line">                [dropsFound addObject:hitView];</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">else</span></div><div class="line">            &#123;</div><div class="line">                rowIsComplete = <span class="literal">NO</span>;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(![dropsFound count])</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span>(rowIsComplete)</div><div class="line">        &#123;</div><div class="line">            [dropToRemove addObjectsFromArray:dropsFound];</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="keyword">if</span>([dropToRemove count])</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="built_in">UIView</span> *drop <span class="keyword">in</span> dropToRemove)</div><div class="line">        &#123;</div><div class="line">            [<span class="keyword">self</span>.dropitBehavior removeItem:drop];</div><div class="line">            </div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        [<span class="keyword">self</span> animateRemovingDrops:dropToRemove];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>爆炸的动画用到的是<code>UIView Animation</code>来改变位置</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)animateRemovingDrops:(<span class="built_in">NSArray</span> *)dropsToRemove</div><div class="line">&#123;</div><div class="line">    [<span class="built_in">UIView</span> animateWithDuration:<span class="number">1.0</span></div><div class="line">                     animations:^&#123;</div><div class="line">                         </div><div class="line">                         <span class="keyword">for</span>(<span class="built_in">UIView</span> *dropView <span class="keyword">in</span> dropsToRemove)</div><div class="line">                         &#123;</div><div class="line">                             <span class="keyword">int</span> x = (arc4random()%(<span class="keyword">int</span>)(<span class="keyword">self</span>.gameView.bounds.size.width*<span class="number">5</span>)) - (<span class="keyword">int</span>)<span class="keyword">self</span>.gameView.bounds.size.width*<span class="number">2</span>;</div><div class="line">                             <span class="keyword">int</span> y = <span class="keyword">self</span>.gameView.bounds.size.height;</div><div class="line">                             dropView.center = <span class="built_in">CGPointMake</span>(x, -y);</div><div class="line">                         &#125;</div><div class="line">                         </div><div class="line">                     &#125; completion:^(<span class="built_in">BOOL</span> finished) &#123;</div><div class="line">                         [dropsToRemove makeObjectsPerformSelector:<span class="keyword">@selector</span>(removeFromSuperview)];</div><div class="line">                     &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<p>以上就是这节课的内容，这个小游戏还会在下节课继续完成，完成之后我也会补全这一部分的代码。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/31/斯坦福大学iOS公开课笔记（7）-绘制视图和手势/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1788,168 +1995,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/14/使用CAGradientLayer制作渐变折线图/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhangzr">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zhangzr's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/14/使用CAGradientLayer制作渐变折线图/" itemprop="url">
-                  使用CAGradientLayer制作渐变折线图
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-14T10:15:34+08:00">
-                2017-04-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>之前写了一下UIBezierPath的<a href="http://zhangzr.cn/2017/04/05/iOS-UIBezierPath%E7%BB%98%E5%88%B6%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" target="_blank" rel="external">简单使用</a>，这次就写写UIBezierPath的具体使用吧。</p>
-<p>如果平时我们遇到一些需要做图表的需求时，使用UIBezierPath就再适合不过了，今天我就打算使用它来绘制一个折线图。先上效果图：</p>
-<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/finally_effect .gif" alt="logo"></center>
-
-<h2 id="绘制背景"><a href="#绘制背景" class="headerlink" title="绘制背景"></a>绘制背景</h2><p>首先我们先来绘制一下背景，背景比较简单，一个背景色上边加上五条细细的线就可以了。<br>首先我们先用UIBezierPath来画一条直线，然后把它给到CAShapeLayer，最后把CAShapeLayer添加到当前view的sublayer中就可以了。</p>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">for</span>(int i = <span class="number">0</span> <span class="comment">; i &lt; 5 ; i++)</span></div><div class="line">&#123;</div><div class="line">    UIBezierPath *<span class="keyword">bgPath </span>= [UIBezierPath <span class="keyword">bezierPath];</span></div><div class="line">    [<span class="keyword">bgPath </span><span class="keyword">moveToPoint:CGPointMake(30, </span>HEIGHT/<span class="number">2</span>-<span class="number">100</span>+i*<span class="number">30</span>)]<span class="comment">;</span></div><div class="line">    [<span class="keyword">bgPath </span><span class="keyword">addLineToPoint:CGPointMake(WIDTH-30, </span>HEIGHT/<span class="number">2</span>-<span class="number">100</span>+i*<span class="number">30</span>)]<span class="comment">;</span></div><div class="line">    </div><div class="line">    CAShapeLayer *<span class="keyword">bgPathLayer </span>= [CAShapeLayer layer]<span class="comment">;</span></div><div class="line">    <span class="keyword">bgPathLayer.path </span>= <span class="keyword">bgPath.CGPath;</span></div><div class="line">    <span class="keyword">bgPathLayer.lineWidth </span>= <span class="number">1</span><span class="comment">;</span></div><div class="line">    <span class="keyword">bgPathLayer.fillColor </span>= [UIColor clearColor].CGColor<span class="comment">;</span></div><div class="line">    <span class="keyword">bgPathLayer.strokeColor </span>= [UIColor colorWithRed:<span class="number">70</span>/<span class="number">255</span>.<span class="number">0</span> green:<span class="number">94</span>/<span class="number">255</span>.<span class="number">0</span> <span class="keyword">blue:116/255.0 </span>alpha:<span class="number">0</span>.<span class="number">3</span>].CGColor<span class="comment">;</span></div><div class="line">    <span class="keyword">bgPathLayer.frame </span>= CGRectMake(<span class="number">0</span>, <span class="number">0</span>, WIDTH, HEIGHT)<span class="comment">;</span></div><div class="line">    </div><div class="line">    </div><div class="line">    [<span class="keyword">self.layer </span><span class="keyword">addSublayer:bgPathLayer];</span></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>实现了上边的代码之后就会看到这样的：</p>
-<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/background.png" alt="logo"></center>
-
-<h2 id="绘制曲线"><a href="#绘制曲线" class="headerlink" title="绘制曲线"></a>绘制曲线</h2><p>接下来我们需要来绘制折线图的主要部分。。。折线。我之前绘制背景的时候使用了5根线所以在这边我使用随机函数<code>arc4random()</code>随机生成每个点的位置。所以可能生成的折线图会与最开始的效果图有一点不同。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIBezierPath</span> *linePath = [<span class="built_in">UIBezierPath</span> bezierPath];</div><div class="line"></div><div class="line"><span class="built_in">NSInteger</span> i = arc4random()%<span class="number">5</span>;</div><div class="line">[linePath moveToPoint:<span class="built_in">CGPointMake</span>(<span class="number">30</span>, HEIGHT/<span class="number">2</span><span class="number">-100</span>+i*<span class="number">30</span>)];</div><div class="line"></div><div class="line"><span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span> ; j &lt; <span class="number">30</span> ; j++)</div><div class="line">&#123;</div><div class="line">    i = arc4random()%<span class="number">5</span>;</div><div class="line">    </div><div class="line">    [linePath addLineToPoint:<span class="built_in">CGPointMake</span>(<span class="number">30</span> + (WIDTH<span class="number">-60</span>)*j/<span class="number">30</span>, HEIGHT/<span class="number">2</span><span class="number">-100</span>+i*<span class="number">30</span>)];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">CAShapeLayer</span> *linePathLayer = [<span class="built_in">CAShapeLayer</span> layer];</div><div class="line">linePathLayer.path = linePath.CGPath;</div><div class="line">linePathLayer.lineWidth = <span class="number">3</span>;</div><div class="line">linePathLayer.fillColor = [<span class="built_in">UIColor</span> clearColor].CGColor;</div><div class="line">linePathLayer.strokeColor = [<span class="built_in">UIColor</span> whiteColor].CGColor;</div><div class="line">linePathLayer.lineCap = kCALineCapRound;</div><div class="line">linePathLayer.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, WIDTH, HEIGHT);</div><div class="line"></div><div class="line"></div><div class="line">[<span class="keyword">self</span>.layer addSublayer:linePathLayer];</div></pre></td></tr></table></figure>
-<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/afterdrawLine.png" alt="logo"></center>
-
-<p>到这里我们折线图的部分基本就已经完成了，接下来我们要实现他的渐变色和动画的功能。</p>
-<h2 id="绘制渐变"><a href="#绘制渐变" class="headerlink" title="绘制渐变"></a>绘制渐变</h2><h3 id="CAGradientLayer"><a href="#CAGradientLayer" class="headerlink" title="CAGradientLayer"></a>CAGradientLayer</h3><h4 id="两种颜色"><a href="#两种颜色" class="headerlink" title="两种颜色"></a>两种颜色</h4><p>绘制渐变色我们需要使用到<code>CAGradientLayer</code>，他是用来生成两种或更多颜色平滑渐变的。</p>
-<p>我们先简单使用<code>CAGradientLayer</code>来绘制一个对角线渐变的颜色。首先我们要赋予<code>colors</code>属性。这个数组接受的是<code>CGColorRef</code>类型的值，所以我们需要通过<code>bridge</code>转换他。</p>
-<p><code>CAGradientLayer</code>也有<code>startPoint</code>和<code>endPoint</code>属性，这两个属性决定了渐变的方向。其中代表左上角的坐标为{0，0}，代表右下角的坐标为{1,1}。</p>
-<p>运行这样一段代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">CAGradientLayer</span> *gradientLayer = [<span class="built_in">CAGradientLayer</span> layer];</div><div class="line">gradientLayer.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, WIDTH, HEIGHT);</div><div class="line">[gradientLayer setColors:@[(__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> blueColor].CGColor,</div><div class="line">                           (__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> redColor].CGColor</div><div class="line">                           ]];</div><div class="line">[gradientLayer setStartPoint:<span class="built_in">CGPointMake</span>(<span class="number">0</span>, <span class="number">0</span>)];</div><div class="line">[gradientLayer setEndPoint:<span class="built_in">CGPointMake</span>(<span class="number">1</span>, <span class="number">0</span>)];</div><div class="line"></div><div class="line"></div><div class="line">[<span class="keyword">self</span>.layer addSublayer:gradientLayer];</div></pre></td></tr></table></figure>
-<p>我们就会看到一个从左到右的蓝色渐变为红色的样式。</p>
-<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayer.png" alt="logo"></center>
-
-<h4 id="多种颜色"><a href="#多种颜色" class="headerlink" title="多种颜色"></a>多种颜色</h4><p>当然了，我们也可以给<code>colors</code>添加更多的颜色，然后使用<code>locations</code>属性来调整空间。同样的也是以0.0代表开始、1.0代表结束。</p>
-<p><code>locations</code>数组不是一定要设置的，但是如果你设置了他，就一定要和<code>colors</code>的大小保持一致，否则会出现一个空白的渐变。</p>
-<p>像这样一段代码，我在之前的基础上多加了一个绿色，并且通过<code>locations</code>将他们设置成了三等分。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">CAGradientLayer</span> *gradientLayer = [<span class="built_in">CAGradientLayer</span> layer];</div><div class="line">gradientLayer.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, WIDTH, HEIGHT);</div><div class="line">[gradientLayer setColors:@[(__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> blueColor].CGColor,</div><div class="line">                           (__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> redColor].CGColor,</div><div class="line">                           (__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> greenColor].CGColor</div><div class="line">                           ]];</div><div class="line">[gradientLayer setLocations:@[@<span class="number">0.0</span>,</div><div class="line">                              @<span class="number">0.5</span>,</div><div class="line">                              @<span class="number">1.0</span></div><div class="line">                              ]];</div><div class="line">[gradientLayer setStartPoint:<span class="built_in">CGPointMake</span>(<span class="number">0</span>, <span class="number">0</span>)];</div><div class="line">[gradientLayer setEndPoint:<span class="built_in">CGPointMake</span>(<span class="number">1</span>, <span class="number">0</span>)];</div><div class="line"></div><div class="line">[<span class="keyword">self</span>.layer addSublayer:gradientLayer];</div></pre></td></tr></table></figure>
-<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayer2.png" alt="logo"></center>
-
-<p>如果想让渐变看起来自然一些，可以使用一些相近的颜色。比如黄色、橙色、红色。</p>
-<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayer3.png" alt="logo"></center>
-
-<h3 id="绘制蒙层"><a href="#绘制蒙层" class="headerlink" title="绘制蒙层"></a>绘制蒙层</h3><p>渐变也有了，折线图也有了，接下来只要把渐变的颜色设置到折线图上就可以了。我们可以使用<code>setMask</code>来设置一个遮罩层。</p>
-<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CALayer *gradientSuperLayer = <span class="string">[CALayer layer]</span>;</div><div class="line"><span class="string">[gradientSuperLayer addSublayer:gradientLayer]</span>;</div><div class="line"><span class="string">[gradientSuperLayer setMask:linePathLayer]</span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="string">[self.layer addSublayer:gradientSuperLayer]</span>;</div></pre></td></tr></table></figure>
-<p>这样一来，渐变的折线图就做出来了。</p>
-<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/CAGradientLayerLine.png" alt="logo"></center>
-
-<h2 id="动画的实现"><a href="#动画的实现" class="headerlink" title="动画的实现"></a>动画的实现</h2><p>样式已经好了，接下来我们只要使用<code>CABasicAnimation</code>来设置一个简单的动画就可以实现功能了。</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">CABasicAnimation *drawAnimation = [CABasicAnimation animationWithKeyPath:@<span class="string">"strokeEnd"</span>]<span class="comment">;</span></div><div class="line">drawAnimation.duration = <span class="number">2</span> <span class="comment">;        //动画时间</span></div><div class="line">drawAnimation.fromValue = @<span class="number">0</span><span class="comment">;</span></div><div class="line">drawAnimation.toValue= @<span class="number">1</span><span class="comment">;</span></div><div class="line">drawAnimation.fillMode = kCAFillModeForwards<span class="comment">;</span></div><div class="line">drawAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]<span class="comment">;    //动画播放的方式</span></div><div class="line">[layer <span class="keyword">addAnimation:drawAnimation </span>forKey:@<span class="string">"draw"</span>]<span class="comment">;</span></div></pre></td></tr></table></figure>
-<center><img src="/2017/04/14/使用CAGradientLayer制作渐变折线图/finally_effect2.gif" alt="logo"></center>
-
-
-<p>以上就是渐变色折线图的简单实现方式，仅作为个人学习笔记，如果有什么地方写的不对还请大神们批评指教。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1999,7 +2044,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
