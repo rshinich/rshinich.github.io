@@ -87,19 +87,24 @@
 
 
 
-<meta name="description" content="获取当前view所在的viewController
-12345678910- (UIViewController*)viewController&amp;#123;    for (UIView* next = [self superview]; next; next = next.superview) &amp;#123;        UIResponder* nextResponder = [next ne">
+<meta name="description" content="iOS开发中最经常用到的控件就是UITableView，几乎大部分的需求都可以通过UITableView来实现。虽然UITableViewCell有自己的点击方法
+1- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+但是我们也经常需要在UITableViewCel">
 <meta property="og:type" content="article">
-<meta property="og:title" content="获取当前View所在的ViewController">
-<meta property="og:url" content="http://yoursite.com/2017/04/20/获取当前View所在的ViewController/index.html">
+<meta property="og:title" content="获取点击UITableViewCell中的UIButton所在的行">
+<meta property="og:url" content="http://yoursite.com/2017/06/13/获取点击UITableViewCell中的UIButton所在的行/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
-<meta property="og:description" content="获取当前view所在的viewController
-12345678910- (UIViewController*)viewController&amp;#123;    for (UIView* next = [self superview]; next; next = next.superview) &amp;#123;        UIResponder* nextResponder = [next ne">
-<meta property="og:updated_time" content="2017-04-20T06:59:25.000Z">
+<meta property="og:description" content="iOS开发中最经常用到的控件就是UITableView，几乎大部分的需求都可以通过UITableView来实现。虽然UITableViewCell有自己的点击方法
+1- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+但是我们也经常需要在UITableViewCel">
+<meta property="og:image" content="http://yoursite.com/2017/06/13/获取点击UITableViewCell中的UIButton所在的行/cellBtnClicked.gif">
+<meta property="og:updated_time" content="2017-06-13T05:30:07.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="获取当前View所在的ViewController">
-<meta name="twitter:description" content="获取当前view所在的viewController
-12345678910- (UIViewController*)viewController&amp;#123;    for (UIView* next = [self superview]; next; next = next.superview) &amp;#123;        UIResponder* nextResponder = [next ne">
+<meta name="twitter:title" content="获取点击UITableViewCell中的UIButton所在的行">
+<meta name="twitter:description" content="iOS开发中最经常用到的控件就是UITableView，几乎大部分的需求都可以通过UITableView来实现。虽然UITableViewCell有自己的点击方法
+1- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+但是我们也经常需要在UITableViewCel">
+<meta name="twitter:image" content="http://yoursite.com/2017/06/13/获取点击UITableViewCell中的UIButton所在的行/cellBtnClicked.gif">
 
 
 
@@ -127,13 +132,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/04/20/获取当前View所在的ViewController/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/06/13/获取点击UITableViewCell中的UIButton所在的行/"/>
 
 
 
 
 
-  <title> 获取当前View所在的ViewController | zhangzr's blog </title>
+  <title> 获取点击UITableViewCell中的UIButton所在的行 | zhangzr's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -302,7 +307,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/20/获取当前View所在的ViewController/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/13/获取点击UITableViewCell中的UIButton所在的行/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhangzr">
@@ -323,7 +328,7 @@
             
             
               
-                获取当前View所在的ViewController
+                获取点击UITableViewCell中的UIButton所在的行
               
             
           </h1>
@@ -338,8 +343,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-20T14:57:59+08:00">
-                2017-04-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-13T11:10:58+08:00">
+                2017-06-13
               </time>
             
 
@@ -374,8 +379,25 @@
       
 
       
-        <p>获取当前view所在的viewController</p>
-<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (UIViewController*)viewController</div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span> (UIView* <span class="keyword">next</span> = [<span class="keyword">self</span> superview]; <span class="keyword">next</span>; <span class="keyword">next</span> = <span class="keyword">next</span>.superview) &#123;</div><div class="line">        UIResponder* nextResponder = [<span class="keyword">next</span> nextResponder];</div><div class="line">        <span class="keyword">if</span> ([nextResponder <span class="symbol">isKindOfClass:</span>[UIViewController <span class="class"><span class="keyword">class</span>]]) &#123;</span></div><div class="line">            <span class="keyword">return</span> (UIViewController*)nextResponder;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <p>iOS开发中最经常用到的控件就是<code>UITableView</code>，几乎大部分的需求都可以通过<code>UITableView</code>来实现。虽然<code>UITableViewCell</code>有自己的点击方法</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>tableView:<span class="params">(UITableView *)</span>tableView didSelectRowAtIndexPath:<span class="params">(NSIndexPath *)</span>indexPath;</div></pre></td></tr></table></figure>
+<p>但是我们也经常需要在<code>UITableViewCell</code>中添加一些<code>UIButton</code>来实现需求。因为<code>UITableView</code>会使用复用机制来节省内存的使用，所以如果单纯的给<code>cell</code>中的按钮添加点击事件往往会照成获取行错误的问题。</p>
+<p>解决这个问题我们可以使用</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">CGPoint</span>)convertPoint:(<span class="built_in">CGPoint</span>)point toView:(<span class="keyword">nullable</span> <span class="built_in">UIView</span> *)view;</div></pre></td></tr></table></figure>
+<p>这个方法进行点击位置坐标的转换，然后通过位置坐标，使用</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">nullable</span> <span class="built_in">NSIndexPath</span> *)indexPathForRowAtPoint:(<span class="built_in">CGPoint</span>)point;</div></pre></td></tr></table></figure>
+<p>这个方法来获取对应的行。</p>
+<p>具体的使用就是这样：</p>
+<ul>
+<li>cell的创建部分：</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">UITableViewCell</span> *)tableView:(<span class="built_in">UITableView</span> *)tableView cellForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath</div><div class="line">&#123;</div><div class="line">    <span class="keyword">static</span> <span class="built_in">NSString</span> *cellId = <span class="string">@"myCellId"</span>;</div><div class="line">    </div><div class="line">    <span class="built_in">UITableViewCell</span> *cell = [tableView dequeueReusableCellWithIdentifier:cellId];</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(!cell)</div><div class="line">    &#123;</div><div class="line">        cell = [[<span class="built_in">UITableViewCell</span> alloc] initWithStyle:<span class="built_in">UITableViewCellStyleDefault</span> reuseIdentifier:cellId];</div><div class="line">        </div><div class="line">        </div><div class="line">        <span class="built_in">UILabel</span> *myTextLabel = [[<span class="built_in">UILabel</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">10</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">50</span>)];</div><div class="line">        myTextLabel.tag = <span class="number">100</span>;</div><div class="line">        myTextLabel.textColor = [<span class="built_in">UIColor</span> blackColor];</div><div class="line">        </div><div class="line">        <span class="built_in">UIButton</span> *myButton = [[<span class="built_in">UIButton</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="keyword">self</span>.view.bounds.size.width<span class="number">-100</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">50</span>)];</div><div class="line">        myButton.tag = <span class="number">200</span>;</div><div class="line">        [myButton setTitleColor:[<span class="built_in">UIColor</span> lightGrayColor] forState:<span class="built_in">UIControlStateNormal</span>];</div><div class="line">        [myButton addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(myButtonClicked:) forControlEvents:<span class="built_in">UIControlEventTouchUpInside</span>];</div><div class="line">        </div><div class="line">        </div><div class="line">        </div><div class="line">        [cell.contentView addSubview:myTextLabel];</div><div class="line">        [cell.contentView addSubview:myButton];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">//根据tag获取控件</span></div><div class="line">    <span class="built_in">UILabel</span> *myTextLabel = (<span class="built_in">UILabel</span> *)[cell.contentView viewWithTag:<span class="number">100</span>];</div><div class="line">    <span class="built_in">UIButton</span> *myButton = (<span class="built_in">UIButton</span> *)[cell.contentView viewWithTag:<span class="number">200</span>];</div><div class="line">    </div><div class="line">    myTextLabel.text = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"这是第%ld行"</span>,indexPath.row];</div><div class="line">    [myButton setTitle:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%ld行按钮"</span>,indexPath.row] forState:<span class="built_in">UIControlStateNormal</span>];</div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="keyword">return</span> cell;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>点击的响应部分</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)myButtonClicked:(<span class="built_in">UIButton</span> *)sender</div><div class="line">&#123;</div><div class="line">    <span class="comment">//获取屏幕上点击按钮位置在tableview中的位置</span></div><div class="line">    <span class="built_in">CGPoint</span> buttonPosition = [sender convertPoint:<span class="built_in">CGPointZero</span> toView:<span class="keyword">self</span>.mainTableView];</div><div class="line">    <span class="comment">//根据坐标获取tableview的index</span></div><div class="line">    <span class="built_in">NSIndexPath</span> *indexPath = [<span class="keyword">self</span>.mainTableView indexPathForRowAtPoint:buttonPosition];</div><div class="line">    <span class="comment">//如果indexPath不为空</span></div><div class="line">    <span class="keyword">if</span>(indexPath)</div><div class="line">    &#123;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实现的效果：</p>
+<p><center><img src="/2017/06/13/获取点击UITableViewCell中的UIButton所在的行/cellBtnClicked.gif" alt="image"> </center></p>
 
       
     </div>
@@ -412,8 +434,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/14/使用CAGradientLayer制作渐变折线图/" rel="next" title="使用CAGradientLayer制作渐变折线图">
-                <i class="fa fa-chevron-left"></i> 使用CAGradientLayer制作渐变折线图
+              <a href="/2017/06/04/斯坦福大学iOS公开课笔记（8）-代理、block、动画/" rel="next" title="斯坦福大学iOS公开课笔记（8）--代理、block、动画">
+                <i class="fa fa-chevron-left"></i> 斯坦福大学iOS公开课笔记（8）--代理、block、动画
               </a>
             
           </div>
@@ -421,10 +443,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/04/24/使用UIBezierPath绘制波浪/" rel="prev" title="使用UIBezierPath绘制波浪">
-                使用UIBezierPath绘制波浪 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
