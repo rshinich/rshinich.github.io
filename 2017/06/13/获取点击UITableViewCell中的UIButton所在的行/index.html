@@ -98,7 +98,7 @@
 1- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 但是我们也经常需要在UITableViewCel">
 <meta property="og:image" content="http://yoursite.com/2017/06/13/获取点击UITableViewCell中的UIButton所在的行/cellBtnClicked.gif">
-<meta property="og:updated_time" content="2017-06-13T05:30:07.000Z">
+<meta property="og:updated_time" content="2017-06-14T05:33:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="获取点击UITableViewCell中的UIButton所在的行">
 <meta name="twitter:description" content="iOS开发中最经常用到的控件就是UITableView，几乎大部分的需求都可以通过UITableView来实现。虽然UITableViewCell有自己的点击方法
@@ -398,6 +398,8 @@
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)myButtonClicked:(<span class="built_in">UIButton</span> *)sender</div><div class="line">&#123;</div><div class="line">    <span class="comment">//获取屏幕上点击按钮位置在tableview中的位置</span></div><div class="line">    <span class="built_in">CGPoint</span> buttonPosition = [sender convertPoint:<span class="built_in">CGPointZero</span> toView:<span class="keyword">self</span>.mainTableView];</div><div class="line">    <span class="comment">//根据坐标获取tableview的index</span></div><div class="line">    <span class="built_in">NSIndexPath</span> *indexPath = [<span class="keyword">self</span>.mainTableView indexPathForRowAtPoint:buttonPosition];</div><div class="line">    <span class="comment">//如果indexPath不为空</span></div><div class="line">    <span class="keyword">if</span>(indexPath)</div><div class="line">    &#123;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>实现的效果：</p>
 <p><center><img src="/2017/06/13/获取点击UITableViewCell中的UIButton所在的行/cellBtnClicked.gif" alt="image"> </center></p>
+<hr>
+<p>Demo可以在<a href="https://github.com/rshinich/TableViewCellBtnClicked" target="_blank" rel="external">这里</a>下载。</p>
 
       
     </div>
@@ -443,6 +445,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/" rel="prev" title="斯坦福大学iOS公开课学习笔记（9）-AutoLayout">
+                斯坦福大学iOS公开课学习笔记（9）-AutoLayout <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -505,7 +511,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
