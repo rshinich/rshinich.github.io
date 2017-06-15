@@ -88,15 +88,15 @@
 
 
 <meta name="description" content="这一节课前边一小部分用来完成上一次的Demo，后边的部分主要用来讲AutoLayout，然后对之前的Atttibutor项目的代码进行了AutoLayout的处理。
-完成 Dropit上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部分功能进行一些优化。
-除此之外，还会对方块增加一个吸附行为，以此来实现">
+多图预警！！！这节课中关于AutoLayout的部分截图会有点多。。
+完成 Dropit上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部">
 <meta property="og:type" content="article">
 <meta property="og:title" content="斯坦福大学iOS公开课学习笔记（9）-AutoLayout">
 <meta property="og:url" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
 <meta property="og:description" content="这一节课前边一小部分用来完成上一次的Demo，后边的部分主要用来讲AutoLayout，然后对之前的Atttibutor项目的代码进行了AutoLayout的处理。
-完成 Dropit上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部分功能进行一些优化。
-除此之外，还会对方块增加一个吸附行为，以此来实现">
+多图预警！！！这节课中关于AutoLayout的部分截图会有点多。。
+完成 Dropit上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部">
 <meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/boomAnimation.gif">
 <meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/dragWithoutLine.gif">
 <meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/dragWithLine.gif">
@@ -116,12 +116,22 @@
 <meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/fixYellowLineWaring.png">
 <meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/BadThingAtCenterH.png">
 <meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/BadThingAtCenterV.png">
-<meta property="og:updated_time" content="2017-06-14T10:01:02.000Z">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/controlDarg.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/controlDarg2.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/controlDargH.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/controlDargV.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/AttributeWithoutAutolayoutH.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/AttributeWithoutAutolayoutV.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/AttributeWithoutAutolayoutBlueLine.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/bottomBtnSetEqualWidth.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/perfectAttrubite.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/warning.png">
+<meta property="og:updated_time" content="2017-06-15T08:09:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="斯坦福大学iOS公开课学习笔记（9）-AutoLayout">
 <meta name="twitter:description" content="这一节课前边一小部分用来完成上一次的Demo，后边的部分主要用来讲AutoLayout，然后对之前的Atttibutor项目的代码进行了AutoLayout的处理。
-完成 Dropit上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部分功能进行一些优化。
-除此之外，还会对方块增加一个吸附行为，以此来实现">
+多图预警！！！这节课中关于AutoLayout的部分截图会有点多。。
+完成 Dropit上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部">
 <meta name="twitter:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/boomAnimation.gif">
 
 
@@ -398,6 +408,7 @@
 
       
         <p>这一节课前边一小部分用来完成上一次的Demo，后边的部分主要用来讲AutoLayout，然后对之前的<code>Atttibutor</code>项目的代码进行了AutoLayout的处理。</p>
+<p>多图预警！！！这节课中关于AutoLayout的部分截图会有点多。。</p>
 <h2 id="完成-Dropit"><a href="#完成-Dropit" class="headerlink" title="完成 Dropit"></a>完成 Dropit</h2><p>上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部分功能进行一些优化。</p>
 <p>除此之外，还会对方块增加一个吸附行为，以此来实现可以拖拽方块放置到我想要放置的位置上。</p>
 <h3 id="添加禁止旋转的属性"><a href="#添加禁止旋转的属性" class="headerlink" title="添加禁止旋转的属性"></a>添加禁止旋转的属性</h3><p>首先我们先对旋转进行一个控制，在之前的<code>DropitBehavior</code>中继续添加行为，添加一个<code>UIDynamicItemBehavior</code>并且同样的使用懒加载实现它。</p>
@@ -443,7 +454,7 @@
 <ul>
 <li>1.使用蓝色辅助线，并且根据系统建议来设置约束。</li>
 <li>2.使用底部按钮</li>
-<li>3.</li>
+<li>3.使用control拖拽</li>
 </ul>
 <h3 id="使用蓝色辅助线"><a href="#使用蓝色辅助线" class="headerlink" title="使用蓝色辅助线"></a>使用蓝色辅助线</h3><p>当我们在storyboard中添加控件的时候，会自动产生一些蓝色的辅助线，这些辅助线可以帮我们更好的选择控件应该摆放的位置，根据蓝色辅助线的位置确定好之后，再通过底部的 <strong>Reset to suggested constants</strong>方法就可以建立AutoLayout的约束了。</p>
 <p>根据蓝色辅助线摆放位置：</p>
@@ -485,10 +496,42 @@
 
 <center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/BadThingAtCenterV.png" alt="logo"></center>
 
+<h3 id="使用control拖拽"><a href="#使用control拖拽" class="headerlink" title="使用control拖拽"></a>使用control拖拽</h3><p>这种方法是使用control在两个目标对象之间进行拖拽，添加约束关系。和建立storyboard与代码之间的联系一样，只需要按住control键，然后将Bad Thing的线拖到Thing 2上。就可以建立一个Bad Thing与Thing 2之间的约束。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/controlDarg.png" alt="logo"></center>
+
+<center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/controlDarg2.png" alt="logo"></center>
+
+<p>这样建立好约束之后，Bad Thing就会始终存在于Thing 2的上边。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/controlDargH.png" alt="logo"></center>
+
+<center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/controlDargV.png" alt="logo"></center>
 
 
+<h2 id="AutoLayout-Demo"><a href="#AutoLayout-Demo" class="headerlink" title="AutoLayout Demo"></a>AutoLayout Demo</h2><p>AutoLayout的应用是对之前的Attribute进行处理，目的是希望在横屏之后也会有一个很好的表现。Attribute相关的课程在<a href="http://zhangzr.cn/2017/05/20/%E6%96%AF%E5%9D%A6%E7%A6%8F%E5%A4%A7%E5%AD%A6iOS%E5%85%AC%E5%BC%80%E8%AF%BE%E7%AC%94%E8%AE%B0%EF%BC%885%EF%BC%89-ViewController%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E9%80%9A%E7%9F%A5/" target="_blank" rel="external">这里</a>。</p>
+<p>之前我们完成的Attribute是这样的。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/AttributeWithoutAutolayoutH.png" alt="logo"></center>
 
+<p>在横屏之后他是这样的</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/AttributeWithoutAutolayoutV.png" alt="logo"></center>
 
+<p>这肯定不是我们想要的结果。甚至我们都没办法点击按钮了。所以我们要对他们进行一些修改。<br>那么我们使用之前提到的第一种设置autolayout的方法，因为之前我们是使用蓝色辅助线，所以直接点击 <strong>Reset to suggested constants</strong>按钮就可以了。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/AttributeWithoutAutolayoutBlueLine.png" alt="logo"></center>
+
+<p>设置之后运行一下看看，发现比刚刚好多了，除了紫色的部分太大了，其他的一切都还可以，至少不影响我的正常使用了。</p>
+<p>但是我们肯定不能就这样结束了，我们还需要对按钮进行一些调整，那么我们选中四个按钮，然后在底部按钮设置他们为相同宽度。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/bottomBtnSetEqualWidth.png" alt="logo"></center>
+
+<p>之后再运行，我们发现，完美了！一些都是想象中的样子，按钮也平分在了屏幕上。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/perfectAttrubite.png" alt="logo"></center>
+
+<p>但是这样就结束了吗？？当然不是了，不然让你学啥。仔细看控制台，我们会发现控制台跟以前不一样了，这里打印出了好多的错误。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课学习笔记（9）-AutoLayout/warning.png" alt="logo"></center>
+
+<p>这些错误仔细看就会发现，他说他没办法在运行时同时满足约束。</p>
+<p>再仔细看我们会发现在约束里，我们对按钮进行了硬编码，我们固定了他的宽度就是64，但是屏幕变宽的时候按钮的宽度就不是64了。所以解决这个方法我们讲约束为64的部分去掉。</p>
+<p>这时候在运行我们就会发现，不会再出现报错了。</p>
+<hr>
+<p>以上就是第九课的全部内容了。</p>
 
       
     </div>
@@ -648,7 +691,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#完成-Dropit"><span class="nav-number">1.</span> <span class="nav-text">完成 Dropit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加禁止旋转的属性"><span class="nav-number">1.1.</span> <span class="nav-text">添加禁止旋转的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加吸附手势"><span class="nav-number">1.2.</span> <span class="nav-text">添加吸附手势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AutoLayout"><span class="nav-number">2.</span> <span class="nav-text">AutoLayout</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用蓝色辅助线"><span class="nav-number">2.1.</span> <span class="nav-text">使用蓝色辅助线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用底部按钮"><span class="nav-number">2.2.</span> <span class="nav-text">使用底部按钮</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#完成-Dropit"><span class="nav-number">1.</span> <span class="nav-text">完成 Dropit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加禁止旋转的属性"><span class="nav-number">1.1.</span> <span class="nav-text">添加禁止旋转的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加吸附手势"><span class="nav-number">1.2.</span> <span class="nav-text">添加吸附手势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AutoLayout"><span class="nav-number">2.</span> <span class="nav-text">AutoLayout</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用蓝色辅助线"><span class="nav-number">2.1.</span> <span class="nav-text">使用蓝色辅助线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用底部按钮"><span class="nav-number">2.2.</span> <span class="nav-text">使用底部按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用control拖拽"><span class="nav-number">2.3.</span> <span class="nav-text">使用control拖拽</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AutoLayout-Demo"><span class="nav-number">3.</span> <span class="nav-text">AutoLayout Demo</span></a></li></ol></div>
             
 
           </div>
