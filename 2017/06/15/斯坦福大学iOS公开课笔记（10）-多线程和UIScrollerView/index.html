@@ -1,0 +1,863 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="这节课主要讲了多线程的基础知识，然后讲了UIScrollView，在最后通过一个下载网络图片并且支持放大缩小的Demo来加深对多线程的理解和UIScrollView的使用。
+多线程多线程就是将程序的执行路径分为不同的路径，可能在同一时间运行。通过这样的方法使程序有更好的响应能力。
+队列代码中的队列就和现实中的队列是一样的，就是排好队的一群人或者是一些准备做的事情。队列中是一群block。根据队列的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="斯坦福大学iOS公开课笔记（10） -多线程和UIScrollerView">
+<meta property="og:url" content="http://yoursite.com/2017/06/15/斯坦福大学iOS公开课笔记（10）-多线程和UIScrollerView/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="这节课主要讲了多线程的基础知识，然后讲了UIScrollView，在最后通过一个下载网络图片并且支持放大缩小的Demo来加深对多线程的理解和UIScrollView的使用。
+多线程多线程就是将程序的执行路径分为不同的路径，可能在同一时间运行。通过这样的方法使程序有更好的响应能力。
+队列代码中的队列就和现实中的队列是一样的，就是排好队的一群人或者是一些准备做的事情。队列中是一群block。根据队列的">
+<meta property="og:image" content="http://yoursite.com/2017/06/15/斯坦福大学iOS公开课笔记（10）-多线程和UIScrollerView/imaginarium_4.gif">
+<meta property="og:updated_time" content="2017-06-18T15:07:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="斯坦福大学iOS公开课笔记（10） -多线程和UIScrollerView">
+<meta name="twitter:description" content="这节课主要讲了多线程的基础知识，然后讲了UIScrollView，在最后通过一个下载网络图片并且支持放大缩小的Demo来加深对多线程的理解和UIScrollView的使用。
+多线程多线程就是将程序的执行路径分为不同的路径，可能在同一时间运行。通过这样的方法使程序有更好的响应能力。
+队列代码中的队列就和现实中的队列是一样的，就是排好队的一群人或者是一些准备做的事情。队列中是一群block。根据队列的">
+<meta name="twitter:image" content="http://yoursite.com/2017/06/15/斯坦福大学iOS公开课笔记（10）-多线程和UIScrollerView/imaginarium_4.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/15/斯坦福大学iOS公开课笔记（10）-多线程和UIScrollerView/"/>
+
+
+
+
+
+  <title> 斯坦福大学iOS公开课笔记（10） -多线程和UIScrollerView | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/15/斯坦福大学iOS公开课笔记（10）-多线程和UIScrollerView/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                斯坦福大学iOS公开课笔记（10） -多线程和UIScrollerView
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-15T22:04:33+08:00">
+                2017-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这节课主要讲了多线程的基础知识，然后讲了<code>UIScrollView</code>，在最后通过一个下载网络图片并且支持放大缩小的Demo来加深对多线程的理解和<code>UIScrollView</code>的使用。</p>
+<h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2><p>多线程就是将程序的执行路径分为不同的路径，可能在同一时间运行。通过这样的方法使程序有更好的响应能力。</p>
+<h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>代码中的队列就和现实中的队列是一样的，就是排好队的一群人或者是一些准备做的事情。队列中是一群block。根据队列的不同，当他们排到前面的时候，就会被取出来然后运行。</p>
+<p>队列包括两种，串行队列和并行队列。</p>
+<ul>
+<li>串行队列：一个一个的执行，只有当上一个任务执行完了之后，下一个任务才会执行。</li>
+<li>并行队列：同时执行，执行顺序上互相不发生影响。</li>
+</ul>
+<h3 id="主线程"><a href="#主线程" class="headerlink" title="主线程"></a>主线程</h3><p>在所有的线程中有一个线程是最重要的，就是主线程，主线程中一般会进行UI方面的处理，响应多点触控。<br>他特殊主要是因为：</p>
+<ul>
+<li>1.我们不希望主线程会发生阻塞。</li>
+<li>2.我们需要在主线程中进行UI中的大部分内容。</li>
+</ul>
+<p>另外主线程只有在“安静”的时候才会执行队列中的内容，“安静”是指用户没有对手机进行操作的时候。</p>
+<h3 id="子线程"><a href="#子线程" class="headerlink" title="子线程"></a>子线程</h3><p>除去主线程其他的线程都可以称之为子线程，在子线程中我们一般会运行一些比较耗时的工作，比如渲染、网络请求等等。</p>
+<h3 id="获取主队列"><a href="#获取主队列" class="headerlink" title="获取主队列"></a>获取主队列</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//NSThread</span></div><div class="line"><span class="built_in">NSOperationQueue</span> *mainQ = [<span class="built_in">NSOperationQueue</span> mainQueue];     <span class="comment">//封装好的类方法</span></div><div class="line"></div><div class="line"><span class="comment">//GCD</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> mainQ = dispatch_get_main_queue();     <span class="comment">//C层，更底层的方法</span></div></pre></td></tr></table></figure>
+<h3 id="创建一个子队列"><a href="#创建一个子队列" class="headerlink" title="创建一个子队列"></a>创建一个子队列</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">dispatch_queue_t</span> otherQ = dispatch_queue_create(<span class="string">"name"</span>,<span class="literal">NULL</span>); <span class="comment">//name是一个非NSString类型的const char*</span></div></pre></td></tr></table></figure>
+<p>第一个参数<code>&quot;name&quot;</code>代表这个队列的名字，第二个参数<code>NULL</code>用来区分并行还是串行，<code>NULL</code>表示的是串行队列。</p>
+<h3 id="获取主队列并做一些东西事情"><a href="#获取主队列并做一些东西事情" class="headerlink" title="获取主队列并做一些东西事情"></a>获取主队列并做一些东西事情</h3><figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//NSThread</span></div><div class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">performSelectorOnMainThread</span><span class="selector-pseudo">:(SEL)aSelector</span> <span class="selector-tag">withObject</span><span class="selector-pseudo">:(nullable</span> <span class="selector-tag">id</span>)<span class="selector-tag">arg</span> <span class="selector-tag">waitUntilDone</span><span class="selector-pseudo">:(BOOL)wait</span>;</div><div class="line"></div><div class="line"><span class="comment">//GCD</span></div><div class="line"> <span class="selector-tag">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;                   </div><div class="line">                        <span class="selector-attr">[call aMethod]</span>;</div><div class="line">                    &#125;);</div></pre></td></tr></table></figure>
+<p>多线程部分的更多应用会在后边的demo里使用，所以这里就不多做介绍了。</p>
+<h2 id="UIScrollView"><a href="#UIScrollView" class="headerlink" title="UIScrollView"></a>UIScrollView</h2><p><code>UIScrollview</code>是一种滚动视图，他可以横屏滚动，也可以竖屏滚动，还可以进行缩放，而且可以在这之中添加更多<code>UIView</code>。</p>
+<h3 id="滑动"><a href="#滑动" class="headerlink" title="滑动"></a>滑动</h3><p><code>UIScrollView</code>有几个特殊的属性用来帮助我们更好的使用它。</p>
+<ul>
+<li>滚动区域大小：<code>contentSize</code>，这个属性表示整个滚动的区域有多大。</li>
+<li>当前显示区域：<code>contentOffset</code>，这个属性可以看到当前屏幕中左上角的位置在整个滚动区域的坐标。</li>
+<li>用户所示区域的边界：<code>bounds</code>，这个就是滚动视图的边界。</li>
+</ul>
+<p>另外还有几个比较特殊的方法。</p>
+<ul>
+<li><p>获取当前显示区域：</p>
+  <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">CGRect visibleRect</span> = [scrollView converRect:scrollView.bounds toView: subView];</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>使用代码完成滚动：在视图中指定一个区域，让他移动过去</p>
+  <figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>scrollRectToVisible:<span class="params">(CGRect)</span>aRect animated:<span class="params">(BOOL)</span>animated;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h3><p>缩放也有几个特殊的属性。</p>
+<ul>
+<li>设置最小缩放比例：<code>scrollView.minimumZoomScale = 0.5;</code></li>
+<li>设置最大缩放比例：<code>scrollView.maximumZoomScale = 2.0;</code></li>
+</ul>
+<p>另外也有一些代理方法：</p>
+<ul>
+<li><p>获取那个界面在进行缩放</p>
+  <figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">    (UIView *)viewForZoomingInScrollView:(UIScrollView *)sender;    </div><div class="line">    ```   </div><div class="line">    </div><div class="line">- 放大某一个指定区域：</div></pre></td></tr></table></figure>
+<ul>
+<li>(void)zoomToRect:(CGRect)rect animated:(BOOL)animated;<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">##Demo</div><div class="line"></div><div class="line">这个Demo主要是演示使用多线程下载网络图片，并且显示在UIScrollView中，实现缩放的功能。</div><div class="line"></div><div class="line"> 首先先创建一个新的`UIViewController`，用来下载和显示图片，给他添加一个公有属性`imageURL`作为接收的图片地址，和私有的属性`imageView`和`image`用来显示图片和获取图片。</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>@interface ImageViewController : UIViewController</p>
+<p>@property (nonatomic ,strong) NSURL         *imageURL;</p>
+<p>@end</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"> </div></pre></td></tr></table></figure>
+<p>@interface ImageViewController ()</p>
+<p>@property (nonatomic ,strong) UIImageView   <em>imageView;<br>@property (nonatomic ,strong) UIImage       </em>image;</p>
+<p>@end</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">并且懒加载实现`imageView`，重写他们的getter和setter方法。</div></pre></td></tr></table></figure>
+</li>
+<li><p>(void)setImageURL:(NSURL *)imageURL<br>{<br>  _imageURL = imageURL;<br>  self.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:_imageURL]];      //会阻塞主线程<br>}</p>
+</li>
+<li><p>(UIImageView *)imageView<br>{<br>  if(!_imageView)<br>  {</p>
+<pre><code>_imageView = [[UIImageView alloc] init];
+</code></pre><p>  }<br>  return _imageView;<br>}</p>
+</li>
+</ul>
+<ul>
+<li><p>(UIImage *)image<br>{<br>  return self.imageView.image;<br>}</p>
+</li>
+<li><p>(void)setImage:(UIImage *)image<br>{<br>  self.imageView.image = image;<br>  [self.imageView sizeToFit];<br>}</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">接下来添加segue，在跳转的时候传过去图片的地址，就可以了。</div></pre></td></tr></table></figure>
+</li>
+<li><p>(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender<br>{<br>  if([segue.destinationViewController  isKindOfClass:[ImageViewController class]])<br>  {</p>
+<pre><code>ImageViewController *ivc = (ImageViewController *)segue.destinationViewController;
+if([segue.identifier isEqualToString:@&quot;doggie&quot;])
+{
+    ivc.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@&quot;http://pic.sc.chinaz.com/files/pic/pic9/201508/apic14052.jpg&quot;]];
+}
+</code></pre></li>
+</ul>
+<pre><code>    ivc.title = segue.identifier;
+}
+</code></pre><p>}<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">center</span>&gt;</span></span>![<span class="string">logo</span>](<span class="link">斯坦福大学iOS公开课笔记（10）-多线程和UIScrollerView/imaginarium_1.gif</span>)<span class="xml"><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span></div><div class="line"></div><div class="line">这里第一张我特意选了一张较小的图，发现除了图片太宽没办法玩去能显示外，其他的还是可以的。但是第二张我特意选择了一张很大的图片，可以看到中间有很长时间的卡顿，因为下载图片的时候是在主线程用了很长时间阻塞了线程，所以一直没办法跳到下一个页面，而且同样的这一张图片显示的区域很小只能看到一点点。</div><div class="line"></div><div class="line"></div><div class="line"><span class="section">### 解决图片太大的问题</span></div><div class="line"></div><div class="line">ok，那我们先来解决一下图片太大的问题，我们先给我们的页面添加一个<span class="code">`UIScrollView`</span>，并且需要在图片的setter中添加一个改变他的<span class="code">`contentSize`</span>的处理，<span class="strong">**注意！一定要记得设置`contentSize`**</span>。不仅在设置图片的时候，在scrollView的setter方法里同样也要设置，并且我们也给他添加一个缩放的功能。<span class="strong">**注意！添加缩放功能一定要实现代理方法**</span>。</div></pre></td></tr></table></figure></p>
+<ul>
+<li><p>(void)setImage:(UIImage *)image<br>{<br>  self.imageView.image = image;<br>  [self.imageView sizeToFit];</p>
+<p>  self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;<br>}</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure>
+</li>
+<li><p>(void)setScrollView:(UIScrollView *)scrollView<br>{<br>  _scrollView = scrollView;</p>
+<p>  _scrollView.minimumZoomScale = 0.2; //设置最小缩放比例<br>  _scrollView.maximumZoomScale = 2.0; //设置最大缩放比例<br>  _scrollView.delegate = self;</p>
+<p>  self.scrollView.contentSize = self.image ? self.image.size : CGSizeZero;</p>
+</li>
+</ul>
+<p>}</p>
+<ul>
+<li>(UIView <em>)viewForZoomingInScrollView:(UIScrollView </em>)scrollView<br>{<br>  return self.imageView;<br>}</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">center</span>&gt;</span></span>![<span class="string">logo</span>](<span class="link">斯坦福大学iOS公开课笔记（10）-多线程和UIScrollerView/imaginarium_2.gif</span>)<span class="xml"><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span></div><div class="line"></div><div class="line">这样就解决了图片太大的问题。</div><div class="line"></div><div class="line"><span class="section">### 解决卡顿的问题</span></div><div class="line"></div><div class="line">解决卡顿的问题我们只需要把费时间的请求图片的问题放置到另外的子线程上来进行就可以了。</div></pre></td></tr></table></figure>
+<ul>
+<li><p>(void)setImageURL:(NSURL *)imageURL<br>{<br>  _imageURL = imageURL;<br>//    self.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:_imageURL]];      //会阻塞主线程</p>
+<p>  [self startDownloadingImage];<br>}</p>
+</li>
+<li><p>(void)startDownloadingImage<br>{<br>  self.image = nil;   //清空当前图片信息<br>  if(self.imageURL)<br>  {</p>
+<pre><code>NSURLRequest *request = [NSURLRequest requestWithURL:self.imageURL];
+
+//ephemeralSessionConfiguration 临时会话配置，下载什么内容，下完就完了。
+//defaultSessionConfiguration 下载多个文件的时候或者让这个会话保持活动状态执行多项内容。
+//backgroundSessionConfigurationWithIdentifier: 后台下载模式，表示即使用户切换或者停止应用也会继续下载,需要使用代理
+NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+NSURLSessionDownloadTask *task = [session downloadTaskWithRequest:request
+                                                completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+
+                                                    //如果没有错误
+                                                    if(!error)
+                                                    {
+                                                        //防止图片地址被修改
+                                                        if([request.URL isEqual:self.imageURL])
+                                                        {
+                                                            UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:location]];
+</code></pre></li>
+</ul>
+<pre><code>dispatch_async(dispatch_get_main_queue(), ^{
+    //需要再主队列进行
+    self.image = image;
+
+});
+
+//另外一种方法，在主线程上设置
+</code></pre><p>//                                                                    [self performSelectorOnMainThread:@selector(setImage:) withObject:image waitUntilDone:NO];<br>                                                                }<br>                                                            }<br>                                                            }];<br>        [task resume];</p>
+<pre><code>}
+</code></pre><p>}<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">center</span>&gt;</span></span>![<span class="string">logo</span>](<span class="link">斯坦福大学iOS公开课笔记（10）-多线程和UIScrollerView/imaginarium_3.gif</span>)<span class="xml"><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span></div><div class="line"></div><div class="line">这样修改以后，我们可以明显的看到所有的按钮点击反应都非常的迅速，即使图片没有下载下来但是也不会卡顿导致我的按钮无法点击。但是还有一个问题当我们点击第二个图片的时候我们发现图片一直没有出来导致页面一片空白，用户根本不知道发生了什么。所以我们需要添加一个指示器。</div><div class="line"></div><div class="line"><span class="section">### 添加指示器</span></div><div class="line"></div><div class="line">指示器我们可以直接拖入一个<span class="code">`UIActivityIndicatorView`</span>到storyboard中，并且设置他的属性如下</div><div class="line"></div><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">center</span>&gt;</span></span>![<span class="string">logo</span>](<span class="link">斯坦福大学iOS公开课笔记（10）-多线程和UIScrollerView/setSpinner.png</span>)<span class="xml"><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span></div><div class="line"></div><div class="line">然后与代码相关联，并且在开始下载的部分和设置图片的部分分别开始和结束动画</div></pre></td></tr></table></figure></p>
+<pre><code>[self.spinner startAnimating];
+</code></pre><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure>
+<pre><code>[self.spinner stopAnimating];
+</code></pre><p>```</p>
+<center><img src="/2017/06/15/斯坦福大学iOS公开课笔记（10）-多线程和UIScrollerView/imaginarium_4.gif" alt="logo"></center>
+
+
+<hr>
+<p> 以上就是这节课中的内容。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/15/iOS轮播图片的简单实现/" rel="next" title="iOS轮播图片的简单实现">
+                <i class="fa fa-chevron-left"></i> iOS轮播图片的简单实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程"><span class="nav-number">1.</span> <span class="nav-text">多线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#队列"><span class="nav-number">1.1.</span> <span class="nav-text">队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主线程"><span class="nav-number">1.2.</span> <span class="nav-text">主线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#子线程"><span class="nav-number">1.3.</span> <span class="nav-text">子线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取主队列"><span class="nav-number">1.4.</span> <span class="nav-text">获取主队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个子队列"><span class="nav-number">1.5.</span> <span class="nav-text">创建一个子队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取主队列并做一些东西事情"><span class="nav-number">1.6.</span> <span class="nav-text">获取主队列并做一些东西事情</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIScrollView"><span class="nav-number">2.</span> <span class="nav-text">UIScrollView</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#滑动"><span class="nav-number">2.1.</span> <span class="nav-text">滑动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缩放"><span class="nav-number">2.2.</span> <span class="nav-text">缩放</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
