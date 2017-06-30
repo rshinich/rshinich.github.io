@@ -1,0 +1,878 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="这一节课前边一小部分用来完成上一次的Demo，后边的部分主要用来讲AutoLayout，然后对之前的Atttibutor项目的代码进行了AutoLayout的处理。
+多图预警！！！这节课中关于AutoLayout的部分截图会有点多。。
+完成 Dropit上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部">
+<meta property="og:type" content="article">
+<meta property="og:title" content="斯坦福大学iOS公开课学习笔记（9）-AutoLayout">
+<meta property="og:url" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="这一节课前边一小部分用来完成上一次的Demo，后边的部分主要用来讲AutoLayout，然后对之前的Atttibutor项目的代码进行了AutoLayout的处理。
+多图预警！！！这节课中关于AutoLayout的部分截图会有点多。。
+完成 Dropit上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/boomAnimation.gif">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/dragWithoutLine.gif">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/dragWithLine.gif">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/landscape.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/verticalScreen.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/blueGuideLine1.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/blueGuideLine2.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/blueGuideLineH.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/blueGuideLineV.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingH.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingV.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingLayoytH.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingLayoytV.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/bottomBtnA.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/bottomBtnB.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/yellowLineWaring.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/fixYellowLineWaring.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingAtCenterH.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingAtCenterV.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/controlDarg.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/controlDarg2.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/controlDargH.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/controlDargV.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/AttributeWithoutAutolayoutH.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/AttributeWithoutAutolayoutV.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/AttributeWithoutAutolayoutBlueLine.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/bottomBtnSetEqualWidth.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/perfectAttrubite.png">
+<meta property="og:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/warning.png">
+<meta property="og:updated_time" content="2017-06-15T08:09:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="斯坦福大学iOS公开课学习笔记（9）-AutoLayout">
+<meta name="twitter:description" content="这一节课前边一小部分用来完成上一次的Demo，后边的部分主要用来讲AutoLayout，然后对之前的Atttibutor项目的代码进行了AutoLayout的处理。
+多图预警！！！这节课中关于AutoLayout的部分截图会有点多。。
+完成 Dropit上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部">
+<meta name="twitter:image" content="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/boomAnimation.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/"/>
+
+
+
+
+
+  <title> 斯坦福大学iOS公开课学习笔记（9）-AutoLayout | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                斯坦福大学iOS公开课学习笔记（9）-AutoLayout
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-14T13:22:46+08:00">
+                2017-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这一节课前边一小部分用来完成上一次的Demo，后边的部分主要用来讲AutoLayout，然后对之前的<code>Atttibutor</code>项目的代码进行了AutoLayout的处理。</p>
+<p>多图预警！！！这节课中关于AutoLayout的部分截图会有点多。。</p>
+<h2 id="完成-Dropit"><a href="#完成-Dropit" class="headerlink" title="完成 Dropit"></a>完成 Dropit</h2><p>上一节课中的Dropit并没有完全完成，因为方块可以自由旋转，所以导致方块搭起来不稳，这个问题也会导致最后的爆炸方法没办法出发。所以这节课会对这部分功能进行一些优化。</p>
+<p>除此之外，还会对方块增加一个吸附行为，以此来实现可以拖拽方块放置到我想要放置的位置上。</p>
+<h3 id="添加禁止旋转的属性"><a href="#添加禁止旋转的属性" class="headerlink" title="添加禁止旋转的属性"></a>添加禁止旋转的属性</h3><p>首先我们先对旋转进行一个控制，在之前的<code>DropitBehavior</code>中继续添加行为，添加一个<code>UIDynamicItemBehavior</code>并且同样的使用懒加载实现它。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIDynamicItemBehavior</span> *animationOptions;</div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">UIDynamicItemBehavior</span> *)animationOptions</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>(!_animationOptions)</div><div class="line">    &#123;</div><div class="line">        _animationOptions = [[<span class="built_in">UIDynamicItemBehavior</span> alloc] init];</div><div class="line">        _animationOptions.allowsRotation = <span class="literal">NO</span>;  <span class="comment">//设置禁止旋转</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> _animationOptions;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样就可以让方块不会到处旋转，而且还可以顺利的出发爆炸的方法。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/boomAnimation.gif" alt="logo"></center>
+
+
+<h3 id="添加吸附手势"><a href="#添加吸附手势" class="headerlink" title="添加吸附手势"></a>添加吸附手势</h3><p>添加吸附手势可以让我在方块掉落的过程中“抓住”它，并且可以控制他掉落到我想要落下的位置。</p>
+<p>首先我们需要添加一个吸附行为<code>UIAttachmentBehavior</code>。然后我们需要知道哪一个方块是我正要进行操作的方块，所以我们需要在<code>drop</code>方法中获取正在掉落的方块。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIAttachmentBehavior</span>  *attachment;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIView</span> *droppingView;</div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)drop</div><div class="line">&#123;</div><div class="line">    <span class="built_in">CGRect</span> frame;</div><div class="line">    frame.origin = <span class="built_in">CGPointZero</span>;</div><div class="line">    frame.size = DROP_SIZE;</div><div class="line">    </div><div class="line">    <span class="keyword">int</span> x = (arc4random()%(<span class="keyword">int</span>)<span class="keyword">self</span>.gameView.bounds.size.width) / DROP_SIZE.width;</div><div class="line">    frame.origin.x = x * DROP_SIZE.width;</div><div class="line">    </div><div class="line">    <span class="built_in">UIView</span> *dropView = [[<span class="built_in">UIView</span> alloc] initWithFrame:frame];</div><div class="line">    dropView.backgroundColor = [<span class="keyword">self</span> randColor];</div><div class="line">    [<span class="keyword">self</span>.gameView addSubview:dropView];</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.droppingView = dropView;<span class="comment">//获取正在掉落的view</span></div><div class="line">    </div><div class="line">    [<span class="keyword">self</span>.dropitBehavior addItem:dropView];</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样当我们进行操作的时候就会获取正在掉落的方块，如果同时有多个方块的时候我们会获取到最后一个方块。</p>
+<p>接下来我需要拖动他，所以我需要实现一个拖动手势。</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">- (IBAction)pan:(UIPanGestureRecognizer *)sender</div><div class="line">&#123;</div><div class="line">    //获取手指的位置</div><div class="line">    CGPoint gesturePoint = [sender locationInView:<span class="literal">self</span>.gameView];</div><div class="line">    </div><div class="line">    if(sender.<span class="keyword">state</span> == UIGestureRecognizerStateBegan)</div><div class="line">    &#123;</div><div class="line">        [<span class="literal">self</span> attachDroppingViewToPoint:gesturePoint];</div><div class="line">    &#125;</div><div class="line">    else if(sender.<span class="keyword">state</span> == UIGestureRecognizerStateChanged)</div><div class="line">    &#123;</div><div class="line">        <span class="literal">self</span>.attachment.<span class="built_in">anchor</span>Point = gesturePoint;</div><div class="line">    &#125;</div><div class="line">    else if(sender.<span class="keyword">state</span> == UIGestureRecognizerStateEnded)</div><div class="line">    &#123;</div><div class="line">        [<span class="literal">self</span>.animator removeBehavior:<span class="literal">self</span>.attachment];        </div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">- (void)attachDroppingViewToPoint:(CGPoint)<span class="built_in">anchor</span>Point</div><div class="line">&#123;</div><div class="line">    if(<span class="literal">self</span>.droppingView)</div><div class="line">    &#123;</div><div class="line">        <span class="literal">self</span>.attachment  = [[UIAttachmentBehavior alloc] initWithItem:<span class="literal">self</span>.droppingView attachedToAnchor:<span class="built_in">anchor</span>Point];        </div><div class="line">        <span class="literal">self</span>.droppingView = nil;</div><div class="line">        [<span class="literal">self</span>.animator addBehavior:<span class="literal">self</span>.attachment];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样我们就实现了吸附的功能，并且可以使用拖拽手势来改变下落的位子。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/dragWithoutLine.gif" alt="logo"></center>
+
+<p>接下来我们需要在我们的手指点击的位置和方块的位置之间添加一条线，让我们控制方块的动作更加明显。那么我们怎么来绘制这条线呢，我们需要添加一条<code>UIBezierPath</code>来绘制这个部分。所以我们新建一个<code>view</code>并且实现画线的功能。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> <span class="attribute">BezierView </span>: UIView</div><div class="line"></div><div class="line"><span class="variable">@property</span> (nonatomic ,strong) UIBezierPath  *path;</div><div class="line"></div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"BezierView.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">BezierView</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)setPath:(<span class="built_in">UIBezierPath</span> *)path</div><div class="line">&#123;</div><div class="line">    _path = path;</div><div class="line">    [<span class="keyword">self</span> setNeedsDisplay];</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)drawRect:(<span class="built_in">CGRect</span>)rect</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">self</span>.path stroke];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>然后让我们的<code>gameView</code>使用这个新建的view。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">weak</span>, <span class="keyword">nonatomic</span>) <span class="keyword">IBOutlet</span>  BezierView *gameView;</div></pre></td></tr></table></figure>
+<p>接下来我们在每次手指改变在屏幕上的位置的时候重绘这条连接线。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIView</span> *droppingView = <span class="keyword">self</span>.droppingView;</div><div class="line">__<span class="keyword">weak</span> ViewController *weakSelf = <span class="keyword">self</span>; <span class="comment">//防止循环引用</span></div><div class="line"></div><div class="line"><span class="keyword">self</span>.attachment.action = ^&#123;</div><div class="line">    <span class="comment">//创建连接线</span></div><div class="line">    <span class="built_in">UIBezierPath</span> *path = [[<span class="built_in">UIBezierPath</span> alloc] init];</div><div class="line">    [path moveToPoint:weakSelf.attachment.anchorPoint];</div><div class="line">    [path addLineToPoint:droppingView.center];</div><div class="line">    weakSelf.gameView.path = path;</div><div class="line">    </div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>最后为了让线在我们松手的时候消失，我们在拖动的状态改为<code>UIGestureRecognizerStateEnded</code>的时候删除这条线。</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.gameView.path = <span class="literal">nil</span>;</div></pre></td></tr></table></figure>
+<p>这样我们的这部分需求就完成了。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/dragWithLine.gif" alt="logo"></center>
+
+
+<h2 id="AutoLayout"><a href="#AutoLayout" class="headerlink" title="AutoLayout"></a>AutoLayout</h2><p>AutoLayout可以帮助你来确定view在屏幕上显示的位置，是使用规则来确定view的位置而不是使用固定的数字例如(20,20,100,100)。</p>
+<p>比如说：现在我的屏幕上有两个<code>UILabel</code>Thing 1和Thing 2，当我的屏幕处于垂直状态的时候我可以很好的显示他们两个的位置。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/landscape.png" alt="logo"></center>
+
+<p>但是当我把屏幕横过来的时候我发现Thing 2不见了。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/verticalScreen.png" alt="logo"></center>
+
+<p>其实Thing 2还在那里，只是因为屏幕的高度不够，他超出了范围，所以没办法显示了。</p>
+<p>那么接下来我们就需要对他添加AutoLayout来控制Thing 1和Thing 2的位置了。我希望Thing 1可以永远处于屏幕的左上角，Thing 2可以永远处于屏幕的右上角，无论是在横屏还是竖屏或者是在不同尺寸的设备上显示。</p>
+<p>在Storyboard中一共有三种不同的方法来设置AutoLayout约束</p>
+<ul>
+<li>1.使用蓝色辅助线，并且根据系统建议来设置约束。</li>
+<li>2.使用底部按钮</li>
+<li>3.使用control拖拽</li>
+</ul>
+<h3 id="使用蓝色辅助线"><a href="#使用蓝色辅助线" class="headerlink" title="使用蓝色辅助线"></a>使用蓝色辅助线</h3><p>当我们在storyboard中添加控件的时候，会自动产生一些蓝色的辅助线，这些辅助线可以帮我们更好的选择控件应该摆放的位置，根据蓝色辅助线的位置确定好之后，再通过底部的 <strong>Reset to suggested constants</strong>方法就可以建立AutoLayout的约束了。</p>
+<p>根据蓝色辅助线摆放位置：</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/blueGuideLine1.png" alt="logo"></center>
+
+<p>点击<strong>Reset to suggested constants</strong>方法</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/blueGuideLine2.png" alt="logo"></center>
+
+<p>通过这样设置之后无论在横屏还是竖屏的状态下Thing 1和Thing 2都会在屏幕的左上角和右下角了。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/blueGuideLineH.png" alt="logo"></center>
+
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/blueGuideLineV.png" alt="logo"></center>
+
+<h3 id="使用底部按钮"><a href="#使用底部按钮" class="headerlink" title="使用底部按钮"></a>使用底部按钮</h3><p>现在我在storyboard又添加了一个<code>Bad Thing</code>，对他没有使用蓝色辅助线。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingH.png" alt="logo"></center>
+
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingV.png" alt="logo"></center>
+
+<p>可以看得出来没有做约束的Bad Thing的位置始终都没有变。</p>
+<p>但是即使没有使用蓝色辅助线，当我们点击点击<strong>Reset to suggested constants</strong>方法的时候，storyboard依然会对Bad Thing进行约束。但是添加了之后我们发现，虽然有了约束，但是根本就是不对。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingLayoytH.png" alt="logo"></center>
+
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingLayoytV.png" alt="logo"></center>
+
+
+<p>那么第二种方法，我们可以使用底部的按钮对控件添加约束。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/bottomBtnA.png" alt="logo"></center>
+
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/bottomBtnB.png" alt="logo"></center>
+
+<p>在添加了约束之后我们发现屏幕上出现了两条黄色的线。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/yellowLineWaring.png" alt="logo"></center>
+
+<p>这是因为我们给Bad Thing设定了约束但是并没有更新Frame，这时候点击黄色的线可以看到左侧大纲中出现了警告的内容，我们点击黄色的小三角，选择 <strong>Update framers</strong> 就可以修正这个问题了。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/fixYellowLineWaring.png" alt="logo"></center>
+
+<p>修正了之后，我们就可以看到无论什么情况下，Bad Thing都会在屏幕的中间了。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingAtCenterH.png" alt="logo"></center>
+
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/BadThingAtCenterV.png" alt="logo"></center>
+
+<h3 id="使用control拖拽"><a href="#使用control拖拽" class="headerlink" title="使用control拖拽"></a>使用control拖拽</h3><p>这种方法是使用control在两个目标对象之间进行拖拽，添加约束关系。和建立storyboard与代码之间的联系一样，只需要按住control键，然后将Bad Thing的线拖到Thing 2上。就可以建立一个Bad Thing与Thing 2之间的约束。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/controlDarg.png" alt="logo"></center>
+
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/controlDarg2.png" alt="logo"></center>
+
+<p>这样建立好约束之后，Bad Thing就会始终存在于Thing 2的上边。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/controlDargH.png" alt="logo"></center>
+
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/controlDargV.png" alt="logo"></center>
+
+
+<h2 id="AutoLayout-Demo"><a href="#AutoLayout-Demo" class="headerlink" title="AutoLayout Demo"></a>AutoLayout Demo</h2><p>AutoLayout的应用是对之前的Attribute进行处理，目的是希望在横屏之后也会有一个很好的表现。Attribute相关的课程在<a href="http://zhangzr.cn/2017/05/20/%E6%96%AF%E5%9D%A6%E7%A6%8F%E5%A4%A7%E5%AD%A6iOS%E5%85%AC%E5%BC%80%E8%AF%BE%E7%AC%94%E8%AE%B0%EF%BC%885%EF%BC%89-ViewController%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E9%80%9A%E7%9F%A5/" target="_blank" rel="external">这里</a>。</p>
+<p>之前我们完成的Attribute是这样的。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/AttributeWithoutAutolayoutH.png" alt="logo"></center>
+
+<p>在横屏之后他是这样的</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/AttributeWithoutAutolayoutV.png" alt="logo"></center>
+
+<p>这肯定不是我们想要的结果。甚至我们都没办法点击按钮了。所以我们要对他们进行一些修改。<br>那么我们使用之前提到的第一种设置autolayout的方法，因为之前我们是使用蓝色辅助线，所以直接点击 <strong>Reset to suggested constants</strong>按钮就可以了。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/AttributeWithoutAutolayoutBlueLine.png" alt="logo"></center>
+
+<p>设置之后运行一下看看，发现比刚刚好多了，除了紫色的部分太大了，其他的一切都还可以，至少不影响我的正常使用了。</p>
+<p>但是我们肯定不能就这样结束了，我们还需要对按钮进行一些调整，那么我们选中四个按钮，然后在底部按钮设置他们为相同宽度。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/bottomBtnSetEqualWidth.png" alt="logo"></center>
+
+<p>之后再运行，我们发现，完美了！一些都是想象中的样子，按钮也平分在了屏幕上。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/perfectAttrubite.png" alt="logo"></center>
+
+<p>但是这样就结束了吗？？当然不是了，不然让你学啥。仔细看控制台，我们会发现控制台跟以前不一样了，这里打印出了好多的错误。</p>
+<center><img src="/2017/06/14/斯坦福大学iOS公开课笔记（9）-AutoLayout/warning.png" alt="logo"></center>
+
+<p>这些错误仔细看就会发现，他说他没办法在运行时同时满足约束。</p>
+<p>再仔细看我们会发现在约束里，我们对按钮进行了硬编码，我们固定了他的宽度就是64，但是屏幕变宽的时候按钮的宽度就不是64了。所以解决这个方法我们讲约束为64的部分去掉。</p>
+<p>这时候在运行我们就会发现，不会再出现报错了。</p>
+<hr>
+<p>以上就是第九课的全部内容了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/13/获取点击UITableViewCell中的UIButton所在的行/" rel="next" title="获取点击UITableViewCell中的UIButton所在的行">
+                <i class="fa fa-chevron-left"></i> 获取点击UITableViewCell中的UIButton所在的行
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/15/iOS轮播图片的简单实现/" rel="prev" title="iOS轮播图片的简单实现">
+                iOS轮播图片的简单实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#完成-Dropit"><span class="nav-number">1.</span> <span class="nav-text">完成 Dropit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加禁止旋转的属性"><span class="nav-number">1.1.</span> <span class="nav-text">添加禁止旋转的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加吸附手势"><span class="nav-number">1.2.</span> <span class="nav-text">添加吸附手势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AutoLayout"><span class="nav-number">2.</span> <span class="nav-text">AutoLayout</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用蓝色辅助线"><span class="nav-number">2.1.</span> <span class="nav-text">使用蓝色辅助线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用底部按钮"><span class="nav-number">2.2.</span> <span class="nav-text">使用底部按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用control拖拽"><span class="nav-number">2.3.</span> <span class="nav-text">使用control拖拽</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AutoLayout-Demo"><span class="nav-number">3.</span> <span class="nav-text">AutoLayout Demo</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
