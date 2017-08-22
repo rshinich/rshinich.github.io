@@ -87,55 +87,22 @@
 
 
 
-<meta name="description" content="我们经常会在一些应用里边见到波浪的动画，比如之前淘宝个人中心顶部的双波浪，今天我们就来看一下这个效果是怎么实现的。
-原理绘制波浪实际上这个波浪就是使用正弦曲线公式 y=Asin(wx+u)+K绘制出来的，具体样式如图。
-
-
-各个参数代表的意义如下：
-
-A：振幅,控制波浪的高度；
-w：角速度 w = 2PI/T；
-T：周期；
-u：初相；
-K：y轴方向上的偏移量。
-
-动起来如何能让波浪在画面上动起来呢">
+<meta name="description" content="在我们应用开发中，用户在手机上点开我们的应用，从手指点击到我们的应用图标到我们的应用真正启动是需要一段时间的，随着开发的推进，有可能会把这个时间变得比较长，这个时候我们就需要有一个占位图来在用户点击了我们的应用之后马上显示出来给用户看。这个东西就是 LaunchImage。
+如何使用添加 LaunchImage很简单，只需要在图片文件夹Images.xcassets中点击 +，然后选择App Ic">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用UIBezierPath绘制波浪">
-<meta property="og:url" content="http://yoursite.com/2017/04/24/使用UIBezierPath绘制波浪/index.html">
+<meta property="og:title" content="iOS中LaunchImage的尺寸">
+<meta property="og:url" content="http://yoursite.com/2017/08/22/iOS中LaunchImage的尺寸/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
-<meta property="og:description" content="我们经常会在一些应用里边见到波浪的动画，比如之前淘宝个人中心顶部的双波浪，今天我们就来看一下这个效果是怎么实现的。
-原理绘制波浪实际上这个波浪就是使用正弦曲线公式 y=Asin(wx+u)+K绘制出来的，具体样式如图。
-
-
-各个参数代表的意义如下：
-
-A：振幅,控制波浪的高度；
-w：角速度 w = 2PI/T；
-T：周期；
-u：初相；
-K：y轴方向上的偏移量。
-
-动起来如何能让波浪在画面上动起来呢">
-<meta property="og:image" content="http://yoursite.com/2017/04/24/使用UIBezierPath绘制波浪/sin.png">
-<meta property="og:image" content="http://yoursite.com/2017/04/24/使用UIBezierPath绘制波浪/Wave.gif">
-<meta property="og:updated_time" content="2017-04-26T05:10:21.000Z">
+<meta property="og:description" content="在我们应用开发中，用户在手机上点开我们的应用，从手指点击到我们的应用图标到我们的应用真正启动是需要一段时间的，随着开发的推进，有可能会把这个时间变得比较长，这个时候我们就需要有一个占位图来在用户点击了我们的应用之后马上显示出来给用户看。这个东西就是 LaunchImage。
+如何使用添加 LaunchImage很简单，只需要在图片文件夹Images.xcassets中点击 +，然后选择App Ic">
+<meta property="og:image" content="http://yoursite.com/2017/08/22/iOS中LaunchImage的尺寸/addLuanchImage.png">
+<meta property="og:image" content="http://yoursite.com/2017/08/22/iOS中LaunchImage的尺寸/showLuanchImage.png">
+<meta property="og:updated_time" content="2017-08-22T02:04:24.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用UIBezierPath绘制波浪">
-<meta name="twitter:description" content="我们经常会在一些应用里边见到波浪的动画，比如之前淘宝个人中心顶部的双波浪，今天我们就来看一下这个效果是怎么实现的。
-原理绘制波浪实际上这个波浪就是使用正弦曲线公式 y=Asin(wx+u)+K绘制出来的，具体样式如图。
-
-
-各个参数代表的意义如下：
-
-A：振幅,控制波浪的高度；
-w：角速度 w = 2PI/T；
-T：周期；
-u：初相；
-K：y轴方向上的偏移量。
-
-动起来如何能让波浪在画面上动起来呢">
-<meta name="twitter:image" content="http://yoursite.com/2017/04/24/使用UIBezierPath绘制波浪/sin.png">
+<meta name="twitter:title" content="iOS中LaunchImage的尺寸">
+<meta name="twitter:description" content="在我们应用开发中，用户在手机上点开我们的应用，从手指点击到我们的应用图标到我们的应用真正启动是需要一段时间的，随着开发的推进，有可能会把这个时间变得比较长，这个时候我们就需要有一个占位图来在用户点击了我们的应用之后马上显示出来给用户看。这个东西就是 LaunchImage。
+如何使用添加 LaunchImage很简单，只需要在图片文件夹Images.xcassets中点击 +，然后选择App Ic">
+<meta name="twitter:image" content="http://yoursite.com/2017/08/22/iOS中LaunchImage的尺寸/addLuanchImage.png">
 
 
 
@@ -163,13 +130,13 @@ K：y轴方向上的偏移量。
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/04/24/使用UIBezierPath绘制波浪/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/22/iOS中LaunchImage的尺寸/"/>
 
 
 
 
 
-  <title> 使用UIBezierPath绘制波浪 | zhangzr's blog </title>
+  <title> iOS中LaunchImage的尺寸 | zhangzr's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -338,7 +305,7 @@ K：y轴方向上的偏移量。
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/24/使用UIBezierPath绘制波浪/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/22/iOS中LaunchImage的尺寸/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhangzr">
@@ -359,7 +326,7 @@ K：y轴方向上的偏移量。
             
             
               
-                使用UIBezierPath绘制波浪
+                iOS中LaunchImage的尺寸
               
             
           </h1>
@@ -374,8 +341,8 @@ K：y轴方向上的偏移量。
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-24T21:29:54+08:00">
-                2017-04-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-22T09:46:29+08:00">
+                2017-08-22
               </time>
             
 
@@ -410,31 +377,55 @@ K：y轴方向上的偏移量。
       
 
       
-        <p>我们经常会在一些应用里边见到波浪的动画，比如之前淘宝个人中心顶部的双波浪，今天我们就来看一下这个效果是怎么实现的。</p>
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><h4 id="绘制波浪"><a href="#绘制波浪" class="headerlink" title="绘制波浪"></a>绘制波浪</h4><p>实际上这个波浪就是使用正弦曲线公式 <code>y=Asin(wx+u)+K</code>绘制出来的，具体样式如图。</p>
-<center><img src="/2017/04/24/使用UIBezierPath绘制波浪/sin.png" alt="logo"></center>
+        <p>在我们应用开发中，用户在手机上点开我们的应用，从手指点击到我们的应用图标到我们的应用真正启动是需要一段时间的，随着开发的推进，有可能会把这个时间变得比较长，这个时候我们就需要有一个占位图来在用户点击了我们的应用之后马上显示出来给用户看。这个东西就是 <code>LaunchImage</code>。</p>
+<h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><p>添加 <code>LaunchImage</code>很简单，只需要在图片文件夹<code>Images.xcassets</code>中点击 <code>+</code>，然后选择<code>App Icons &amp; Launch Images</code> 然后选择 <code>New iOS Launch Image</code>就可以了。</p>
+<center><img src="/2017/08/22/iOS中LaunchImage的尺寸/addLuanchImage.png" alt="logo"></center>
 
-<p>各个参数代表的意义如下：</p>
-<ul>
-<li>A：振幅,控制波浪的高度；</li>
-<li>w：角速度 w = 2PI/T；</li>
-<li>T：周期；</li>
-<li>u：初相；</li>
-<li>K：y轴方向上的偏移量。</li>
+<h2 id="尺寸大小"><a href="#尺寸大小" class="headerlink" title="尺寸大小"></a>尺寸大小</h2><p>添加了之后我们就会看到一大堆等着我们填充的位置，这么多位置，看着真是不知道要写填什么尺寸好。</p>
+<center><img src="/2017/08/22/iOS中LaunchImage的尺寸/showLuanchImage.png" alt="logo"></center>
+
+<p>那么下边我就把每个位置对应的图片尺寸写下来。</p>
+<h3 id="iPhone-Portrait-iOS-5-6"><a href="#iPhone-Portrait-iOS-5-6" class="headerlink" title="iPhone Portrait iOS 5,6"></a>iPhone Portrait iOS 5,6</h3><ul>
+<li>1x : 320*480</li>
+<li>2x : 640*960</li>
+<li>Retina : 640*1136</li>
 </ul>
-<h4 id="动起来"><a href="#动起来" class="headerlink" title="动起来"></a>动起来</h4><p>如何能让波浪在画面上动起来呢，我们可以使用<code>CADisplayLink</code>或者<code>NSTimer</code>使画面中的线条一直在绘制。</p>
-<p>这里推荐使用<code>CADisplayLink</code> 因为它可以保持较高的刷新率，刷新率为每秒60次。</p>
-<p>在使用<code>CADisplayLink</code>时调用UIView中的<code>drawRect</code>方法不停地重绘页面。就可以实现动画的样式。</p>
-<p>实现的效果就是这样：</p>
-<center><img src="/2017/04/24/使用UIBezierPath绘制波浪/Wave.gif" alt="logo"></center>
-
-
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>首先我们先创建一个<code>UIView</code>并且注册一个<code>CADisplayLink</code>定时器，并把它加入到<code>NSMainRunLoop</code>中。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.waveDisplayLink=[<span class="built_in">CADisplayLink</span> displayLinkWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(runWave)];</div><div class="line">[<span class="keyword">self</span>.waveDisplayLink addToRunLoop:[<span class="built_in">NSRunLoop</span> mainRunLoop] forMode:<span class="built_in">NSRunLoopCommonModes</span>];</div></pre></td></tr></table></figure>
-<p>在调用的<code>runWave</code>中我们使用<code>setNeedsDisplay</code>方法调用UIView的<code>drawRect</code>方法，在这里我改变了K的值，也就是<code>_waterLineY</code>来让波浪一直向下移动，并且通过改变<code>_waveCycle</code>让波浪移动。</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (void)runWave</div><div class="line">&#123;</div><div class="line">    _waterLineY += <span class="number">0</span>.<span class="number">1</span><span class="comment">;</span></div><div class="line">    _waveCycle += <span class="number">0</span>.<span class="number">1</span><span class="comment">;    </span></div><div class="line">    </div><div class="line">    [self setNeedsDisplay]<span class="comment">;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>然后在<code>drawRect</code>中绘制正弦曲线就可以了。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)drawRect:(<span class="built_in">CGRect</span>)rect</div><div class="line">&#123;</div><div class="line">    <span class="built_in">UIBezierPath</span> *wavePath = [<span class="built_in">UIBezierPath</span> bezierPath];</div><div class="line">    </div><div class="line">    [wavePath moveToPoint:<span class="built_in">CGPointMake</span>(<span class="number">0</span>, <span class="keyword">self</span>.waterLineY)];</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">float</span> x = <span class="number">0</span> ; x &lt;=WIDTH ; x++)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">CGFloat</span> y = _waveAmplitude * sin(x/<span class="number">180</span>*M_PI + <span class="number">4</span>*_waveCycle/M_PI ) * <span class="number">5</span> + _waterLineY;</div><div class="line">        </div><div class="line">        [wavePath addLineToPoint:<span class="built_in">CGPointMake</span>(x, y)];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    [wavePath addLineToPoint:<span class="built_in">CGPointMake</span>(WIDTH, HEIGHT)];</div><div class="line">    [wavePath addLineToPoint:<span class="built_in">CGPointMake</span>(<span class="number">0</span>, HEIGHT)];</div><div class="line">    [wavePath closePath];</div><div class="line"></div><div class="line">    <span class="keyword">self</span>.shapeLayer.path = wavePath.CGPath;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="iPad-Protrait-Without-Status-Bar-iOS-5-6"><a href="#iPad-Protrait-Without-Status-Bar-iOS-5-6" class="headerlink" title="iPad Protrait Without Status Bar iOS 5,6"></a>iPad Protrait Without Status Bar iOS 5,6</h3><ul>
+<li>1x : 768*1004</li>
+<li>2x : 1536*2008</li>
+</ul>
+<h3 id="iPad-Portrait"><a href="#iPad-Portrait" class="headerlink" title="iPad Portrait"></a>iPad Portrait</h3><ul>
+<li>1x : 768*1024</li>
+<li>2x : 1536*2048</li>
+</ul>
+<h3 id="iPad-Landscape-Without-Status-Bar-iOS-5-6"><a href="#iPad-Landscape-Without-Status-Bar-iOS-5-6" class="headerlink" title="iPad Landscape Without Status Bar iOS 5,6"></a>iPad Landscape Without Status Bar iOS 5,6</h3><ul>
+<li>1x : 1024*748</li>
+<li>2x : 2048*1496</li>
+</ul>
+<h3 id="iPad-Landscape-iOS-5-6"><a href="#iPad-Landscape-iOS-5-6" class="headerlink" title="iPad Landscape iOS 5,6"></a>iPad Landscape iOS 5,6</h3><ul>
+<li>1x : 1024*768</li>
+<li>2x : 2048 * 1536</li>
+</ul>
+<h3 id="iPhone-Protrait-iOS-8-9"><a href="#iPhone-Protrait-iOS-8-9" class="headerlink" title="iPhone Protrait iOS 8,9"></a>iPhone Protrait iOS 8,9</h3><ul>
+<li>Retina HD 5.5’’ : 1242*2208</li>
+<li>Retina HD 4.7’’ : 750*1334</li>
+</ul>
+<h3 id="iPhone-Landscape-iOS-8-9"><a href="#iPhone-Landscape-iOS-8-9" class="headerlink" title="iPhone Landscape iOS 8,9"></a>iPhone Landscape iOS 8,9</h3><ul>
+<li>Retina HD 5.5’’ : 2208 * 1243</li>
+</ul>
+<h3 id="iPhone-Portrait-iOS-7-9"><a href="#iPhone-Portrait-iOS-7-9" class="headerlink" title="iPhone Portrait iOS 7-9"></a>iPhone Portrait iOS 7-9</h3><ul>
+<li>2x : 640*960 </li>
+<li>Retina4 : 640*1136</li>
+</ul>
+<h3 id="iPad-Portrait-iOS-7-9"><a href="#iPad-Portrait-iOS-7-9" class="headerlink" title="iPad Portrait iOS 7-9"></a>iPad Portrait iOS 7-9</h3><ul>
+<li>1x : 768*1024</li>
+<li>2x : 1536*2048</li>
+</ul>
+<h3 id="iPad-Landscape-iOS-7-9"><a href="#iPad-Landscape-iOS-7-9" class="headerlink" title="iPad Landscape iOS 7-9"></a>iPad Landscape iOS 7-9</h3><ul>
+<li>1x : 1024*768</li>
+<li>2x : 2048*1536</li>
+</ul>
+<p>这样设置好了之后，我们的应用在启动时就会显示对应的启动图片了。</p>
 
       
     </div>
@@ -471,8 +462,8 @@ K：y轴方向上的偏移量。
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/20/获取当前View所在的ViewController/" rel="next" title="获取当前View所在的ViewController">
-                <i class="fa fa-chevron-left"></i> 获取当前View所在的ViewController
+              <a href="/2017/08/16/iOS粒子系统CAEmitterLayer的使用/" rel="next" title="iOS粒子系统CAEmitterLayer的使用">
+                <i class="fa fa-chevron-left"></i> iOS粒子系统CAEmitterLayer的使用
               </a>
             
           </div>
@@ -480,10 +471,6 @@ K：y轴方向上的偏移量。
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/04/26/斯坦福大学iOS公开课笔记（1）-iOS的MVC框架/" rel="prev" title="斯坦福大学iOS公开课学习笔记（1）---iOS的MVC框架">
-                斯坦福大学iOS公开课学习笔记（1）---iOS的MVC框架 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -594,7 +581,7 @@ K：y轴方向上的偏移量。
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#绘制波浪"><span class="nav-number">1.1.</span> <span class="nav-text">绘制波浪</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动起来"><span class="nav-number">1.2.</span> <span class="nav-text">动起来</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">2.</span> <span class="nav-text">实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何使用"><span class="nav-number">1.</span> <span class="nav-text">如何使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#尺寸大小"><span class="nav-number">2.</span> <span class="nav-text">尺寸大小</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iPhone-Portrait-iOS-5-6"><span class="nav-number">2.1.</span> <span class="nav-text">iPhone Portrait iOS 5,6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iPad-Protrait-Without-Status-Bar-iOS-5-6"><span class="nav-number">2.2.</span> <span class="nav-text">iPad Protrait Without Status Bar iOS 5,6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iPad-Portrait"><span class="nav-number">2.3.</span> <span class="nav-text">iPad Portrait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iPad-Landscape-Without-Status-Bar-iOS-5-6"><span class="nav-number">2.4.</span> <span class="nav-text">iPad Landscape Without Status Bar iOS 5,6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iPad-Landscape-iOS-5-6"><span class="nav-number">2.5.</span> <span class="nav-text">iPad Landscape iOS 5,6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iPhone-Protrait-iOS-8-9"><span class="nav-number">2.6.</span> <span class="nav-text">iPhone Protrait iOS 8,9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iPhone-Landscape-iOS-8-9"><span class="nav-number">2.7.</span> <span class="nav-text">iPhone Landscape iOS 8,9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iPhone-Portrait-iOS-7-9"><span class="nav-number">2.8.</span> <span class="nav-text">iPhone Portrait iOS 7-9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iPad-Portrait-iOS-7-9"><span class="nav-number">2.9.</span> <span class="nav-text">iPad Portrait iOS 7-9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iPad-Landscape-iOS-7-9"><span class="nav-number">2.10.</span> <span class="nav-text">iPad Landscape iOS 7-9</span></a></li></ol></li></ol></div>
             
 
           </div>
