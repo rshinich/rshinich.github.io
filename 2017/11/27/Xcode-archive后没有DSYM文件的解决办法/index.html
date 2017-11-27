@@ -87,12 +87,19 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="zhangzr's blog">
-<meta property="og:url" content="http://yoursite.com/archives/2017/page/4/index.html">
+<meta name="description" content="今天用Xcode打包之后发现找不到dsym文件，无论是在Window-&amp;gt;Organizer中点击Download dSYMs...还是直接show in finder文件之后查看dSYMs文件夹下的内容。
+后来发现在Build Settings -&amp;gt; Build Options -&amp;gt; Debug Information Format中，内容被置为了 DWARF，如果选为DWARF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Xcode archivew后没有DSYM文件的解决办法">
+<meta property="og:url" content="http://yoursite.com/2017/11/27/Xcode-archive后没有DSYM文件的解决办法/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="今天用Xcode打包之后发现找不到dsym文件，无论是在Window-&amp;gt;Organizer中点击Download dSYMs...还是直接show in finder文件之后查看dSYMs文件夹下的内容。
+后来发现在Build Settings -&amp;gt; Build Options -&amp;gt; Debug Information Format中，内容被置为了 DWARF，如果选为DWARF">
+<meta property="og:updated_time" content="2017-11-27T03:01:53.248Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="zhangzr's blog">
+<meta name="twitter:title" content="Xcode archivew后没有DSYM文件的解决办法">
+<meta name="twitter:description" content="今天用Xcode打包之后发现找不到dsym文件，无论是在Window-&amp;gt;Organizer中点击Download dSYMs...还是直接show in finder文件之后查看dSYMs文件夹下的内容。
+后来发现在Build Settings -&amp;gt; Build Options -&amp;gt; Debug Information Format中，内容被置为了 DWARF，如果选为DWARF">
 
 
 
@@ -120,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/2017/page/4/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/27/Xcode-archive后没有DSYM文件的解决办法/"/>
 
 
 
 
 
-  <title> 归档 | zhangzr's blog </title>
+  <title> Xcode archivew后没有DSYM文件的解决办法 | zhangzr's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -161,7 +168,7 @@
     
   
 
-  <div class="container sidebar-position-left  page-archive  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -285,106 +292,151 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-    <span class="archive-page-counter">
-      
-      
-       
-      
-      OK! 目前共计 32 篇日志。 继续努力。
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/27/Xcode-archive后没有DSYM文件的解决办法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
     </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Xcode archivew后没有DSYM文件的解决办法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-27T10:56:06+08:00">
+                2017-11-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
 
       
       
+
+      
+        <p>今天用Xcode打包之后发现找不到dsym文件，无论是在Window-&gt;Organizer中点击<code>Download dSYMs...</code>还是直接show in finder文件之后查看dSYMs文件夹下的内容。</p>
+<p>后来发现在Build Settings -&gt; Build Options -&gt; Debug Information Format中，内容被置为了 DWARF，如果选为DWARF则不会产生dSYM文件，必须选择DWARF with dSYM File才会生成符号表文件。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
       
 
       
         
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2017">2017</h2>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/16/斯坦福大学iOS公开课笔记（14）-UIApplication和网络指示器/" rel="next" title="斯坦福大学iOS公开课笔记（14）-UIApplication和网络指示器">
+                <i class="fa fa-chevron-left"></i> 斯坦福大学iOS公开课笔记（14）-UIApplication和网络指示器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
         </div>
       
-      
 
       
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/03/24/iOS-UIDynamic物理引擎的简单使用/" itemprop="url">
-              
-                <span itemprop="name">iOS 物理引擎 UIKit Dynamics 的简单使用</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-03-24T13:42:08+08:00"
-              content="2017-03-24" >
-          03-24
-        </time>
-      </div>
-
-    </header>
+      
+    </footer>
   </article>
 
 
 
-    
-
+    <div class="post-spread">
       
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/03/24/hello-world/" itemprop="url">
-              
-                <span itemprop="name">Hello World</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-03-24T13:15:30+08:00"
-              content="2017-03-24" >
-          03-24
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-  </section>
-
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/2017/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/2017/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2017/page/3/">3</a><span class="page-number current">4</span>
-  </nav>
-
-
+    </div>
+  </div>
 
 
           </div>
@@ -392,6 +444,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -573,11 +629,9 @@
 
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
 
 
   
