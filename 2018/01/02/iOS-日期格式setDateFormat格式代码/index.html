@@ -87,19 +87,19 @@
 
 
 
-<meta name="description" content="今天用Xcode打包之后发现找不到dsym文件，无论是在Window-&amp;gt;Organizer中点击Download dSYMs...还是直接show in finder文件之后查看dSYMs文件夹下的内容。
-后来发现在Build Settings -&amp;gt; Build Options -&amp;gt; Debug Information Format中，内容被置为了 DWARF，如果选为DWARF">
+<meta name="description" content="我们开发中经常遇到日期（NSDate）转字符串（NSString）的需求。转换的时候经常对格式的要求都不一样，每次都不记得格式到底是怎么样的，所以特地记录一下。
+转换代码12345NSDate *currentDate = [NSDate date];NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];[dateForma">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Xcode archivew后没有DSYM文件的解决办法">
-<meta property="og:url" content="http://yoursite.com/2017/11/27/Xcode-archive后没有DSYM文件的解决办法/index.html">
+<meta property="og:title" content="iOS 日期格式setDateFormat格式代码">
+<meta property="og:url" content="http://yoursite.com/2018/01/02/iOS-日期格式setDateFormat格式代码/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
-<meta property="og:description" content="今天用Xcode打包之后发现找不到dsym文件，无论是在Window-&amp;gt;Organizer中点击Download dSYMs...还是直接show in finder文件之后查看dSYMs文件夹下的内容。
-后来发现在Build Settings -&amp;gt; Build Options -&amp;gt; Debug Information Format中，内容被置为了 DWARF，如果选为DWARF">
-<meta property="og:updated_time" content="2017-11-27T03:01:53.248Z">
+<meta property="og:description" content="我们开发中经常遇到日期（NSDate）转字符串（NSString）的需求。转换的时候经常对格式的要求都不一样，每次都不记得格式到底是怎么样的，所以特地记录一下。
+转换代码12345NSDate *currentDate = [NSDate date];NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];[dateForma">
+<meta property="og:updated_time" content="2018-01-02T07:35:25.548Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Xcode archivew后没有DSYM文件的解决办法">
-<meta name="twitter:description" content="今天用Xcode打包之后发现找不到dsym文件，无论是在Window-&amp;gt;Organizer中点击Download dSYMs...还是直接show in finder文件之后查看dSYMs文件夹下的内容。
-后来发现在Build Settings -&amp;gt; Build Options -&amp;gt; Debug Information Format中，内容被置为了 DWARF，如果选为DWARF">
+<meta name="twitter:title" content="iOS 日期格式setDateFormat格式代码">
+<meta name="twitter:description" content="我们开发中经常遇到日期（NSDate）转字符串（NSString）的需求。转换的时候经常对格式的要求都不一样，每次都不记得格式到底是怎么样的，所以特地记录一下。
+转换代码12345NSDate *currentDate = [NSDate date];NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];[dateForma">
 
 
 
@@ -127,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/11/27/Xcode-archive后没有DSYM文件的解决办法/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/01/02/iOS-日期格式setDateFormat格式代码/"/>
 
 
 
 
 
-  <title> Xcode archivew后没有DSYM文件的解决办法 | zhangzr's blog </title>
+  <title> iOS 日期格式setDateFormat格式代码 | zhangzr's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -302,7 +302,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/27/Xcode-archive后没有DSYM文件的解决办法/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/02/iOS-日期格式setDateFormat格式代码/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhangzr">
@@ -323,7 +323,7 @@
             
             
               
-                Xcode archivew后没有DSYM文件的解决办法
+                iOS 日期格式setDateFormat格式代码
               
             
           </h1>
@@ -338,8 +338,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-27T10:56:06+08:00">
-                2017-11-27
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-02T15:19:08+08:00">
+                2018-01-02
               </time>
             
 
@@ -374,8 +374,17 @@
       
 
       
-        <p>今天用Xcode打包之后发现找不到dsym文件，无论是在Window-&gt;Organizer中点击<code>Download dSYMs...</code>还是直接show in finder文件之后查看dSYMs文件夹下的内容。</p>
-<p>后来发现在Build Settings -&gt; Build Options -&gt; Debug Information Format中，内容被置为了 DWARF，如果选为DWARF则不会产生dSYM文件，必须选择DWARF with dSYM File才会生成符号表文件。</p>
+        <p>我们开发中经常遇到日期（NSDate）转字符串（NSString）的需求。转换的时候经常对格式的要求都不一样，每次都不记得格式到底是怎么样的，所以特地记录一下。</p>
+<h2 id="转换代码"><a href="#转换代码" class="headerlink" title="转换代码"></a>转换代码</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSDate</span> *currentDate = [<span class="built_in">NSDate</span> date];</div><div class="line"><span class="built_in">NSDateFormatter</span> *dateFormatter = [[<span class="built_in">NSDateFormatter</span> alloc] init];</div><div class="line">[dateFormatter setDateFormat:<span class="string">@"yyyy-MM-dd HH:mm"</span>];</div><div class="line"></div><div class="line"><span class="built_in">NSString</span> *dateString = [dateFormatter stringFromDate:currentDate];</div></pre></td></tr></table></figure>
+<h2 id="日期格式"><a href="#日期格式" class="headerlink" title="日期格式"></a>日期格式</h2><h3 id="公元"><a href="#公元" class="headerlink" title="公元"></a>公元</h3><p>G：顯示AD，也就是公元</p>
+<h3 id="年"><a href="#年" class="headerlink" title="年"></a>年</h3><p>yy：年，后面的两位数字<br>yyyy：完整的年份</p>
+<h3 id="月"><a href="#月" class="headerlink" title="月"></a>月</h3><p>M：1~12，1~9显示一位数，10~12显示两位数字<br>MM：01~12，显示两位数字<br>MMM：英文的月份缩写<br>MMMM：英文的月份全拼</p>
+<h3 id="日"><a href="#日" class="headerlink" title="日"></a>日</h3><p>d：1~31，1~9显示一位数，10~31显示两位数字<br>dd：01~31，显示两位数字</p>
+<h3 id="星期"><a href="#星期" class="headerlink" title="星期"></a>星期</h3><p>EEE：星期的缩写，Tue(英文)，周二（中文）<br>EEEE：星期的全拼，Tuesday(英文)，星期二（中文）</p>
+<h3 id="上午-下午"><a href="#上午-下午" class="headerlink" title="上午/下午"></a>上午/下午</h3><p>aa：显示AM/PM</p>
+<h3 id="小时"><a href="#小时" class="headerlink" title="小时"></a>小时</h3><p>H：0~23，0~9显示一位数，10~12显示两位数<br>HH：0~23，显示两位数字<br>K：0~12，0~9显示一位数，10~12显示两位数<br>KK：0~12，显示两位数字</p>
+<h3 id="分"><a href="#分" class="headerlink" title="分"></a>分</h3><p>m：0~59，0~9显示一位数字，10~59显示两位数<br>mm：0~59，显示两位数字</p>
+<h3 id="秒"><a href="#秒" class="headerlink" title="秒"></a>秒</h3><p>s：0~59，0~0显示一位数字，10~59显示两位数<br>ss：0~59，显示两位数字<br>S：显示毫秒</p>
 
       
     </div>
@@ -412,8 +421,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/16/斯坦福大学iOS公开课笔记（14）-UIApplication和网络指示器/" rel="next" title="斯坦福大学iOS公开课笔记（14）-UIApplication和网络指示器">
-                <i class="fa fa-chevron-left"></i> 斯坦福大学iOS公开课笔记（14）-UIApplication和网络指示器
+              <a href="/2017/11/27/Xcode-archive后没有DSYM文件的解决办法/" rel="next" title="Xcode archivew后没有DSYM文件的解决办法">
+                <i class="fa fa-chevron-left"></i> Xcode archivew后没有DSYM文件的解决办法
               </a>
             
           </div>
@@ -421,10 +430,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/01/02/iOS-日期格式setDateFormat格式代码/" rel="prev" title="iOS 日期格式setDateFormat格式代码">
-                iOS 日期格式setDateFormat格式代码 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -471,8 +476,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -516,6 +530,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#转换代码"><span class="nav-number">1.</span> <span class="nav-text">转换代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日期格式"><span class="nav-number">2.</span> <span class="nav-text">日期格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#公元"><span class="nav-number">2.1.</span> <span class="nav-text">公元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#年"><span class="nav-number">2.2.</span> <span class="nav-text">年</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#月"><span class="nav-number">2.3.</span> <span class="nav-text">月</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日"><span class="nav-number">2.4.</span> <span class="nav-text">日</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#星期"><span class="nav-number">2.5.</span> <span class="nav-text">星期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上午-下午"><span class="nav-number">2.6.</span> <span class="nav-text">上午/下午</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小时"><span class="nav-number">2.7.</span> <span class="nav-text">小时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分"><span class="nav-number">2.8.</span> <span class="nav-text">分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#秒"><span class="nav-number">2.9.</span> <span class="nav-text">秒</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
