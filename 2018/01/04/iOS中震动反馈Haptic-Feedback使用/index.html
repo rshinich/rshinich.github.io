@@ -88,24 +88,33 @@
 
 
 <meta name="description" content="前几天元旦的时候，用iMessage发“新年快乐”的时候，苹果给出了放烟花的彩蛋。
-!(logo)[iOS中震动反馈Haptic-Feedback使用/happyNewYear.png]
 
-这个倒是还不是很令人吃惊，真正令人吃惊的是手机的震动真的跟放烟花的节奏一模一样，苹果的震动处理真的是吓人。包括Macbook上的触摸板震动，以前我还真的以为是可以按下去的，直到有一天电脑死机了才知道是震动反馈。">
+
+这个倒是还不是很令人吃惊，真正令人吃惊的是手机的震动真的跟放烟花的节奏一模一样，苹果的震动处理真的是吓人。包括Macbook上的触摸板震动，以前我还真的以为是可以按下去的，直到有一天电脑死机了才知道是震动反馈。。
+正好趁着这个机会把苹果从iOS9就开始使用的震动反馈拿出来看看。
+其实在发布iOS9中的 forc">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS中震动反馈Haptic Feedback使用">
 <meta property="og:url" content="http://yoursite.com/2018/01/04/iOS中震动反馈Haptic-Feedback使用/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
 <meta property="og:description" content="前几天元旦的时候，用iMessage发“新年快乐”的时候，苹果给出了放烟花的彩蛋。
-!(logo)[iOS中震动反馈Haptic-Feedback使用/happyNewYear.png]
 
-这个倒是还不是很令人吃惊，真正令人吃惊的是手机的震动真的跟放烟花的节奏一模一样，苹果的震动处理真的是吓人。包括Macbook上的触摸板震动，以前我还真的以为是可以按下去的，直到有一天电脑死机了才知道是震动反馈。">
-<meta property="og:updated_time" content="2018-01-04T13:40:01.451Z">
+
+这个倒是还不是很令人吃惊，真正令人吃惊的是手机的震动真的跟放烟花的节奏一模一样，苹果的震动处理真的是吓人。包括Macbook上的触摸板震动，以前我还真的以为是可以按下去的，直到有一天电脑死机了才知道是震动反馈。。
+正好趁着这个机会把苹果从iOS9就开始使用的震动反馈拿出来看看。
+其实在发布iOS9中的 forc">
+<meta property="og:image" content="http://yoursite.com/2018/01/04/iOS中震动反馈Haptic-Feedback使用/happyNewYear.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/04/iOS中震动反馈Haptic-Feedback使用/demo.png">
+<meta property="og:updated_time" content="2018-01-04T14:45:08.559Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS中震动反馈Haptic Feedback使用">
 <meta name="twitter:description" content="前几天元旦的时候，用iMessage发“新年快乐”的时候，苹果给出了放烟花的彩蛋。
-!(logo)[iOS中震动反馈Haptic-Feedback使用/happyNewYear.png]
 
-这个倒是还不是很令人吃惊，真正令人吃惊的是手机的震动真的跟放烟花的节奏一模一样，苹果的震动处理真的是吓人。包括Macbook上的触摸板震动，以前我还真的以为是可以按下去的，直到有一天电脑死机了才知道是震动反馈。">
+
+这个倒是还不是很令人吃惊，真正令人吃惊的是手机的震动真的跟放烟花的节奏一模一样，苹果的震动处理真的是吓人。包括Macbook上的触摸板震动，以前我还真的以为是可以按下去的，直到有一天电脑死机了才知道是震动反馈。。
+正好趁着这个机会把苹果从iOS9就开始使用的震动反馈拿出来看看。
+其实在发布iOS9中的 forc">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/04/iOS中震动反馈Haptic-Feedback使用/happyNewYear.png">
 
 
 
@@ -381,7 +390,7 @@
 
       
         <p>前几天元旦的时候，用<code>iMessage</code>发“新年快乐”的时候，苹果给出了放烟花的彩蛋。</p>
-<center>!(logo)[iOS中震动反馈Haptic-Feedback使用/happyNewYear.png]</center>
+<center><img src="/2018/01/04/iOS中震动反馈Haptic-Feedback使用/happyNewYear.png" alt="logo"></center>
 
 <p>这个倒是还不是很令人吃惊，真正令人吃惊的是手机的震动真的跟放烟花的节奏一模一样，苹果的震动处理真的是吓人。包括Macbook上的触摸板震动，以前我还真的以为是可以按下去的，直到有一天电脑死机了才知道是震动反馈。。</p>
 <p>正好趁着这个机会把苹果从iOS9就开始使用的震动反馈拿出来看看。</p>
@@ -411,7 +420,7 @@
 <h2 id="UISelectionFeedbackGenerator"><a href="#UISelectionFeedbackGenerator" class="headerlink" title="UISelectionFeedbackGenerator"></a>UISelectionFeedbackGenerator</h2><p><code>UISelectionFeedbackGenerator</code>中只有一个类型，是用来模拟选择滚轮一类控件时的震动，比如计时器中的picker滚动时就有这个效果。</p>
 <figure class="highlight inform7"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+ (void)excuteSelectionFeedback</div><div class="line">&#123;</div><div class="line">    UISelectionFeedbackGenerator *generator = <span class="comment">[<span class="comment">[UISelectionFeedbackGenerator alloc]</span> init]</span>;</div><div class="line">    <span class="comment">[generator selectionChanged]</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h2><p>最后放<a href="https://github.com/rshinich/HapticFeedbackDemo" target="_blank" rel="external">Demo</a>，下载下来用真机跑一下按按就知道什么感觉啦。</p>
-<center>!(logo)[iOS中震动反馈Haptic-Feedback使用/demo.png]</center>
+<center><img src="/2018/01/04/iOS中震动反馈Haptic-Feedback使用/demo.png" alt="logo"></center>
 
 
 
