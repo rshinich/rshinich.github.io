@@ -87,22 +87,23 @@
 
 
 
-<meta name="description" content="在开发中有可能会出现从任何页面跳转到某一个指定页面的需求，比如在使用应用时，突然推送过来一条消息，用户点击了之后就会跳到指定的页面，因为不知道当前用户操作的是哪一个控制器，所以没办法实现跳转。
-首先我们先获取 rootViewController。
-12UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;UIViewC">
+<meta name="description" content="苹果最近发出消息说iCloud服务要转到国内来了，正好趁着这个机会研究一下iCloud到底要怎么用。
+现在各大互联网厂商都会提供一点云端服务，苹果也不例外，iCloud就是苹果的云端服务，用户可以在这里备份通讯录、邮件、照片、音乐等等iOS原生系统中的数据，并且可以在各个苹果设备之间无缝连接，虽然苹果在iOS5（好像是）发布的时候大吹特吹了一把iCloud，但是后来的使用过程中好像iCloud是各">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS获取当前显示的控制器">
-<meta property="og:url" content="http://yoursite.com/2017/08/02/iOS获取当前显示的控制器/index.html">
+<meta property="og:title" content="iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value storage的使用">
+<meta property="og:url" content="http://yoursite.com/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
-<meta property="og:description" content="在开发中有可能会出现从任何页面跳转到某一个指定页面的需求，比如在使用应用时，突然推送过来一条消息，用户点击了之后就会跳到指定的页面，因为不知道当前用户操作的是哪一个控制器，所以没办法实现跳转。
-首先我们先获取 rootViewController。
-12UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;UIViewC">
-<meta property="og:updated_time" content="2017-08-02T09:54:13.000Z">
+<meta property="og:description" content="苹果最近发出消息说iCloud服务要转到国内来了，正好趁着这个机会研究一下iCloud到底要怎么用。
+现在各大互联网厂商都会提供一点云端服务，苹果也不例外，iCloud就是苹果的云端服务，用户可以在这里备份通讯录、邮件、照片、音乐等等iOS原生系统中的数据，并且可以在各个苹果设备之间无缝连接，虽然苹果在iOS5（好像是）发布的时候大吹特吹了一把iCloud，但是后来的使用过程中好像iCloud是各">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/iCloud_1.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/iCloud_2.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/iCloud_3.png">
+<meta property="og:updated_time" content="2018-01-15T14:36:11.966Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS获取当前显示的控制器">
-<meta name="twitter:description" content="在开发中有可能会出现从任何页面跳转到某一个指定页面的需求，比如在使用应用时，突然推送过来一条消息，用户点击了之后就会跳到指定的页面，因为不知道当前用户操作的是哪一个控制器，所以没办法实现跳转。
-首先我们先获取 rootViewController。
-12UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;UIViewC">
+<meta name="twitter:title" content="iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value storage的使用">
+<meta name="twitter:description" content="苹果最近发出消息说iCloud服务要转到国内来了，正好趁着这个机会研究一下iCloud到底要怎么用。
+现在各大互联网厂商都会提供一点云端服务，苹果也不例外，iCloud就是苹果的云端服务，用户可以在这里备份通讯录、邮件、照片、音乐等等iOS原生系统中的数据，并且可以在各个苹果设备之间无缝连接，虽然苹果在iOS5（好像是）发布的时候大吹特吹了一把iCloud，但是后来的使用过程中好像iCloud是各">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/iCloud_1.png">
 
 
 
@@ -130,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/08/02/iOS获取当前显示的控制器/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/"/>
 
 
 
 
 
-  <title> iOS获取当前显示的控制器 | zhangzr's blog </title>
+  <title> iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value storage的使用 | zhangzr's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -305,7 +306,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/02/iOS获取当前显示的控制器/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhangzr">
@@ -326,7 +327,7 @@
             
             
               
-                iOS获取当前显示的控制器
+                iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value storage的使用
               
             
           </h1>
@@ -341,8 +342,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-02T17:41:37+08:00">
-                2017-08-02
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T22:06:22+08:00">
+                2018-01-15
               </time>
             
 
@@ -377,18 +378,33 @@
       
 
       
-        <p>在开发中有可能会出现从任何页面跳转到某一个指定页面的需求，比如在使用应用时，突然推送过来一条消息，用户点击了之后就会跳到指定的页面，因为不知道当前用户操作的是哪一个控制器，所以没办法实现跳转。</p>
-<p>首先我们先获取 <code>rootViewController</code>。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIWindow</span> *keyWindow = [<span class="built_in">UIApplication</span> sharedApplication].keyWindow;</div><div class="line"><span class="built_in">UIViewController</span> *rootViewController = keyWindow.rootViewController;</div></pre></td></tr></table></figure>
-<p>然后根据不同类型获取不同的控制器，获取当前显示的控制器一共分为三种，UINavigationController、UITabBarViewController、presentedViewController。</p>
-<h2 id="UINavigationController"><a href="#UINavigationController" class="headerlink" title="UINavigationController"></a>UINavigationController</h2><p>UINavigationController中我们可以使用 <code>visibleViewController</code> 这个方法来获得。他会UINavigationController中最上层的控制器。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nullable</span>, <span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>,<span class="keyword">strong</span>) <span class="built_in">UIViewController</span> *visibleViewController; <span class="comment">// Return modal view controller if it exists. Otherwise the top view controller.</span></div></pre></td></tr></table></figure>
-<h2 id="UITabBarViewController"><a href="#UITabBarViewController" class="headerlink" title="UITabBarViewController"></a>UITabBarViewController</h2><p>UITabbarViewController中我们可以使用 <code>selectedViewController</code> 来获得选中的控制器。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nullable</span>, <span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) __kindof <span class="built_in">UIViewController</span> *selectedViewController; <span class="comment">// This may return the "More" navigation controller if it exists.</span></div></pre></td></tr></table></figure>
-<h2 id="presentedViewController"><a href="#presentedViewController" class="headerlink" title="presentedViewController"></a>presentedViewController</h2><p>这个情况下如果有presentedViewController我们就一层层的向上寻找就可以了。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// The view controller that was presented by this view controller or its nearest ancestor.</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nullable</span>, <span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>) <span class="built_in">UIViewController</span> *presentedViewController  <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">5</span>_0);</div></pre></td></tr></table></figure>
-<h2 id="整合一下"><a href="#整合一下" class="headerlink" title="整合一下"></a>整合一下</h2><p>最后整合一下就是这样的：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">+ (UIViewController *)<span class="string">getShowViewControllerWithRootViewController:</span>(UIViewController *)rootViewController</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> ([rootViewController <span class="string">isKindOfClass:</span>[UINavigationController <span class="class"><span class="keyword">class</span>]])</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> [Tools <span class="string">getShowViewControllerWithRootViewController:</span>[((UINavigationController *) rootViewController) visibleViewController]];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> ([rootViewController <span class="string">isKindOfClass:</span>[UITabBarController <span class="class"><span class="keyword">class</span>]])</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> [Tools <span class="string">getShowViewControllerWithRootViewController:</span>[((UITabBarController *) rootViewController) selectedViewController]];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span> (rootViewController.presentedViewController)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">return</span> [Tools <span class="string">getShowViewControllerWithRootViewController:</span>rootViewController.presentedViewController];</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">return</span> rootViewController;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <p>苹果最近发出消息说iCloud服务要转到国内来了，正好趁着这个机会研究一下iCloud到底要怎么用。</p>
+<p>现在各大互联网厂商都会提供一点云端服务，苹果也不例外，iCloud就是苹果的云端服务，用户可以在这里备份通讯录、邮件、照片、音乐等等iOS原生系统中的数据，并且可以在各个苹果设备之间无缝连接，虽然苹果在iOS5（好像是）发布的时候大吹特吹了一把iCloud，但是后来的使用过程中好像iCloud是各种坑爹。不过随着技术的提升，最近iCloud也变得越来越好，对开发者的支持也是越来越方便了。</p>
+<h2 id="配置iCloud"><a href="#配置iCloud" class="headerlink" title="配置iCloud"></a>配置iCloud</h2><p>配置iCloud，首先你就先要有一个真实的苹果开发者账号，没错，就是一年688的那个。开通了之后，在Xcode中新建一个项目。然后在 <code>TARGETS</code> -&gt; <code>Capabilities</code> -&gt; <code>iCloud</code>中打开开关就可以了。</p>
+<p>就像这样，是不是很简单啊。</p>
+<center><img src="/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/iCloud_1.png" alt="logo"></center>
+
+<p>诶，可是好像有什么地方不对，有些地方爆红了。</p>
+<p>这是因为我们还没有给这个App ID 注册，所以接下来我们去苹果的 <a href="https://developer.apple.com/account" target="_blank" rel="external">开发者官网</a> 添加一个App ID，在添加的时候勾选 <code>iCloud</code> 服务就可以啦。</p>
+<center><img src="/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/iCloud_2.png" alt="logo"></center>
+
+<p>什么？你说你已经创建过App ID了？？？没关系，在管理App ID这边选择 <code>Edit</code>，然后在勾选<code>iCloud</code>也是一样的。</p>
+<center><img src="/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/iCloud_3.png" alt="logo"></center>
+
+
+<p>这时候回到Xcode中在看一下，应该就已经没有爆红了吧。</p>
+<p>什么？？？还有爆红？？？ 那你重启一下XCode试试吧。再不行，你重启一下电脑试试好了。</p>
+<h2 id="Key-value-storage"><a href="#Key-value-storage" class="headerlink" title="Key-value storage"></a>Key-value storage</h2><p>在Xcode中 <code>iCloud</code>下边一共有三个可以勾选的服务，其中第一个就是<code>key-value storage</code>，这个也是最简单的<code>iCloud</code>使用方法了，他跟<code>NSUserDefaults</code>的使用方法基本一样，都是以键值对的方式存储数据。只不过处理iCloud的类为<code>NSUbiquitousKeyValueStore</code>。</p>
+<h3 id="存储数据"><a href="#存储数据" class="headerlink" title="存储数据"></a>存储数据</h3><p>存储数据的方式很简单，只要使用 <code>setObject:forkey:</code>之后，使用<code>synchronize</code>同步一下就可以了。</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">NSUbiquitousKeyValueStore *keyValueStore = [NSUbiquitousKeyValueStore <span class="keyword">default</span>Store];</div><div class="line">[keyValueStore <span class="built_in">set</span>Object:@<span class="string">"test message"</span> <span class="keyword">for</span>Key:@<span class="string">"test"</span>];</div><div class="line">[keyValueStore synchronize];</div></pre></td></tr></table></figure>
+<h3 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h3><p>获取数据的方式也一样，是要使用 <code>objectForKey</code>就可以了。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSUbiquitousKeyValueStore</span> *keyValueStore = [<span class="built_in">NSUbiquitousKeyValueStore</span> defaultStore];</div><div class="line"><span class="built_in">NSString</span> *testString = [keyValueStore objectForKey:<span class="string">@"test"</span>];</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,testString);</div></pre></td></tr></table></figure>
+<h3 id="数据改变通知"><a href="#数据改变通知" class="headerlink" title="数据改变通知"></a>数据改变通知</h3><p>看一下<code>NSUbiquitousKeyValueStore</code>的头文件，我们发现他还有一个通知消息</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">FOUNDATION_EXPORT NSNotificationName const NSUbiquitousKeyValueStoreDidChangeExternallyNotification API_AVAILABLE(<span class="name">macos</span>(<span class="number">10.7</span>), ios(<span class="number">5.0</span>), watchos(<span class="number">2.0</span>), tvos(<span class="number">9.0</span>))<span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>注册这个通知，就可以在数据修改的时候接收到通知，然后做对应的处理。最好的验证方法就是在存储了数据之后直接删除掉这个app，然后再次安装，这个时候就会触发该通知。</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[[<span class="name">NSNotificationCenter</span> defaultCenter] addObserver:self selector:@selector(<span class="name">storeDidChange:</span>) name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification object:[<span class="name">NSUbiquitousKeyValueStore</span> defaultStore]]<span class="comment">;</span></div></pre></td></tr></table></figure>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>storeDidChange:<span class="params">(NSUbiquitousKeyValueStore *)</span>defaultStore</div><div class="line">&#123;</div><div class="line">    NSLog<span class="params">(@<span class="string">"%@"</span>,defaultStore)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上就是关于配置iCloud和key-value存储的简单使用，后边我们再看看其他两种服务是怎么样使用的。</p>
 
       
     </div>
@@ -425,8 +441,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/30/iOS-10-3新特性-在应用内评分/" rel="next" title="iOS 10.3新特性-在应用内评分">
-                <i class="fa fa-chevron-left"></i> iOS 10.3新特性-在应用内评分
+              <a href="/2018/01/15/iOS开发-iCloud的简单使用/" rel="next" title="iOS开发-iCloud的简单使用">
+                <i class="fa fa-chevron-left"></i> iOS开发-iCloud的简单使用
               </a>
             
           </div>
@@ -434,10 +450,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/04/iOS通过UTI（统一类型标示符）实现应用间文件的传递/" rel="prev" title="iOS通过UTI（统一类型标示符）实现应用间文件的传递">
-                iOS通过UTI（统一类型标示符）实现应用间文件的传递 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -548,7 +560,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#UINavigationController"><span class="nav-number">1.</span> <span class="nav-text">UINavigationController</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UITabBarViewController"><span class="nav-number">2.</span> <span class="nav-text">UITabBarViewController</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#presentedViewController"><span class="nav-number">3.</span> <span class="nav-text">presentedViewController</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整合一下"><span class="nav-number">4.</span> <span class="nav-text">整合一下</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置iCloud"><span class="nav-number">1.</span> <span class="nav-text">配置iCloud</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Key-value-storage"><span class="nav-number">2.</span> <span class="nav-text">Key-value storage</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#存储数据"><span class="nav-number">2.1.</span> <span class="nav-text">存储数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取数据"><span class="nav-number">2.2.</span> <span class="nav-text">获取数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据改变通知"><span class="nav-number">2.3.</span> <span class="nav-text">数据改变通知</span></a></li></ol></li></ol></div>
             
 
           </div>
