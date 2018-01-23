@@ -101,13 +101,13 @@ Cloud Kit 基础cloud kit一共有7个基础类，简单了解一下这些基础
 CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 <meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitDashboardEnter.png">
 <meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitDashboardWeb.png">
-<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitCreateRecordType">
-<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddField">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitCreateRecordType.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddField.png">
 <meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddIndex.png">
 <meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddIndexFinished.png">
-<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddRecord">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddRecord.png">
 <meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitQueryRecords.png">
-<meta property="og:updated_time" content="2018-01-23T08:51:19.187Z">
+<meta property="og:updated_time" content="2018-01-23T08:55:35.226Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发-iCloud的简单使用（3）-Cloud Kit的使用">
 <meta name="twitter:description" content="好了，看完了key-value，看完了Document的存储，终于到了Cloud kit的使用了。
@@ -427,11 +427,11 @@ CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 <h3 id="Api-Access"><a href="#Api-Access" class="headerlink" title="Api Access"></a>Api Access</h3><p>管理API令牌和服务器密钥，允许对应环境进行web服务调用。</p>
 <h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>这次我们只讲简单的操作，所以本篇文章就只使用 Data中的部分功能。</p>
 <h4 id="创建RECORD-TYPE"><a href="#创建RECORD-TYPE" class="headerlink" title="创建RECORD TYPE"></a>创建RECORD TYPE</h4><p>首先点击<em>Data</em> , <em>RECORD TYPE</em> , <em>Create New Type</em>创建一个新的RECORD TYPE。</p>
- <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitCreateRecordType" alt="logo"></center>
+ <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitCreateRecordType.png" alt="logo"></center>
 
 <p>这里<em>注意</em>，我们的RECORD TYPE Name 是<em>Note</em>，这个在之后代码里操作非常重要，所以记得不要写错了。</p>
 <h4 id="添加Field"><a href="#添加Field" class="headerlink" title="添加Field"></a>添加Field</h4><p>有了表，接下来就是添加字段了。点击<em>Add Field</em> 然后输入字段名，选择类型就可以了。这里可以一次性添加多条，添加完点击保存就可以了。</p>
- <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddField" alt="logo"></center>
+ <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddField.png" alt="logo"></center>
 
 <p>添加的内容有：</p>
 <ul>
@@ -459,7 +459,7 @@ CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 
 <h4 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h4><p>接下来，我们就可以给表里添加数据了。</p>
 <p>选择<em>RECORD</em> ,确认<em>LOAD RECORDS FROM</em>和<em>QUERY FOR RECORDS OF TYPE</em> 都正确了之后，点击<em>Creat New Record…</em>，在右边输入想要插入的数据，添加个几条就可以了。</p>
- <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddRecord" alt="logo"></center>
+ <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddRecord.png" alt="logo"></center>
 
 
 <h4 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h4><p>随便添加几条数据之后，还是在这个页面，点击左侧的<em>Query Records</em>，就可以查询到数据了。</p>
