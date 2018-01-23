@@ -89,7 +89,7 @@
 
 <meta name="description" content="好了，看完了key-value，看完了Document的存储，终于到了Cloud kit的使用了。
 比起前边的两种，Cloud kit更像是一个数据库。苹果会提供一个dashboard作为云存储的管理端。
-cloud kit 基础cloud kit一共有7个基础类，简单了解一下这些基础类接下来的使用就比较容易理解了。
+Cloud Kit 基础cloud kit一共有7个基础类，简单了解一下这些基础类接下来的使用就比较容易理解了。
 CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS开发-iCloud的简单使用（3）-Cloud Kit的使用">
@@ -97,16 +97,22 @@ CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 <meta property="og:site_name" content="zhangzr's blog">
 <meta property="og:description" content="好了，看完了key-value，看完了Document的存储，终于到了Cloud kit的使用了。
 比起前边的两种，Cloud kit更像是一个数据库。苹果会提供一个dashboard作为云存储的管理端。
-cloud kit 基础cloud kit一共有7个基础类，简单了解一下这些基础类接下来的使用就比较容易理解了。
+Cloud Kit 基础cloud kit一共有7个基础类，简单了解一下这些基础类接下来的使用就比较容易理解了。
 CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 <meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitDashboardEnter.png">
 <meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitDashboardWeb.png">
-<meta property="og:updated_time" content="2018-01-22T15:02:37.411Z">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitCreateRecordType">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddField">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddIndex.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddIndexFinished.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddRecord">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitQueryRecords.png">
+<meta property="og:updated_time" content="2018-01-23T08:51:19.187Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发-iCloud的简单使用（3）-Cloud Kit的使用">
 <meta name="twitter:description" content="好了，看完了key-value，看完了Document的存储，终于到了Cloud kit的使用了。
 比起前边的两种，Cloud kit更像是一个数据库。苹果会提供一个dashboard作为云存储的管理端。
-cloud kit 基础cloud kit一共有7个基础类，简单了解一下这些基础类接下来的使用就比较容易理解了。
+Cloud Kit 基础cloud kit一共有7个基础类，简单了解一下这些基础类接下来的使用就比较容易理解了。
 CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 <meta name="twitter:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitDashboardEnter.png">
 
@@ -385,7 +391,7 @@ CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
       
         <p>好了，看完了<code>key-value</code>，看完了<code>Document</code>的存储，终于到了<code>Cloud kit</code>的使用了。</p>
 <p>比起前边的两种，<code>Cloud kit</code>更像是一个数据库。苹果会提供一个dashboard作为云存储的管理端。</p>
-<h2 id="cloud-kit-基础"><a href="#cloud-kit-基础" class="headerlink" title="cloud kit 基础"></a>cloud kit 基础</h2><p>cloud kit一共有7个基础类，简单了解一下这些基础类接下来的使用就比较容易理解了。</p>
+<h2 id="Cloud-Kit-基础"><a href="#Cloud-Kit-基础" class="headerlink" title="Cloud Kit 基础"></a>Cloud Kit 基础</h2><p>cloud kit一共有7个基础类，简单了解一下这些基础类接下来的使用就比较容易理解了。</p>
 <h3 id="CKContainer"><a href="#CKContainer" class="headerlink" title="CKContainer"></a>CKContainer</h3><p><code>CKContainer</code>类似于应用运行时的沙盒，一个应用只能访问自己的沙盒，同样的，一个应用也只能访问自己的Container。</p>
 <p>通过初始化之后就可以使用</p>
 <figure class="highlight inform7"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">CKContainer *<span class="keyword">container</span> = <span class="comment">[CKContainer defaultContainer]</span>;</div></pre></td></tr></table></figure>
@@ -413,10 +419,55 @@ CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 <p>这个界面好像更新过了，和网上很多教程的样式都不太一样。新的界面长这样：</p>
  <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitDashboardWeb.png" alt="logo"></center>
 
+<p>新的界面包括开发版和产品版（线上版）两种，在开发的时候我们就只针对左边的开发版进行操作就可以了。无论是那个版本，都有五个相同的入口。</p>
+<h3 id="Data"><a href="#Data" class="headerlink" title="Data"></a>Data</h3><p>Cloud kit的数据管理中心入口。在这里可以进行数据的字段，索引等内容设定。</p>
+<h3 id="Logs"><a href="#Logs" class="headerlink" title="Logs"></a>Logs</h3><p>查看Cloud kit的服务日志，显示数据库操作，推送通知以及对应环境中的其他活动。</p>
+<h3 id="Telemetry"><a href="#Telemetry" class="headerlink" title="Telemetry"></a>Telemetry</h3><p>查看对应环境中服务器端性能和数据库利用率的图表。</p>
+<h3 id="Public-Database-Usage"><a href="#Public-Database-Usage" class="headerlink" title="Public Database Usage"></a>Public Database Usage</h3><p>查看公共数据库的使用情况图标，包括活跃用户、请求频率等。</p>
+<h3 id="Api-Access"><a href="#Api-Access" class="headerlink" title="Api Access"></a>Api Access</h3><p>管理API令牌和服务器密钥，允许对应环境进行web服务调用。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>这次我们只讲简单的操作，所以本篇文章就只使用 Data中的部分功能。</p>
+<h4 id="创建RECORD-TYPE"><a href="#创建RECORD-TYPE" class="headerlink" title="创建RECORD TYPE"></a>创建RECORD TYPE</h4><p>首先点击<em>Data</em> , <em>RECORD TYPE</em> , <em>Create New Type</em>创建一个新的RECORD TYPE。</p>
+ <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitCreateRecordType" alt="logo"></center>
+
+<p>这里<em>注意</em>，我们的RECORD TYPE Name 是<em>Note</em>，这个在之后代码里操作非常重要，所以记得不要写错了。</p>
+<h4 id="添加Field"><a href="#添加Field" class="headerlink" title="添加Field"></a>添加Field</h4><p>有了表，接下来就是添加字段了。点击<em>Add Field</em> 然后输入字段名，选择类型就可以了。这里可以一次性添加多条，添加完点击保存就可以了。</p>
+ <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddField" alt="logo"></center>
+
+<p>添加的内容有：</p>
+<ul>
+<li>title         String</li>
+<li>content       String</li>
+<li>photo         Asset</li>
+</ul>
+<h4 id="添加Indexs"><a href="#添加Indexs" class="headerlink" title="添加Indexs"></a>添加Indexs</h4><p>为了搜索更方便一些，我们添加一些索引。<br>点击<em>INDEXS</em>，选择我们刚刚添加的<em>Note</em>，然后添加索引，添加的索引类型有<em>QUERYABLE</em>,<em>SEARCHABLE</em>,<em>SORTABLE</em>。</p>
+ <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddIndex.png" alt="logo"></center>
 
 
+<p>添加的内容有：</p>
+<ul>
+<li>title         QUERYABLE</li>
+<li>title         SEARCHABLE</li>
+<li>title         SORTABLE</li>
+<li>content       QUERYABLE</li>
+<li>content       SEARCHABLE</li>
+<li>content       SORTABLE</li>
+<li>recordName    QUERYABLE</li>
+</ul>
+<p>添加完就是这样的，对照一下看看有没有添加错啊。</p>
+ <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddIndexFinished.png" alt="logo"></center>
 
 
+<h4 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h4><p>接下来，我们就可以给表里添加数据了。</p>
+<p>选择<em>RECORD</em> ,确认<em>LOAD RECORDS FROM</em>和<em>QUERY FOR RECORDS OF TYPE</em> 都正确了之后，点击<em>Creat New Record…</em>，在右边输入想要插入的数据，添加个几条就可以了。</p>
+ <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddRecord" alt="logo"></center>
+
+
+<h4 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h4><p>随便添加几条数据之后，还是在这个页面，点击左侧的<em>Query Records</em>，就可以查询到数据了。</p>
+ <center><img src="/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitQueryRecords.png" alt="logo"></center>
+
+
+<p>到此，Cloud Dashboard的简单使用就介绍到这，接下来我们看看通过代码怎么来操作Cloud kit。<br>撸起袖子写代码吧。</p>
+<h2 id="通过代码操作Cloud-Kit"><a href="#通过代码操作Cloud-Kit" class="headerlink" title="通过代码操作Cloud Kit"></a>通过代码操作Cloud Kit</h2>
       
     </div>
 
@@ -571,7 +622,7 @@ CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cloud-kit-基础"><span class="nav-number">1.</span> <span class="nav-text">cloud kit 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CKContainer"><span class="nav-number">1.1.</span> <span class="nav-text">CKContainer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKDatabase"><span class="nav-number">1.2.</span> <span class="nav-text">CKDatabase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKRecord"><span class="nav-number">1.3.</span> <span class="nav-text">CKRecord</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKRecordZone"><span class="nav-number">1.4.</span> <span class="nav-text">CKRecordZone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKRecordIdentifier"><span class="nav-number">1.5.</span> <span class="nav-text">CKRecordIdentifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKReference"><span class="nav-number">1.6.</span> <span class="nav-text">CKReference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKAsset"><span class="nav-number">1.7.</span> <span class="nav-text">CKAsset</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CloudKit-Dashboard"><span class="nav-number">2.</span> <span class="nav-text">CloudKit Dashboard</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cloud-Kit-基础"><span class="nav-number">1.</span> <span class="nav-text">Cloud Kit 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CKContainer"><span class="nav-number">1.1.</span> <span class="nav-text">CKContainer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKDatabase"><span class="nav-number">1.2.</span> <span class="nav-text">CKDatabase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKRecord"><span class="nav-number">1.3.</span> <span class="nav-text">CKRecord</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKRecordZone"><span class="nav-number">1.4.</span> <span class="nav-text">CKRecordZone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKRecordIdentifier"><span class="nav-number">1.5.</span> <span class="nav-text">CKRecordIdentifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKReference"><span class="nav-number">1.6.</span> <span class="nav-text">CKReference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CKAsset"><span class="nav-number">1.7.</span> <span class="nav-text">CKAsset</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CloudKit-Dashboard"><span class="nav-number">2.</span> <span class="nav-text">CloudKit Dashboard</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data"><span class="nav-number">2.1.</span> <span class="nav-text">Data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Logs"><span class="nav-number">2.2.</span> <span class="nav-text">Logs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Telemetry"><span class="nav-number">2.3.</span> <span class="nav-text">Telemetry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Public-Database-Usage"><span class="nav-number">2.4.</span> <span class="nav-text">Public Database Usage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Api-Access"><span class="nav-number">2.5.</span> <span class="nav-text">Api Access</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">2.6.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建RECORD-TYPE"><span class="nav-number">2.6.1.</span> <span class="nav-text">创建RECORD TYPE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加Field"><span class="nav-number">2.6.2.</span> <span class="nav-text">添加Field</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加Indexs"><span class="nav-number">2.6.3.</span> <span class="nav-text">添加Indexs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加数据"><span class="nav-number">2.6.4.</span> <span class="nav-text">添加数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询数据"><span class="nav-number">2.6.5.</span> <span class="nav-text">查询数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过代码操作Cloud-Kit"><span class="nav-number">3.</span> <span class="nav-text">通过代码操作Cloud Kit</span></a></li></ol></div>
             
 
           </div>
