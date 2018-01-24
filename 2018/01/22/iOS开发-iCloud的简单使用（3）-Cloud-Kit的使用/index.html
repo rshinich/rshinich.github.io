@@ -108,7 +108,7 @@ CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 <meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitAddRecord.png">
 <meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitQueryRecords.png">
 <meta property="og:image" content="http://yoursite.com/2018/01/22/iOS开发-iCloud的简单使用（3）-Cloud-Kit的使用/CloudKitDemo.gif">
-<meta property="og:updated_time" content="2018-01-23T13:24:14.335Z">
+<meta property="og:updated_time" content="2018-01-23T13:49:26.953Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发-iCloud的简单使用（3）-Cloud Kit的使用">
 <meta name="twitter:description" content="好了，看完了key-value，看完了Document的存储，终于到了Cloud kit的使用了。
@@ -482,6 +482,8 @@ CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[noteRecord <span class="built_in">set</span>Value:title <span class="keyword">for</span>Key:@<span class="string">"title"</span>];</div><div class="line">[noteRecord <span class="built_in">set</span>Value:content <span class="keyword">for</span>Key:@<span class="string">"content"</span>];</div></pre></td></tr></table></figure>
 <p>这里要特殊注意的是图片的处理，我们先要创建一个URL，然后把图片数据保存到沙盒中，生成一个URL，再创建CKAsset。</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSDate</span> *dateID = [<span class="built_in">NSDate</span> dateWithTimeIntervalSinceNow:<span class="number">0</span>];</div><div class="line"><span class="built_in">NSTimeInterval</span> timeInterval = [dateID timeIntervalSince1970] * <span class="number">1000</span>;      <span class="comment">//*1000表示到毫秒级，这样可以保证不会同时生成两个同样的id</span></div><div class="line"><span class="built_in">NSString</span> *idString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%.0f"</span>, timeInterval];</div><div class="line"></div><div class="line"><span class="built_in">NSString</span> *filePath = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@/%@"</span>,tempPath,idString];</div><div class="line"><span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> fileURLWithPath:filePath];</div><div class="line">[imageData writeToURL:url atomically:<span class="literal">YES</span>];</div><div class="line"></div><div class="line">CKAsset *asset = [[CKAsset alloc]initWithFileURL:url];</div><div class="line"></div><div class="line">[noteRecord setValue:asset forKey:<span class="string">@"photo"</span>];</div></pre></td></tr></table></figure>
+<p> 对了，还有CKAsset转UIImage的方法：</p>
+ <figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"> <span class="string">CKAsset</span> <span class="meta">*asset</span> <span class="string">=</span> <span class="string">[record</span> <span class="attr">objectForKey:@"photo"];</span></div><div class="line"><span class="string">UIImage</span> <span class="meta">*image</span> <span class="string">=</span> <span class="string">[UIImage</span> <span class="attr">imageWithContentsOfFile:asset.fileURL.path];</span></div></pre></td></tr></table></figure>
 <p>这样数据的内容就处理好了，接下来我们只要把它保存起来就可以咯。</p>
 <figure class="highlight scheme"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[<span class="name">datebase</span> saveRecord:noteRecord completionHandler:^(<span class="name">CKRecord</span> * _Nullable record, NSError * _Nullable error) &#123;</div><div class="line">    </div><div class="line">    if(<span class="name">!error</span>)</div><div class="line">    &#123;</div><div class="line">        NSLog(<span class="name">@</span><span class="string">"保存成功"</span>)<span class="comment">;</span></div><div class="line">    &#125;</div><div class="line">    else</div><div class="line">    &#123;</div><div class="line">        NSLog(<span class="name">@</span><span class="string">"保存失败"</span>)<span class="comment">;</span></div><div class="line">        NSLog(<span class="name">@</span><span class="string">"%@"</span>,error.description)<span class="comment">;</span></div><div class="line">    &#125;</div><div class="line">&#125;]<span class="comment">;</span></div></pre></td></tr></table></figure>
 <p>整个代码合起来就是这样的：</p>
@@ -562,6 +564,10 @@ CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/01/24/iOS开发-runloop入门/" rel="prev" title="iOS开发-runloop入门">
+                iOS开发-runloop入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -632,7 +638,7 @@ CKContainerCKContainer类似于应用运行时的沙盒，一个应用只能">
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-count">39</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
