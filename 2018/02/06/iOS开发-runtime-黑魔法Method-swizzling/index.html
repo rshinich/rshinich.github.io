@@ -87,34 +87,22 @@
 
 
 
-<meta name="description" content="先放链接：
-Objective-C-Method-Swizzling
-iOS黑魔法－Method Swizzling
-iOS runtime实战应用：Method Swizzling
-Method Swizzling的各种姿势
-Method Swizzling
-Objective-C Method Swizzling 的最佳实践">
+<meta name="description" content="记得很久很久以前，啊，其实也没有很久，有一次面试，面试官问我，你懂runtime么？？当时我是一个比现在还菜的菜逼，一句话给我问懵逼了，runtime是啥，我不懂啊。。。
+后来面试完回来就赶快去查runtime的资料，至于runtime是什么，这里我就不多说啦，网上无数大牛总结过的东西，我也就不再班门弄斧啦，虽然这次的主题Method Swizzling也有很多大牛总结，我这篇文章呢，也就兹当做自">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS开发-runtime-黑魔法Method swizzling">
 <meta property="og:url" content="http://yoursite.com/2018/02/06/iOS开发-runtime-黑魔法Method-swizzling/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
-<meta property="og:description" content="先放链接：
-Objective-C-Method-Swizzling
-iOS黑魔法－Method Swizzling
-iOS runtime实战应用：Method Swizzling
-Method Swizzling的各种姿势
-Method Swizzling
-Objective-C Method Swizzling 的最佳实践">
-<meta property="og:updated_time" content="2018-02-06T07:14:15.737Z">
+<meta property="og:description" content="记得很久很久以前，啊，其实也没有很久，有一次面试，面试官问我，你懂runtime么？？当时我是一个比现在还菜的菜逼，一句话给我问懵逼了，runtime是啥，我不懂啊。。。
+后来面试完回来就赶快去查runtime的资料，至于runtime是什么，这里我就不多说啦，网上无数大牛总结过的东西，我也就不再班门弄斧啦，虽然这次的主题Method Swizzling也有很多大牛总结，我这篇文章呢，也就兹当做自">
+<meta property="og:image" content="http://yoursite.com/2018/02/06/iOS开发-runtime-黑魔法Method-swizzling/MethodSwizzlingBefore.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/06/iOS开发-runtime-黑魔法Method-swizzling/MethodSwizzlingAfter.png">
+<meta property="og:updated_time" content="2018-02-06T13:49:28.913Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发-runtime-黑魔法Method swizzling">
-<meta name="twitter:description" content="先放链接：
-Objective-C-Method-Swizzling
-iOS黑魔法－Method Swizzling
-iOS runtime实战应用：Method Swizzling
-Method Swizzling的各种姿势
-Method Swizzling
-Objective-C Method Swizzling 的最佳实践">
+<meta name="twitter:description" content="记得很久很久以前，啊，其实也没有很久，有一次面试，面试官问我，你懂runtime么？？当时我是一个比现在还菜的菜逼，一句话给我问懵逼了，runtime是啥，我不懂啊。。。
+后来面试完回来就赶快去查runtime的资料，至于runtime是什么，这里我就不多说啦，网上无数大牛总结过的东西，我也就不再班门弄斧啦，虽然这次的主题Method Swizzling也有很多大牛总结，我这篇文章呢，也就兹当做自">
+<meta name="twitter:image" content="http://yoursite.com/2018/02/06/iOS开发-runtime-黑魔法Method-swizzling/MethodSwizzlingBefore.png">
 
 
 
@@ -389,8 +377,58 @@ Objective-C Method Swizzling 的最佳实践">
       
 
       
-        <p>先放链接：</p>
-<p><a href="http://yulingtianxia.com/blog/2017/04/17/Objective-C-Method-Swizzling/" target="_blank" rel="external">Objective-C-Method-Swizzling</a></p>
+        <p>记得很久很久以前，啊，其实也没有很久，有一次面试，面试官问我，你懂<code>runtime</code>么？？当时我是一个比现在还菜的菜逼，一句话给我问懵逼了，<code>runtime</code>是啥，我不懂啊。。。</p>
+<p>后来面试完回来就赶快去查<code>runtime</code>的资料，至于<code>runtime</code>是什么，这里我就不多说啦，网上无数大牛总结过的东西，我也就不再班门弄斧啦，虽然这次的主题<code>Method Swizzling</code>也有很多大牛总结，我这篇文章呢，也就兹当做自己学习的笔记啦。</p>
+<h2 id="Method-Swizzling-是什么"><a href="#Method-Swizzling-是什么" class="headerlink" title="Method Swizzling 是什么"></a>Method Swizzling 是什么</h2><p><strong>Method Swizzling</strong>是objective-c中的黑魔法，算是runtime中的一种实战使用模式，它允许我们动态的替换方法，实现<code>Hook</code>功能。</p>
+<p>但是它也是一把双刃剑，用得好的人可以用它来很轻松的实现一些复杂的功能，而如果用的不好，后果就真的是毁灭性的伤害，这样的黑魔法，我们一定要尽力去掌握并驾驭它。</p>
+<h2 id="Method-Swizzling-能做什么"><a href="#Method-Swizzling-能做什么" class="headerlink" title="Method Swizzling 能做什么"></a>Method Swizzling 能做什么</h2><p>说了这么多，那我们到底用它来做什么呢？？？ 先从名字来看，<code>Method</code>方法 <code>Swizzling</code>混合，那他的意思就是<strong>方法混合</strong>？？？ 好像也没有一个准确的翻译，我们就姑且翻译成<strong>方法交换</strong>吧。</p>
+<p>也就是说把原来 A方法实现的a，原来B方法实现的b交换一下，让A来实现b的功能，让B来实现a的功能。咋一看好像没什么厉害的地方，不就是交换个方法么，有什么用呢？您先别急，往下看。</p>
+<h2 id="Method-Swizzling-原理"><a href="#Method-Swizzling-原理" class="headerlink" title="Method Swizzling 原理"></a>Method Swizzling 原理</h2><p>ok，知道他是什么，能干什么了。接下来我们来看看他的原理吧。</p>
+<p>虽然之前我们说Method Swizzling是一把双刃剑，用不好就容易把自己砍死，但是如果我们知道如何使用，这些就不会那么可怕了。</p>
+<p>在<code>Method</code>方法中，有两个关键的成员变量：<strong>SEL</strong>和<strong>IMP</strong>。<br><strong>SEL</strong>就是我们平时看到的方法的名称，比如 <code>@selector(viewWillAppear:)</code>。<br><strong>IMP</strong>是一个函数指针，指向的是方法的实现。<br>原则上，方法名<strong>SEL</strong>和<strong>IMP</strong>是一一对应的，那Method Swizzling的本质就是改变他们的对应关系，达到交换方法实现的目的。</p>
+<center><img src="/2018/02/06/iOS开发-runtime-黑魔法Method-swizzling/MethodSwizzlingBefore.png" alt="logo"></center>
+
+<center><img src="/2018/02/06/iOS开发-runtime-黑魔法Method-swizzling/MethodSwizzlingAfter.png" alt="logo"></center>
+
+
+<h2 id="Method-Swizzling-实现-amp-实践"><a href="#Method-Swizzling-实现-amp-实践" class="headerlink" title="Method Swizzling 实现&amp;实践"></a>Method Swizzling 实现&amp;实践</h2><p>好了，废话说了一大堆，接下来我们就来说说到底是怎么实现Method Swizzling吧。</p>
+<p>我们用一个日常开发中都会用到的需求作为例子，平时我们可能会被产品要求在页面中添加监听事件，监听每个页面的访问，那我们需要再每个页面都添加这样的代码：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">viewWillAppear:</span>(BOOL)animated</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> <span class="string">viewWillAppear:</span>animated];</div><div class="line">    [TalkingData <span class="string">trackPageBegin:</span>@<span class="string">"P110000"</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)<span class="string">viewWillDisappear:</span>(BOOL)animated</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> <span class="string">viewWillDisappear:</span>animated];</div><div class="line">    [TalkingData <span class="string">trackPageEnd:</span>@<span class="string">"P110000"</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们可以直接在每个页面中都添加这样的代码，简单粗暴，但是缺点也很明显，这样不仅要干很多体力活儿，还容易漏写某些页面，后期可能会被后边的程序员骂死。</p>
+<p>或者我们写一个<code>UIViewController</code>的基类，让其他类都继承他，但是对于已经写好的代码，几十个类这样修改还是非常麻烦。</p>
+<p>这时候就用到了我们的黑魔法Method Swizzling。</p>
+<h3 id="Method-Swizzling-相关函数介绍"><a href="#Method-Swizzling-相关函数介绍" class="headerlink" title="Method Swizzling 相关函数介绍"></a>Method Swizzling 相关函数介绍</h3><p>在真正使用黑魔法之前，我们先熟悉一下需要用到的函数：</p>
+<p>获取一个方法名称（SEL）：</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span><span class="number">_</span>getInstanceMethod</div></pre></td></tr></table></figure>
+<p>获取一个方法的实现（IMP）：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">method_getImplementation</div></pre></td></tr></table></figure>
+<p>获取一个实现编码类型</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">method_getTypeEncoding</div></pre></td></tr></table></figure>
+<p>给方法添加实现</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span><span class="number">_</span>addMethod</div></pre></td></tr></table></figure>
+<p>用一个方法实现替换另一个方法的实现</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span><span class="number">_</span>replaceMethod</div></pre></td></tr></table></figure>
+<p>交换两个方法的实现</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">method_exchangeImplementations</div></pre></td></tr></table></figure>
+<h3 id="Method-Swizzling-实现"><a href="#Method-Swizzling-实现" class="headerlink" title="Method Swizzling 实现"></a>Method Swizzling 实现</h3><p>终于到了实现的部分，好紧脏。<br>废话不多说直接上代码。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">+ (void)load</div><div class="line">&#123;</div><div class="line">    static dispatch_once_t onceToken<span class="comment">;</span></div><div class="line">    dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">        </div><div class="line">//        获取类方法</div><div class="line">//        Class <span class="keyword">selfClass </span>= object_getClass([<span class="keyword">self </span>class])<span class="comment">;</span></div><div class="line">//        获取实例方法</div><div class="line">        Class <span class="keyword">selfClass </span>= [<span class="keyword">self </span>class]<span class="comment">;</span></div><div class="line"></div><div class="line">        //获取原方法的名称和实现</div><div class="line">        <span class="keyword">SEL </span>oriSEL = <span class="comment">@selector(viewWillAppear:);</span></div><div class="line">        Method oriMethod = class_getInstanceMethod(<span class="keyword">selfClass, </span>oriSEL)<span class="comment">;</span></div><div class="line">    </div><div class="line">        //获取替换方法的名称和实现</div><div class="line">        <span class="keyword">SEL </span><span class="keyword">swizzlingSEL </span>= <span class="comment">@selector(swizzlingViewWillAppear:);</span></div><div class="line">        Method <span class="keyword">swizzlingMethod </span>= class_getInstanceMethod(<span class="keyword">selfClass, </span><span class="keyword">swizzlingSEL);</span></div><div class="line">        </div><div class="line">        //给原方法添加替换方法实现，为了避免原方法没有实现</div><div class="line">        <span class="keyword">BOOL </span><span class="keyword">addSucc </span>= class_addMethod(<span class="keyword">selfClass, </span>oriSEL, method_getImplementation(<span class="keyword">swizzlingMethod), </span>method_getTypeEncoding(<span class="keyword">swizzlingMethod));</span></div><div class="line">        //成功，将原方法的实现替换到替换方法的实现</div><div class="line">        <span class="meta">if</span> (<span class="keyword">addSucc) </span>&#123;</div><div class="line">            class_replaceMethod(<span class="keyword">selfClass, </span><span class="keyword">swizzlingSEL, </span>method_getImplementation(oriMethod), method_getTypeEncoding(oriMethod))<span class="comment">;</span></div><div class="line">        &#125;</div><div class="line">        //失败，说明原方法已经实现，直接交换方法</div><div class="line">        <span class="meta">else</span> &#123;</div><div class="line">            method_exchangeImplementations(oriMethod, <span class="keyword">swizzlingMethod);</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>另外附上替换方法的实现，这里我直接打印了类的名称，具体需要怎么做直接按需求来就行了。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)swizzlingViewWillAppear:(<span class="built_in">BOOL</span>)animated</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,<span class="keyword">self</span>.class);</div><div class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> swizzlingViewWillAppear:animated];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Method-Swizzling-注意要点"><a href="#Method-Swizzling-注意要点" class="headerlink" title="Method Swizzling 注意要点"></a>Method Swizzling 注意要点</h3><p>功能虽然实现完了，但是这里边有几个部分我们要注意一下。</p>
+<ul>
+<li>1.为什么要在<code>+load</code>中实现？</li>
+<li>2.<code>+load</code>只会被调用一次，为什么还要用<code>dispatch_once</code>?</li>
+<li>3.为什么不直接交换方法，而是先要添加方法？</li>
+<li>4.在<code>swizzlingViewWillAppear:</code>方法里调用<code>swizzlingViewWillAppear:</code>，不会引起死循环么？</li>
+</ul>
+<h4 id="为什么要在-load中实现？"><a href="#为什么要在-load中实现？" class="headerlink" title="为什么要在+load中实现？"></a>为什么要在<code>+load</code>中实现？</h4><p>因为<code>+load</code>方法是在类被加载的时候调用的，与之相似的有类的<code>+initialize</code>方法，但是他的一种懒加载模式，当这个类或子类收到第一条消息之前才会调用他，所以<code>+load</code>方法是最好的实现场所。</p>
+<h4 id="load只会被调用一次，为什么还要用dispatch-once"><a href="#load只会被调用一次，为什么还要用dispatch-once" class="headerlink" title="+load只会被调用一次，为什么还要用dispatch_once?"></a><code>+load</code>只会被调用一次，为什么还要用<code>dispatch_once</code>?</h4><p>首先我们要确认我们的Method Swizzling只实现一次，因为多次实现会反复交换方法，导致偶数次调用的实现没有交换，造成不必要的麻烦，添加<code>dispatch_once</code>算是添加一个双保险，因为谁知道有没有人会手动调用<code>+load</code>呢？</p>
+<h4 id="为什么不直接交换方法，而是先要添加方法？"><a href="#为什么不直接交换方法，而是先要添加方法？" class="headerlink" title="为什么不直接交换方法，而是先要添加方法？"></a>为什么不直接交换方法，而是先要添加方法？</h4><p>一般情况下，我们都是为了和我们未知的系统方法添加Method Swizzling，而不是完全替换某个功能，所以我们一般都需要再自定义的实现中调用原始的实现，所以就会出现两种情况：</p>
+<p>1.本身就有实现要替换的方法，这个时候比较简单，<code>class_addMethod</code>返回NO，我们直接交换方法就好。<br>2.本身没有实现要替换的方法，而是继承了父类的实现，<code>class_addMethod</code>返回YES，这个时候，我们需要使用<code>class_getInstanceMethod</code>函数获取到原始实现方法指向的方法，也就是父类中的实现，再通过实现<code>class_replaceMethod</code>来实现调用。</p>
+<h4 id="在swizzlingViewWillAppear-方法里调用swizzlingViewWillAppear-，不会引起死循环么？"><a href="#在swizzlingViewWillAppear-方法里调用swizzlingViewWillAppear-，不会引起死循环么？" class="headerlink" title="在swizzlingViewWillAppear:方法里调用swizzlingViewWillAppear:，不会引起死循环么？"></a>在<code>swizzlingViewWillAppear:</code>方法里调用<code>swizzlingViewWillAppear:</code>，不会引起死循环么？</h4><p>因为Method Swizzling的原理为方法互换，所以这时候用执行的<code>swizzlingViewWillAppear:</code>方法，实际上是执行的<code>viewWillAppear:</code>方法，因为我们并不知道OC的<code>viewWillAppear:</code>方法实现了什么内容，所以我们通过这个调用来实现系统的功能。</p>
+<h2 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h2><p>如果看到这里了的话，好像也没有什么必要上Demo了吧？？<br>不过还是放上去好了, <a href="https://github.com/rshinich/MethodSwizzlingDemo" target="_blank" rel="external">Demo地址</a>。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>Method Swizzling算是runtime中的一个比较好的实战使用方式，用好了的话可以解决各种各样的问题，比如数组越界崩溃等等很多问题，都可以通过他来解决，但是也不能滥用，不小心使用的话，可能真的要半夜爬起来改代码了。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://yulingtianxia.com/blog/2017/04/17/Objective-C-Method-Swizzling/" target="_blank" rel="external">Objective-C-Method-Swizzling</a></p>
 <p><a href="https://www.jianshu.com/p/ff19c04b34d0" target="_blank" rel="external">iOS黑魔法－Method Swizzling</a></p>
 <p><a href="https://www.jianshu.com/p/3efc3e94b14c" target="_blank" rel="external">iOS runtime实战应用：Method Swizzling</a></p>
 <p><a href="http://www.tanhao.me/code/160723.html/" target="_blank" rel="external">Method Swizzling的各种姿势</a></p>
@@ -487,8 +525,17 @@ Objective-C Method Swizzling 的最佳实践">
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -532,6 +579,22 @@ Objective-C Method Swizzling 的最佳实践">
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-Swizzling-是什么"><span class="nav-number">1.</span> <span class="nav-text">Method Swizzling 是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-Swizzling-能做什么"><span class="nav-number">2.</span> <span class="nav-text">Method Swizzling 能做什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-Swizzling-原理"><span class="nav-number">3.</span> <span class="nav-text">Method Swizzling 原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-Swizzling-实现-amp-实践"><span class="nav-number">4.</span> <span class="nav-text">Method Swizzling 实现&实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Method-Swizzling-相关函数介绍"><span class="nav-number">4.1.</span> <span class="nav-text">Method Swizzling 相关函数介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Method-Swizzling-实现"><span class="nav-number">4.2.</span> <span class="nav-text">Method Swizzling 实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Method-Swizzling-注意要点"><span class="nav-number">4.3.</span> <span class="nav-text">Method Swizzling 注意要点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么要在-load中实现？"><span class="nav-number">4.3.1.</span> <span class="nav-text">为什么要在+load中实现？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#load只会被调用一次，为什么还要用dispatch-once"><span class="nav-number">4.3.2.</span> <span class="nav-text">+load只会被调用一次，为什么还要用dispatch_once?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么不直接交换方法，而是先要添加方法？"><span class="nav-number">4.3.3.</span> <span class="nav-text">为什么不直接交换方法，而是先要添加方法？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在swizzlingViewWillAppear-方法里调用swizzlingViewWillAppear-，不会引起死循环么？"><span class="nav-number">4.3.4.</span> <span class="nav-text">在swizzlingViewWillAppear:方法里调用swizzlingViewWillAppear:，不会引起死循环么？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo"><span class="nav-number">5.</span> <span class="nav-text">Demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">6.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
