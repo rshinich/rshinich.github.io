@@ -1,0 +1,826 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="今天来说说iOS中的事件传递及响应。
+什么是事件iOS中的事件就是你做出的某些动作，比如触摸屏幕，摇晃手机，或者在听歌的时候用线控切换了音乐，这些事情传递到手机中让手机做出响应的就是事件。
+iOS中的事件一共有三种：
+
+1.触摸事件。（比如轻触、滑动、拖动等）
+2.加速计事件。（比如摇一摇，使用陀螺仪等）
+3.远程控制事件。（比如用耳机线控调整音量等）
+
+这边我们就主要看一下平时最常用的触摸事件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-事件响应及传递">
+<meta property="og:url" content="http://yoursite.com/2018/02/07/iOS开发-事件响应及传递/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="今天来说说iOS中的事件传递及响应。
+什么是事件iOS中的事件就是你做出的某些动作，比如触摸屏幕，摇晃手机，或者在听歌的时候用线控切换了音乐，这些事情传递到手机中让手机做出响应的就是事件。
+iOS中的事件一共有三种：
+
+1.触摸事件。（比如轻触、滑动、拖动等）
+2.加速计事件。（比如摇一摇，使用陀螺仪等）
+3.远程控制事件。（比如用耳机线控调整音量等）
+
+这边我们就主要看一下平时最常用的触摸事件。">
+<meta property="og:image" content="http://yoursite.com/2018/02/07/iOS开发-事件响应及传递/UIResponderTouchView.gif">
+<meta property="og:image" content="http://yoursite.com/2018/02/07/iOS开发-事件响应及传递/eventTouch1.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/07/iOS开发-事件响应及传递/eventTouch2.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/07/iOS开发-事件响应及传递/eventTouch3.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/07/iOS开发-事件响应及传递/eventTouch4.png">
+<meta property="og:updated_time" content="2018-02-07T15:01:06.575Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-事件响应及传递">
+<meta name="twitter:description" content="今天来说说iOS中的事件传递及响应。
+什么是事件iOS中的事件就是你做出的某些动作，比如触摸屏幕，摇晃手机，或者在听歌的时候用线控切换了音乐，这些事情传递到手机中让手机做出响应的就是事件。
+iOS中的事件一共有三种：
+
+1.触摸事件。（比如轻触、滑动、拖动等）
+2.加速计事件。（比如摇一摇，使用陀螺仪等）
+3.远程控制事件。（比如用耳机线控调整音量等）
+
+这边我们就主要看一下平时最常用的触摸事件。">
+<meta name="twitter:image" content="http://yoursite.com/2018/02/07/iOS开发-事件响应及传递/UIResponderTouchView.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/07/iOS开发-事件响应及传递/"/>
+
+
+
+
+
+  <title> iOS开发-事件响应及传递 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/07/iOS开发-事件响应及传递/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-事件响应及传递
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-07T21:02:35+08:00">
+                2018-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天来说说iOS中的事件传递及响应。</p>
+<h2 id="什么是事件"><a href="#什么是事件" class="headerlink" title="什么是事件"></a>什么是事件</h2><p>iOS中的事件就是你做出的某些动作，比如触摸屏幕，摇晃手机，或者在听歌的时候用线控切换了音乐，这些事情传递到手机中让手机做出响应的就是事件。</p>
+<p>iOS中的事件一共有三种：</p>
+<ul>
+<li>1.触摸事件。（比如轻触、滑动、拖动等）</li>
+<li>2.加速计事件。（比如摇一摇，使用陀螺仪等）</li>
+<li>3.远程控制事件。（比如用耳机线控调整音量等）</li>
+</ul>
+<p>这边我们就主要看一下平时最常用的触摸事件。</p>
+<h2 id="响应者对象（UIResponder）"><a href="#响应者对象（UIResponder）" class="headerlink" title="响应者对象（UIResponder）"></a>响应者对象（UIResponder）</h2><p>学习触摸事件第一件事情就是先了解一下响应者对象<code>UIResponder</code>是个什么东西。</p>
+<p>在iOS中并不是所有的东西都能响应事件，只有继承了<code>UIResponder</code>的对象才有能力响应事件。</p>
+<p>在iOS中有三种继承了<code>UIResponder</code>的类，他们都可以接受并处理事件。</p>
+<ul>
+<li>UIApplication</li>
+<li>UIViewController</li>
+<li>UIView</li>
+</ul>
+<p>仔细看一下<code>UIResponder</code>中的方法，很轻松就能找到以下的方法：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)touchesBegan:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event;</div><div class="line">- (<span class="keyword">void</span>)touchesMoved:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event;</div><div class="line">- (<span class="keyword">void</span>)touchesEnded:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event;</div><div class="line">- (<span class="keyword">void</span>)touchesCancelled:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event;</div><div class="line">- (<span class="keyword">void</span>)touchesEstimatedPropertiesUpdated:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">9</span>_1);</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)pressesBegan:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UIPress</span> *&gt; *)presses withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIPressesEvent</span> *)event <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">9</span>_0);</div><div class="line">- (<span class="keyword">void</span>)pressesChanged:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UIPress</span> *&gt; *)presses withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIPressesEvent</span> *)event <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">9</span>_0);</div><div class="line">- (<span class="keyword">void</span>)pressesEnded:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UIPress</span> *&gt; *)presses withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIPressesEvent</span> *)event <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">9</span>_0);</div><div class="line">- (<span class="keyword">void</span>)pressesCancelled:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UIPress</span> *&gt; *)presses withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIPressesEvent</span> *)event <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">9</span>_0);</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)motionBegan:(<span class="built_in">UIEventSubtype</span>)motion withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">3</span>_0);</div><div class="line">- (<span class="keyword">void</span>)motionEnded:(<span class="built_in">UIEventSubtype</span>)motion withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">3</span>_0);</div><div class="line">- (<span class="keyword">void</span>)motionCancelled:(<span class="built_in">UIEventSubtype</span>)motion withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">3</span>_0);</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)remoteControlReceivedWithEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">4</span>_0);</div></pre></td></tr></table></figure>
+<p>这里边我们就只看触摸事件相关的方法：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//一根或多根手指触摸view</span></div><div class="line">- (<span class="keyword">void</span>)touchesBegan:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event;</div><div class="line"><span class="comment">//一根或多根手指在view上移动</span></div><div class="line">- (<span class="keyword">void</span>)touchesMoved:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event;</div><div class="line"><span class="comment">//一根或多根手指离开view</span></div><div class="line">- (<span class="keyword">void</span>)touchesEnded:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event;</div><div class="line"><span class="comment">//在手指离开view之前被系统事件打断，比如来电话了</span></div><div class="line">- (<span class="keyword">void</span>)touchesCancelled:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="keyword">nullable</span> <span class="built_in">UIEvent</span> *)event;</div><div class="line">- (<span class="keyword">void</span>)touchesEstimatedPropertiesUpdated:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">9</span>_1);</div></pre></td></tr></table></figure>
+<p>如果想要在<code>UIView</code>中处理触摸事件，只能添加一个类继承<code>UIView</code>，并重写上述方法。<br>如果想要在<code>UIVIewController</code>中处理触摸事件，在<code>UIViewController</code>中重写上述方法即可。</p>
+<p>比如这样：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">instancetype</span>)initWithFrame:(<span class="built_in">CGRect</span>)frame</div><div class="line">&#123;</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame];</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">self</span>.showEventLabel = [[<span class="built_in">UILabel</span> alloc] init];</div><div class="line">        <span class="keyword">self</span>.showEventLabel.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">10</span>, <span class="number">300</span>, <span class="number">50</span>);</div><div class="line">        <span class="keyword">self</span>.showEventLabel.textAlignment = <span class="built_in">NSTextAlignmentCenter</span>;</div><div class="line">        </div><div class="line">        [<span class="keyword">self</span> addSubview:<span class="keyword">self</span>.showEventLabel];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)touchesBegan:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</div><div class="line">&#123;</div><div class="line">    <span class="keyword">self</span>.showEventLabel.text = <span class="string">@"开始触摸"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)touchesEnded:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</div><div class="line">&#123;</div><div class="line">    <span class="keyword">self</span>.showEventLabel.text = <span class="string">@"触摸结束"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)touchesMoved:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</div><div class="line">&#123;</div><div class="line">    <span class="keyword">self</span>.showEventLabel.text = <span class="string">@"正在移动..."</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<center><img src="/2018/02/07/iOS开发-事件响应及传递/UIResponderTouchView.gif" alt="logo"></center>
+
+
+<h2 id="UITouch"><a href="#UITouch" class="headerlink" title="UITouch"></a>UITouch</h2><p>前边讲到的方法中基本都包含有两个类，<code>UITouch</code>和<code>UIEvent</code>。</p>
+<p><code>UITouch</code>代表触摸屏幕的手指，一个<code>UITouch</code>对象就对应着一根手指，在事件中可以根据<code>NSSet</code>中<code>UITouch</code>的数量来判断触摸屏幕的手指个数，而且<code>UITouch</code>中也包含一些手指的信息，比如位置，触摸时间等等，我们来看一下他的属性:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//触摸的时间，以秒为单位</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>) <span class="built_in">NSTimeInterval</span>      timestamp;</div><div class="line"><span class="comment">//触摸事件的状态</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>) <span class="built_in">UITouchPhase</span>        phase;</div><div class="line"><span class="comment">//短时间内点按屏幕的次数，用来判断双击还是单击</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>) <span class="built_in">NSUInteger</span>          tapCount;  </div><div class="line"><span class="comment">//触摸事件的类型 </span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>) <span class="built_in">UITouchType</span>         type <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">9</span>_0);</div><div class="line"><span class="comment">//触摸时的窗口</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nullable</span>,<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>,<span class="keyword">strong</span>) <span class="built_in">UIWindow</span>                        *window;</div><div class="line"><span class="comment">//触摸时的view</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nullable</span>,<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>,<span class="keyword">strong</span>) <span class="built_in">UIView</span>                          *view;</div></pre></td></tr></table></figure>
+<h2 id="UIEvent"><a href="#UIEvent" class="headerlink" title="UIEvent"></a>UIEvent</h2><p>每次产生一个事件，就对应一个<code>UIEvent</code>,它记录了事件产生的时间和类型等等，我们来看一下它的属性：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//事件的类型</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>) <span class="built_in">UIEventType</span>     type <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">3</span>_0);</div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>) <span class="built_in">UIEventSubtype</span>  subtype <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">3</span>_0);</div><div class="line"></div><div class="line"><span class="comment">//事件产生的时间</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>) <span class="built_in">NSTimeInterval</span>  timestamp;</div></pre></td></tr></table></figure>
+<h2 id="事件的产生和传递"><a href="#事件的产生和传递" class="headerlink" title="事件的产生和传递"></a>事件的产生和传递</h2><p>当发生触摸事件后，系统会将事件加入一个由<code>UIApplication</code>管理的事件队列中。<br>然后会去调用<code>UIWindow</code>中的响应方法，判断点击的点是否在window范围内，如果是，则继续一次调用subView中的响应方法，直到找到最后需要的view。</p>
+<p>也就是说事件的传递是从父控件到子控件的。</p>
+<p>比如下图：<code>UIWindow</code>有一个MainView，MainView里有三个subView，viewA，viewB，viewC，他们各有两个subview，其中viewA在最下边，viewB在中间，viewC在最上边，viewA与viewB有一部分重叠。</p>
+<center><img src="/2018/02/07/iOS开发-事件响应及传递/eventTouch1.png" alt="logo"></center>
+
+<p>这时候我们点击viewA和viewB的重叠部分，就会按照上边说的递归方式执行。</p>
+<center><img src="/2018/02/07/iOS开发-事件响应及传递/eventTouch2.png" alt="logo"></center>
+
+<p>整个事件的传递是从UIWindow开始的，首先判断了点击的位置是否在UIWindow中，然后遍历window的subview，然后依次对subview进行遍历，这里viewC根本不在点击的范围内，所以也就没有再访问他的subview。当事件遍历到了viewB.1时发现一切都符合条件，那么他就是我们要找的view，所以viewA也就没有被遍历了。</p>
+<p>这里有几个需要<strong>注意</strong>的部分：</p>
+<ul>
+<li>1.如果父控件不能接受触摸事件，那么子控件就不可能接受到触摸事件；</li>
+<li>2.默认情况下<code>UIImageView</code>不允许交互，所以如果要<code>UIImageView</code>可以交互，需要设置UIImageView的userInteractionEnabled = YES。</li>
+</ul>
+<p>另外就是UIView不允许触摸的三种情况：</p>
+<ul>
+<li>1.设定不允许交互，即userInteractionEnabled = NO；</li>
+<li>2.点击位置不在view范围内；</li>
+<li>3.view被隐藏或被设置透明度&lt;0.01；</li>
+</ul>
+<p>最后上一张图，能够清楚的讲明白这个流程</p>
+<center><img src="/2018/02/07/iOS开发-事件响应及传递/eventTouch3.png" alt="logo"></center>
+
+
+<h2 id="事件的响应"><a href="#事件的响应" class="headerlink" title="事件的响应"></a>事件的响应</h2><p>之前说完了事件的产生和传递，那么接下来改事件的响应了。</p>
+<p>用户点击屏幕产生了一个触摸事件，经过一系列的传递过程后，就会找到合适的视图控件来处理这个事件。<br>找到最合适的控件之后，就会调用控件的touches方法来做具体的时间处理。</p>
+<p>这些touches方法的默认做法是顺着响应链条向上传递的（也就是touch方法默认不处理事件，只传递事件），将事件交给上一个响应者进行处理。</p>
+<p>这就形成了响应者链条。</p>
+<h3 id="响应者链条"><a href="#响应者链条" class="headerlink" title="响应者链条"></a>响应者链条</h3><p>响应者链条其实就是很多响应者对象（继承自UIResponder的对象）一起组合起来的链条。</p>
+<p>一般默认做法是控件将顺着响应者链条向上传递，将事件交给上一个响应者处理。</p>
+<p>那么如何判断当前响应者的上一个响应者是谁呢？</p>
+<p>判断当前是否为控制器的view，如果是，上一个响应者就是控制器，如果不是，上一个响应者就是父控件。</p>
+<center><img src="/2018/02/07/iOS开发-事件响应及传递/eventTouch4.png" alt="logo"></center>
+
+<p>传递的过程为：</p>
+<ul>
+<li>1.判断当前是否为控制器的view，是，事件就传递给控制器，不是，事件就传递给父控件。</li>
+<li>2.在视图层次结构的最顶层，如果也不能处理收到的事件，则将事件传递给window对象处理。</li>
+<li>3.如果window对象也不处理，则将事件传递给UIApplication对象。</li>
+<li>4.如果UIApplication对象也不处理，则将事件丢弃。</li>
+</ul>
+<h2 id="hitTest-withEvent"><a href="#hitTest-withEvent" class="headerlink" title="hitTest:withEvent:"></a>hitTest:withEvent:</h2><p>这是iOS事件的传递和响应中最重要的方法之一，在前边也有提到，现在来具体的介绍一下这个方法。</p>
+<p>只要事件一传递给一个控件，这个控件就会调用自己的<code>hitTest:withEvent:</code>方法。</p>
+<p>他的作用就是寻找并返回最适合的view，无论这个控件能不能处理事件，也不管触摸点在不在这个控件上，事件都会先传递给这个控件，随后就调用该方法。</p>
+<p>事件传递给窗口或控件的后，就调用hitTest:withEvent:方法寻找更合适的view。所以是，先传递事件，再根据事件在自己身上找更合适的view。<br>不管子控件是不是最合适的view，系统默认都要先把事件传递给子控件，经过子控件调用子控件自己的hitTest:withEvent:方法验证后才知道有没有更合适的view。即便父控件是最合适的view了，子控件的hitTest:withEvent:方法还是会调用，不然怎么知道有没有更合适的！即，如果确定最终父控件是最合适的view，那么该父控件的子控件的hitTest:withEvent:方法也是会被调用的。</p>
+<p>如果hitTest:withEvent:方法中返回nil，那么调用该方法的控件本身和其子控件都不是最合适的view，也就是在自己身上没有找到更合适的view。那么最合适的view就是该控件的父控件。</p>
+<h2 id="pointInside-withEvent"><a href="#pointInside-withEvent" class="headerlink" title="pointInside:withEvent:"></a>pointInside:withEvent:</h2><p>这个是整个事件的传递中最重要的另一个方法，用来判断点击的点在不在当前view上。如果返回YES，代表点在方法调用者的坐标系上;返回NO代表点不在方法调用者的坐标系上，那么方法调用者也就不能处理事件。</p>
+<h2 id="事件传递及响应的应用"><a href="#事件传递及响应的应用" class="headerlink" title="事件传递及响应的应用"></a>事件传递及响应的应用</h2><p>好了，讲了这么多，那在开发的过程中有哪些时候我们会用到事件的响应和传递呢？<br>其实更确切的说是利用<code>hitTest:withEvent:</code>方法。</p>
+<h3 id="扩大按钮点击范围"><a href="#扩大按钮点击范围" class="headerlink" title="扩大按钮点击范围"></a>扩大按钮点击范围</h3><h3 id="将事件传递给兄弟view"><a href="#将事件传递给兄弟view" class="headerlink" title="将事件传递给兄弟view"></a>将事件传递给兄弟view</h3><h3 id="将事件传递给subview"><a href="#将事件传递给subview" class="headerlink" title="将事件传递给subview"></a>将事件传递给subview</h3><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://blog.flight.dev.qunar.com/2016/10/28/ios-event-mechanism-summary/" target="_blank" rel="external">iOS 点击事件传递及响应</a></p>
+<p><a href="https://www.jianshu.com/p/2e074db792ba" target="_blank" rel="external">史上最详细的iOS之事件的传递和响应机制-原理篇</a></p>
+<p><a href="https://zhoon.github.io/ios/2015/04/12/ios-event.html" target="_blank" rel="external">深入浅出iOS事件机制</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/06/iOS开发-runtime-黑魔法Method-swizzling/" rel="next" title="iOS开发-runtime-黑魔法Method swizzling">
+                <i class="fa fa-chevron-left"></i> iOS开发-runtime-黑魔法Method swizzling
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是事件"><span class="nav-number">1.</span> <span class="nav-text">什么是事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#响应者对象（UIResponder）"><span class="nav-number">2.</span> <span class="nav-text">响应者对象（UIResponder）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UITouch"><span class="nav-number">3.</span> <span class="nav-text">UITouch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIEvent"><span class="nav-number">4.</span> <span class="nav-text">UIEvent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件的产生和传递"><span class="nav-number">5.</span> <span class="nav-text">事件的产生和传递</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件的响应"><span class="nav-number">6.</span> <span class="nav-text">事件的响应</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#响应者链条"><span class="nav-number">6.1.</span> <span class="nav-text">响应者链条</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hitTest-withEvent"><span class="nav-number">7.</span> <span class="nav-text">hitTest:withEvent:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pointInside-withEvent"><span class="nav-number">8.</span> <span class="nav-text">pointInside:withEvent:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件传递及响应的应用"><span class="nav-number">9.</span> <span class="nav-text">事件传递及响应的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#扩大按钮点击范围"><span class="nav-number">9.1.</span> <span class="nav-text">扩大按钮点击范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将事件传递给兄弟view"><span class="nav-number">9.2.</span> <span class="nav-text">将事件传递给兄弟view</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将事件传递给subview"><span class="nav-number">9.3.</span> <span class="nav-text">将事件传递给subview</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">10.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
