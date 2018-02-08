@@ -1,0 +1,773 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="objective-c是一门动态语言，动态语言的特点就是方法的调用是在运行时（runtime）而不是编译时。
+C语言就是一门典型的静态语言，在编译时程序就已经知道要调用的函数，所以在C语言中如果某个函数没有实现，是没有办法编译成功的。
+但是OC不同，在编译时并没有确定的知道要调用的函数，甚至于在运行时还可以动态的添加方法，但是这也带来了问题，就是只有在程序运行起来之后，我们才会发现某些方法没有实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-runtime-消息传递和转发机制">
+<meta property="og:url" content="http://yoursite.com/2018/02/08/iOS开发-runtime-消息传递和转发机制/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="objective-c是一门动态语言，动态语言的特点就是方法的调用是在运行时（runtime）而不是编译时。
+C语言就是一门典型的静态语言，在编译时程序就已经知道要调用的函数，所以在C语言中如果某个函数没有实现，是没有办法编译成功的。
+但是OC不同，在编译时并没有确定的知道要调用的函数，甚至于在运行时还可以动态的添加方法，但是这也带来了问题，就是只有在程序运行起来之后，我们才会发现某些方法没有实现">
+<meta property="og:updated_time" content="2018-02-08T14:47:14.218Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-runtime-消息传递和转发机制">
+<meta name="twitter:description" content="objective-c是一门动态语言，动态语言的特点就是方法的调用是在运行时（runtime）而不是编译时。
+C语言就是一门典型的静态语言，在编译时程序就已经知道要调用的函数，所以在C语言中如果某个函数没有实现，是没有办法编译成功的。
+但是OC不同，在编译时并没有确定的知道要调用的函数，甚至于在运行时还可以动态的添加方法，但是这也带来了问题，就是只有在程序运行起来之后，我们才会发现某些方法没有实现">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/08/iOS开发-runtime-消息传递和转发机制/"/>
+
+
+
+
+
+  <title> iOS开发-runtime-消息传递和转发机制 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/08/iOS开发-runtime-消息传递和转发机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-runtime-消息传递和转发机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-08T21:37:00+08:00">
+                2018-02-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>objective-c是一门动态语言，动态语言的特点就是方法的调用是在运行时（runtime）而不是编译时。</p>
+<p>C语言就是一门典型的静态语言，在编译时程序就已经知道要调用的函数，所以在C语言中如果某个函数没有实现，是没有办法编译成功的。</p>
+<p>但是OC不同，在编译时并没有确定的知道要调用的函数，甚至于在运行时还可以动态的添加方法，但是这也带来了问题，就是只有在程序运行起来之后，我们才会发现某些方法没有实现，而这种情况往往导致了程序的崩溃。</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '-[ViewController btnClicked]: unrecognized selector sent to<span class="built_in"> instance </span>0x7f9a3a40b640'</div></pre></td></tr></table></figure>
+<p>那接下来我们就来彻底的了解一下这门动态语言中的消息是如何传递和转发的。</p>
+<h2 id="objc-msgSend-函数"><a href="#objc-msgSend-函数" class="headerlink" title="objc_msgSend() 函数"></a>objc_msgSend() 函数</h2><p>说到消息传递机制，最应该说的就是大名鼎鼎的<code>objc_msgSend()</code>函数了。相信写过一段时间OC代码的同学们应该都有或多或少的听说过这个方法。</p>
+<p>我们每天写的OC代码，在编译器看到时都会转换成一条C语言函数调用。</p>
+<p>我们先来看一下objc_msgSend的结构是什么样的。</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="literal">void</span> objc_msgSend(id <span class="built_in">self</span>, SEL cmd, <span class="params">...</span>)</div></pre></td></tr></table></figure>
+<p>咋一看好像有点懵，这都什么对什么呀。没关系，我们用OC代码带进去看一下就明白了。</p>
+<p>比如在OC中的这个方法：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">id returnValue</span> = [someObject messageName:parameter];</div></pre></td></tr></table></figure>
+<p>在编译器中就变成了：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">id returnValue = objc_msgSend(<span class="name">someObject</span>, @selector(<span class="name">messageName</span>:), parameter)</div></pre></td></tr></table></figure>
+<p>这下是不是清楚很多啦，接下来我们再来看看每个参数都是什么意思，还是用上边的这个例子：</p>
+<ul>
+<li>someObject为方法的调用者，也可以叫做接受者（receiver）；</li>
+<li>messageName:是方法名，也就是选择子（selector）；</li>
+<li>parameter是参数，参数可以是一个，也可以是多个；</li>
+<li>messageName和参数合起来叫做消息（message）；</li>
+</ul>
+<p>了解了这些参数的含义之后，我们来看一下消息传递的流程。</p>
+<h2 id="消息传递流程"><a href="#消息传递流程" class="headerlink" title="消息传递流程"></a>消息传递流程</h2><p>首先接受者根据isa指针找到接受者自己的类，每个类都会有自己的方法列表（method list），然后会在这个方法列表中遍历。</p>
+<p>如果这时候找到合适的方法名，就会根据IMP指针跳转到方法的实现代码，调用方法的实现。</p>
+<p>如果没有找到合适的方法名，接受者会根据所属类的父类（superClass）指针，在父类中遍历寻找方法名，如果父类没有，就去父类的父类寻找，一级一级向上。</p>
+<p>如果在父类们中找到了合适的方法名，就会跳转到方法的实现代码，调用方法的实现。</p>
+<p>如果还没有找到合适的方法，就会执行<strong>消息转发（message forwarding）</strong>。</p>
+<h2 id="消息转发"><a href="#消息转发" class="headerlink" title="消息转发"></a>消息转发</h2><p>消息转发其实我们已经见过了。</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '-[ViewController btnClicked]: unrecognized selector sent to<span class="built_in"> instance </span>0x7f9a3a40b640'</div></pre></td></tr></table></figure>
+<p>之前说的这段代码就是消息转发给了<code>NSObject</code>的<code>doesNotRecognizeSelector:</code>方法抛出来的，意思就是接受者<code>ViewController</code>无法响应<code>btnClicked</code>这个消息，最后转发给了最最最父类<code>NSObject</code>处理，而<code>NSObject</code>也无法处理，就抛出了异常。</p>
+<h3 id="消息转发流程"><a href="#消息转发流程" class="headerlink" title="消息转发流程"></a>消息转发流程</h3><p>消息转发一共分为三个阶段</p>
+<ul>
+<li>1.第一阶段为动态方法解析（dynamic method resolution），就是看看能否动态添加方法处理当前无法解读的消息，如果此时无法动态新增方法，则进入第二阶段。</li>
+<li>2.第二阶段为备援接受者（replacement receiver），也就是看看运行时系统会请求当前接受者让其他接受者处理这条消息，如果还没有办法，则进入第三阶段。</li>
+<li>3.第三阶段为完整消息转发机制，运行时系统会把消息有关的细节全部封装到NSInvocation对象中，再给接受者最后一次机会，如果还没有办法解决，就只能抛出异常了。</li>
+</ul>
+<h3 id="动态方法解析"><a href="#动态方法解析" class="headerlink" title="动态方法解析"></a>动态方法解析</h3><p>这是整个消息转发流程的第一个阶段，如果在收到无法响应的消息后，会调用所属类的方法:</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//实例对象</span></div><div class="line">+ (<span class="keyword">BOOL</span>)resolveInstanceMethod:(SEL)selector</div></pre></td></tr></table></figure>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//类对象</span></div><div class="line">+ <span class="comment">(BOOL)</span>resolveClassMethod:<span class="comment">(SEL)</span>selector</div></pre></td></tr></table></figure>
+<p>其中参数<code>selector</code>为未处理的方法。</p>
+<p>返回值<code>@return</code>表示能否新增一个方法来处理，一般使用@dynamic属性来实现：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/************** 使用 resolveInstanceMethod 实现 @dynamic 属性 **************/</span></div><div class="line"><span class="keyword">id</span> autoDictionaryGetter(<span class="keyword">id</span> <span class="keyword">self</span>, SEL _cmd);</div><div class="line"><span class="keyword">void</span> autoDictionarySetter(<span class="keyword">id</span> <span class="keyword">self</span>, SEL _cmd, <span class="keyword">id</span> value);</div><div class="line">+ (<span class="built_in">BOOL</span>)resolveInstanceMethod:(SEL)selector</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSString</span> *selectorString = <span class="built_in">NSStringFromSelector</span>(selector);</div><div class="line">    <span class="keyword">if</span> (<span class="comment">/* selector is from a @dynamic property */</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span> ([selectorString hasPrefix:<span class="string">@"set"</span>])</div><div class="line">        &#123;</div><div class="line">            <span class="comment">// 添加 setter 方法</span></div><div class="line">            class_addMethod(<span class="keyword">self</span>, selector, (IMP)autoDictionarySetter, <span class="string">"v@:@"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span></div><div class="line">        &#123;</div><div class="line">            <span class="comment">// 添加 getter 方法</span></div><div class="line">            class_addMethod(<span class="keyword">self</span>, selector, (IMP)autoDictionaryGetter, <span class="string">"@@:"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> [<span class="keyword">super</span> resolveInstanceMethod:selector];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="备援接受者"><a href="#备援接受者" class="headerlink" title="备援接受者"></a>备援接受者</h3><p>这是整个消息转发机制的第二站，看名字就可以看出来，这是在寻找一个备用援救的接受者，到了这一阶段，系统会调用这个方法：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(id)</span>forwardingTargetForSelector:<span class="params">(SEL)</span>aSelector;</div></pre></td></tr></table></figure>
+<p>传入参数<code>aSelector</code>同样为无法处理的方法。</p>
+<p>返回值为当前找到的备援接受者，如果没有则返回nil，进入下一阶段。</p>
+<h3 id="完整的消息转发机制"><a href="#完整的消息转发机制" class="headerlink" title="完整的消息转发机制"></a>完整的消息转发机制</h3><p>如果前两个阶段都没有办法处理消息，就会启动完整的消息转发机制。</p>
+<p>首先会创建<code>NSInvocation</code>对象，把尚未处理的那条消息的全部信息细节装在里边，在触发<code>NSInvocation</code>对象时，系统派发系统（message-dispatch system）将会把消息指派给目标对象。这时会调用该方法：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>forwardInvocation:<span class="params">(NSInvocation *)</span>anInvocation;</div></pre></td></tr></table></figure>
+<p>传入的参数<code>anInvocation</code>就包含了消息的所有内容。</p>
+<p>如果此时还是没办法处理消息，就会沿着继承的顺序一步一步向父类调用相同的方法，直到最后的<code>NSObject</code>类中，这时候如果还没有办法处理消息，就会调用<code>doesNotRecognizeSelector:</code>抛出异常，之前看到的崩溃原因就是这个了。</p>
+<p>到此为止，消息转发的整个流程就都结束了。</p>
+<p>所以，利用消息转发机制，在程序崩溃之前，我们还有三次机会来拯救我们的应用，避免崩溃的事件发生。</p>
+<p>以上内容仅为作者学习使用，如果有什么地方写的不对，还请大佬们多多指教。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/07/iOS开发-事件响应及传递/" rel="next" title="iOS开发-事件响应及传递">
+                <i class="fa fa-chevron-left"></i> iOS开发-事件响应及传递
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#objc-msgSend-函数"><span class="nav-number">1.</span> <span class="nav-text">objc_msgSend() 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息传递流程"><span class="nav-number">2.</span> <span class="nav-text">消息传递流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息转发"><span class="nav-number">3.</span> <span class="nav-text">消息转发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消息转发流程"><span class="nav-number">3.1.</span> <span class="nav-text">消息转发流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态方法解析"><span class="nav-number">3.2.</span> <span class="nav-text">动态方法解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#备援接受者"><span class="nav-number">3.3.</span> <span class="nav-text">备援接受者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整的消息转发机制"><span class="nav-number">3.4.</span> <span class="nav-text">完整的消息转发机制</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
