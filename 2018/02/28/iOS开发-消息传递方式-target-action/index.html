@@ -1,0 +1,767 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="target-action是iOS中UIControl控件下使用的最常见的消息传递方式，target-action在中文中就是目标-动作,也算是一种简单的设计模式.
+主要的功能就是在发生某种事情的时候，给某某对象发送一个消息。一般情况下是在我们点击按钮，或者是滑动进度条之类的情况下发送给目标一个消息。比如说，当我们肚子饿了的时候就告诉大脑要去找东西吃。
+
+
+
+方法调用target-action的方">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-消息传递方式-target-action">
+<meta property="og:url" content="http://yoursite.com/2018/02/28/iOS开发-消息传递方式-target-action/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="target-action是iOS中UIControl控件下使用的最常见的消息传递方式，target-action在中文中就是目标-动作,也算是一种简单的设计模式.
+主要的功能就是在发生某种事情的时候，给某某对象发送一个消息。一般情况下是在我们点击按钮，或者是滑动进度条之类的情况下发送给目标一个消息。比如说，当我们肚子饿了的时候就告诉大脑要去找东西吃。
+
+
+
+方法调用target-action的方">
+<meta property="og:image" content="http://yoursite.com/2018/02/28/iOS开发-消息传递方式-target-action/">
+<meta property="og:updated_time" content="2018-02-28T08:34:08.858Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-消息传递方式-target-action">
+<meta name="twitter:description" content="target-action是iOS中UIControl控件下使用的最常见的消息传递方式，target-action在中文中就是目标-动作,也算是一种简单的设计模式.
+主要的功能就是在发生某种事情的时候，给某某对象发送一个消息。一般情况下是在我们点击按钮，或者是滑动进度条之类的情况下发送给目标一个消息。比如说，当我们肚子饿了的时候就告诉大脑要去找东西吃。
+
+
+
+方法调用target-action的方">
+<meta name="twitter:image" content="http://yoursite.com/2018/02/28/iOS开发-消息传递方式-target-action/">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/28/iOS开发-消息传递方式-target-action/"/>
+
+
+
+
+
+  <title> iOS开发-消息传递方式-target-action | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/28/iOS开发-消息传递方式-target-action/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-消息传递方式-target-action
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-28T16:03:38+08:00">
+                2018-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>target-action是iOS中<strong>UIControl</strong>控件下使用的最常见的消息传递方式，target-action在中文中就是<strong>目标-动作</strong>,也算是一种简单的设计模式.</p>
+<p>主要的功能就是在发生某种事情的时候，给某某对象发送一个消息。一般情况下是在我们点击按钮，或者是滑动进度条之类的情况下发送给目标一个消息。比如说，当我们肚子饿了的时候就告诉大脑要去找东西吃。</p>
+<center><img src="/2018/02/28/iOS开发-消息传递方式-target-action/" alt="logo"></center>
+
+
+<h2 id="方法调用"><a href="#方法调用" class="headerlink" title="方法调用"></a>方法调用</h2><p>target-action的方法调用非常简单，一般实现一个函数：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>addTarget:<span class="params">(nullable id)</span>target action:<span class="params">(SEL)</span>action forControlEvents:<span class="params">(UIControlEvents)</span>controlEvents;</div></pre></td></tr></table></figure>
+<h3 id="target"><a href="#target" class="headerlink" title="target"></a>target</h3><p>target就是目标，如果用之前的例子来比喻的话就是我们的大脑。</p>
+<h3 id="action"><a href="#action" class="headerlink" title="action"></a>action</h3><p>action就是动作，用之前的例子来比喻的话就是去找东西吃这个动作。</p>
+<h3 id="events"><a href="#events" class="headerlink" title="events"></a>events</h3><p>events是事件，比如说肚子饿了，或者口渴了，是出发动作的条件。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>这里用给<code>UIButton</code>添加点击事件来做一个🌰。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[targetBtn <span class="string">addTarget:</span>self <span class="string">action:</span><span class="meta">@selector</span>(<span class="string">targetBtnClicked:</span>) <span class="string">forControlEvents:</span>UIControlEventTouchUpInside];</div></pre></td></tr></table></figure>
+<p>这样就可以给targetBtn添加一个按下的事件，当用户按下按钮时，按钮就会告诉<code>self</code>，调用<code>targetBtnClicked:</code>方法。</p>
+<h2 id="UIControlEvents"><a href="#UIControlEvents" class="headerlink" title="UIControlEvents"></a>UIControlEvents</h2><p>UIControlEvents主要是事件的触发条件。</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">typedef NS_OPTIONS(NSUInteger, UIControlEvents) &#123;</div><div class="line">    UIControlEventTouchDown                                         = <span class="number">1</span> &lt;&lt;  <span class="number">0</span>,      <span class="comment">// on all touch downs</span></div><div class="line">    UIControlEventTouchDownRepeat                                   = <span class="number">1</span> &lt;&lt;  <span class="number">1</span>,      <span class="comment">// on multiple touchdowns (tap count &gt; 1)</span></div><div class="line">    UIControlEventTouchDragInside                                   = <span class="number">1</span> &lt;&lt;  <span class="number">2</span>,</div><div class="line">    UIControlEventTouchDragOutside                                  = <span class="number">1</span> &lt;&lt;  <span class="number">3</span>,</div><div class="line">    UIControlEventTouchDragEnter                                    = <span class="number">1</span> &lt;&lt;  <span class="number">4</span>,</div><div class="line">    UIControlEventTouchDragExit                                     = <span class="number">1</span> &lt;&lt;  <span class="number">5</span>,</div><div class="line">    UIControlEventTouchUpInside                                     = <span class="number">1</span> &lt;&lt;  <span class="number">6</span>,</div><div class="line">    UIControlEventTouchUpOutside                                    = <span class="number">1</span> &lt;&lt;  <span class="number">7</span>,</div><div class="line">    UIControlEventTouchCancel                                       = <span class="number">1</span> &lt;&lt;  <span class="number">8</span>,</div><div class="line"></div><div class="line">    UIControlEventValueChanged                                      = <span class="number">1</span> &lt;&lt; <span class="number">12</span>,     <span class="comment">// sliders, etc.</span></div><div class="line">    UIControlEventPrimaryActionTriggered NS_ENUM_AVAILABLE_IOS(<span class="number">9</span>_0) = <span class="number">1</span> &lt;&lt; <span class="number">13</span>,     <span class="comment">// semantic action: for buttons, etc.</span></div><div class="line"></div><div class="line">    UIControlEventEditingDidBegin                                   = <span class="number">1</span> &lt;&lt; <span class="number">16</span>,     <span class="comment">// UITextField</span></div><div class="line">    UIControlEventEditingChanged                                    = <span class="number">1</span> &lt;&lt; <span class="number">17</span>,</div><div class="line">    UIControlEventEditingDidEnd                                     = <span class="number">1</span> &lt;&lt; <span class="number">18</span>,</div><div class="line">    UIControlEventEditingDidEndOnExit                               = <span class="number">1</span> &lt;&lt; <span class="number">19</span>,     <span class="comment">// 'return key' ending editing</span></div><div class="line"></div><div class="line">    UIControlEventAllTouchEvents                                    = <span class="number">0x00000FFF</span>,  <span class="comment">// for touch events</span></div><div class="line">    UIControlEventAllEditingEvents                                  = <span class="number">0x000F0000</span>,  <span class="comment">// for UITextField</span></div><div class="line">    UIControlEventApplicationReserved                               = <span class="number">0x0F000000</span>,  <span class="comment">// range available for application use</span></div><div class="line">    UIControlEventSystemReserved                                    = <span class="number">0xF0000000</span>,  <span class="comment">// range reserved for internal framework use</span></div><div class="line">    UIControlEventAllEvents                                         = <span class="number">0xFFFFFFFF</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="target-action-传值"><a href="#target-action-传值" class="headerlink" title="target-action 传值"></a>target-action 传值</h2><h3 id="tag"><a href="#tag" class="headerlink" title="tag"></a>tag</h3><p>target-action 模式传值一般通过<strong>tag</strong>来实现。</p>
+<p>tag是一个无符号整形，所有的<code>UIKit</code>控件都有这个属性，在设定控件时可以加上tag值，在响应事件action中可以获取到sender，通过获取sender的tag来达到传值的功能。</p>
+<p>添加tag：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">UIButton *targetBtn = [UIButton <span class="string">buttonWithType:</span>UIButtonTypeCustom];</div><div class="line">targetBtn.frame = CGRectMake(<span class="number">0</span>, HEIGHT/<span class="number">2</span><span class="number">-50</span>, WIDTH, <span class="number">100</span>);</div><div class="line">targetBtn.tag = <span class="number">100</span>;</div><div class="line">[targetBtn <span class="string">setTitle:</span>@<span class="string">"点我"</span> <span class="string">forState:</span>UIControlStateNormal];</div><div class="line">[targetBtn <span class="string">setTitleColor:</span>[UIColor blueColor] <span class="string">forState:</span>UIControlStateNormal];</div><div class="line">[targetBtn <span class="string">addTarget:</span>self <span class="string">action:</span><span class="meta">@selector</span>(<span class="string">targetBtnClicked:</span>) <span class="string">forControlEvents:</span>UIControlEventTouchUpInside];</div></pre></td></tr></table></figure>
+<p>在action中获取tag值：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)targetBtnClicked:(<span class="built_in">UIButton</span> *)sender</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"我被点击了"</span>);</div><div class="line"> </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"tag:%ld"</span>,(<span class="keyword">long</span>)sender.tag);    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="category-添加传值方法"><a href="#category-添加传值方法" class="headerlink" title="category 添加传值方法"></a>category 添加传值方法</h3><p>tag只能传递一个整形数字，这有很大的局限性，平时我们开发时可能还需要传递一些复杂的数据，这个时候tag就显得很局促了。</p>
+<p>所以我们可以通过给父类添加category的方式，添加一个info的字典，用来传递消息。</p>
+<p>添加category：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSObject</span> (<span class="title">MPTargetActionPassing</span>)</span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">retain</span>) <span class="built_in">NSDictionary</span>          *info;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>使用runtime实现info的getter方法和setter方法：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"NSObject+MPTargetActionPassing.h"</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;objc/runtime.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSObject</span> (<span class="title">MPTargetActionPassing</span>)</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)setInfo:(<span class="built_in">NSDictionary</span> *)info</div><div class="line">&#123;</div><div class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, <span class="string">@"info"</span>, info, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">NSDictionary</span> *)info</div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> objc_getAssociatedObject(<span class="keyword">self</span>, <span class="string">@"info"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>在使用时设置info的值：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">UIButton *targetBtn = [UIButton <span class="string">buttonWithType:</span>UIButtonTypeCustom];</div><div class="line">targetBtn.frame = CGRectMake(<span class="number">0</span>, HEIGHT/<span class="number">2</span><span class="number">-50</span>, WIDTH, <span class="number">100</span>);</div><div class="line">targetBtn.tag = <span class="number">100</span>;</div><div class="line">[targetBtn <span class="string">setTitle:</span>@<span class="string">"点我"</span> <span class="string">forState:</span>UIControlStateNormal];</div><div class="line">[targetBtn <span class="string">setTitleColor:</span>[UIColor blueColor] <span class="string">forState:</span>UIControlStateNormal];</div><div class="line">[targetBtn <span class="string">addTarget:</span>self <span class="string">action:</span><span class="meta">@selector</span>(<span class="string">targetBtnClicked:</span>) <span class="string">forControlEvents:</span>UIControlEventTouchUpInside];</div><div class="line">[targetBtn <span class="string">setInfo:</span>@&#123;@<span class="string">"id"</span>:@<span class="string">"12138"</span>,@<span class="string">"name"</span>:@<span class="string">"target-action"</span>&#125;];</div><div class="line"></div><div class="line">[self.view <span class="string">addSubview:</span>targetBtn];</div></pre></td></tr></table></figure>
+<p>在action中获取info中的值：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)targetBtnClicked:(<span class="built_in">UIButton</span> *)sender</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"我被点击了"</span>);</div><div class="line"> </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"tag:%ld"</span>,(<span class="keyword">long</span>)sender.tag);</div><div class="line">    </div><div class="line">    <span class="built_in">NSDictionary</span> *info = sender.info;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,info);</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里我们是对<code>NSObject</code>进行的一个拓展，写完这个拓展之后，只要在继承了NSObject的类的控件使用时，引入头文件：</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#<span class="keyword">import</span> <span class="string">"NSObject+MPTargetActionPassing.h"</span></div></pre></td></tr></table></figure>
+<p>就可以随意的传递值了。</p>
+<h2 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h2><p>最后放个<a href="">Demo</a>。</p>
+<p>这里只是iOS中消息传递方式的第一部分，这种传值的方式使用到了runtime，意味着所有的NSObject子类都可以使用这个info，所以平时还是不是很建议用这种方式，如果平时想要传递一些复杂的数据可以通过其他的方式来做，比如代理、block等。</p>
+<p>本文章仅限个人学习，如果有什么地方写的不对的还希望各位大佬批评指正。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/08/iOS开发-runtime-消息传递和转发机制/" rel="next" title="iOS开发-runtime-消息传递和转发机制">
+                <i class="fa fa-chevron-left"></i> iOS开发-runtime-消息传递和转发机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#方法调用"><span class="nav-number">1.</span> <span class="nav-text">方法调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#target"><span class="nav-number">1.1.</span> <span class="nav-text">target</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#action"><span class="nav-number">1.2.</span> <span class="nav-text">action</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#events"><span class="nav-number">1.3.</span> <span class="nav-text">events</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">1.4.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIControlEvents"><span class="nav-number">2.</span> <span class="nav-text">UIControlEvents</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#target-action-传值"><span class="nav-number">3.</span> <span class="nav-text">target-action 传值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tag"><span class="nav-number">3.1.</span> <span class="nav-text">tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#category-添加传值方法"><span class="nav-number">3.2.</span> <span class="nav-text">category 添加传值方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo"><span class="nav-number">4.</span> <span class="nav-text">Demo</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
