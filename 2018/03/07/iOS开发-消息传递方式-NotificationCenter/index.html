@@ -1,0 +1,789 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="说完了target-action说完了KVO
+今天说另一种消息传递的方式，这种方式和KVO很像，通常也是用于一对多的情况，这种消息传递的方式就是NotificationCenter。
+NotificationCenter 翻译过来就是通知中心，他和我们生活中的广播很相似。
+如何使用NotificationCenter使用NotificationCenter和KVO非常相似，一般也是分为4个步骤：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-消息传递方式-NotificationCenter">
+<meta property="og:url" content="http://yoursite.com/2018/03/07/iOS开发-消息传递方式-NotificationCenter/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="说完了target-action说完了KVO
+今天说另一种消息传递的方式，这种方式和KVO很像，通常也是用于一对多的情况，这种消息传递的方式就是NotificationCenter。
+NotificationCenter 翻译过来就是通知中心，他和我们生活中的广播很相似。
+如何使用NotificationCenter使用NotificationCenter和KVO非常相似，一般也是分为4个步骤：">
+<meta property="og:updated_time" content="2018-03-08T13:32:10.793Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-消息传递方式-NotificationCenter">
+<meta name="twitter:description" content="说完了target-action说完了KVO
+今天说另一种消息传递的方式，这种方式和KVO很像，通常也是用于一对多的情况，这种消息传递的方式就是NotificationCenter。
+NotificationCenter 翻译过来就是通知中心，他和我们生活中的广播很相似。
+如何使用NotificationCenter使用NotificationCenter和KVO非常相似，一般也是分为4个步骤：">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/07/iOS开发-消息传递方式-NotificationCenter/"/>
+
+
+
+
+
+  <title> iOS开发-消息传递方式-NotificationCenter | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/07/iOS开发-消息传递方式-NotificationCenter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-消息传递方式-NotificationCenter
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-07T20:55:11+08:00">
+                2018-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>说完了<a href="http://zhangzr.cn/2018/02/28/iOS%E5%BC%80%E5%8F%91-%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F-target-action/" target="_blank" rel="external">target-action</a><br>说完了<a href="http://zhangzr.cn/2018/03/02/iOS%E5%BC%80%E5%8F%91-%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F-KVO/" target="_blank" rel="external">KVO</a></p>
+<p>今天说另一种消息传递的方式，这种方式和KVO很像，通常也是用于一对多的情况，这种消息传递的方式就是<strong>NotificationCenter</strong>。</p>
+<p><strong>NotificationCenter</strong> 翻译过来就是通知中心，他和我们生活中的广播很相似。</p>
+<h2 id="如何使用NotificationCenter"><a href="#如何使用NotificationCenter" class="headerlink" title="如何使用NotificationCenter"></a>如何使用NotificationCenter</h2><p>使用NotificationCenter和KVO非常相似，一般也是分为4个步骤：</p>
+<ul>
+<li>1.添加观察者。</li>
+<li>2.实现响应方法。</li>
+<li>3.发出通知。</li>
+<li>4.移除观察者。</li>
+</ul>
+<p>一般在使用NotificationCenter时我们通常都是直接使用系统默认的NotificationCenter</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@property</span> (<span class="class"><span class="keyword">class</span>, <span class="type">readonly</span>, <span class="type">strong) NSNotificationCenter *defaultCenter;</span></span></div></pre></td></tr></table></figure>
+<p>使用类方法调用他之后，我们就可以做响应的添加、发出通知、移除等操作了。</p>
+<h2 id="添加观察者"><a href="#添加观察者" class="headerlink" title="添加观察者"></a>添加观察者</h2><p>添加观察者有两种方式，一个是直接调用函数添加，然后再编写实现的方法，通过<code>selector</code>来响应通知。</p>
+<p>还有一种方法是使用<code>block</code>，在代码块内部实现响应通知的操作。</p>
+<h3 id="直接添加"><a href="#直接添加" class="headerlink" title="直接添加"></a>直接添加</h3><p>直接添加观察者时可以通过函数：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)addObserver:(<span class="keyword">id</span>)observer selector:(SEL)aSelector name:(<span class="keyword">nullable</span> <span class="built_in">NSNotificationName</span>)aName object:(<span class="keyword">nullable</span> <span class="keyword">id</span>)anObject;</div></pre></td></tr></table></figure>
+<p>传递了响应的参数之后就完成了观察者的添加，那我们来看看传递的参数都有什么作用。</p>
+<h4 id="observer"><a href="#observer" class="headerlink" title="observer"></a>observer</h4><p>通知的观察者，当通知post出来之后，观察者会收到响应的通知，不可以为nil。</p>
+<h4 id="aSelector"><a href="#aSelector" class="headerlink" title="aSelector"></a>aSelector</h4><p>收到通知之后需要做的操作，当通知post出来之后，会触发该方法，当中会传递一个<code>NSNotification</code>的参数。</p>
+<h4 id="aName"><a href="#aName" class="headerlink" title="aName"></a>aName</h4><p>通知名称，用来区分发送通知的对象，可以为nil，但是因为应用的执行的过程中会发出很多通知，如果为nil则代表接受所有的通知。</p>
+<h4 id="anObject"><a href="#anObject" class="headerlink" title="anObject"></a>anObject</h4><p>发送的对象，也是用来区分发送通知的对象，可以为nil，当为nil时，也会接受同一通知名称的所有的通知。</p>
+<p>一般情况下，如果我们将通知名称和发送对象都置为nil时，我们可以监听到当前通知中心的全部通知。比如：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)addNotificationCenter</div><div class="line">&#123;</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">addObserver:</span>self <span class="string">selector:</span><span class="meta">@selector</span>(<span class="string">notificationCall:</span>) <span class="string">name:</span>nil <span class="string">object:</span>nil];</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">postNotificationName:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)<span class="string">notificationCall:</span>(NSNotification *)notification</div><div class="line">&#123;</div><div class="line">    NSLog(@<span class="string">"notification = %@"</span>, notification.name);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上边一段代码执行了之后我们会发现结果如下：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.368264</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = postNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.368593</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UINavigationControllerWillShowViewControllerNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.370494</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.370677</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.371431</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = _UIWindowContentWillRotateNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.372607</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.372898</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.373097</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = _UIWindowContentWillRotateNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.392586</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.393403</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.423827</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.424067</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.424322</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.424721</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.426606</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.426780</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28:25.427223</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.427401</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.431615</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.790567</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.790769</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.791427</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.792659</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidCommitNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28:25.793148</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.935701</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.936635</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UINavigationControllerDidShowViewControllerNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">28</span>:<span class="number">25.936938</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50635</span>:<span class="number">3561130</span>] notification = UIViewAnimationDidStopNotification</div></pre></td></tr></table></figure>
+<p>所以一般情况下，添加观察者时，我们至少都会指定好通知的名称。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)addNotificationCenter</div><div class="line">&#123;</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">addObserver:</span>self <span class="string">selector:</span><span class="meta">@selector</span>(<span class="string">notificationCall:</span>) <span class="string">name:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>nil];</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">postNotificationName:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>nil];</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)<span class="string">notificationCall:</span>(NSNotification *)notification</div><div class="line">&#123;</div><div class="line">    NSLog(@<span class="string">"notification = %@"</span>, notification.name);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">30</span>:<span class="number">22.767448</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">50709</span>:<span class="number">3564576</span>] notification = postNotification</div></pre></td></tr></table></figure>
+<p>另外，如果我们设置了通知名，没有设置发送对象时，所有此通知名的通知都会被接收到，如果设置了发送对象：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)addNotificationCenter</div><div class="line">&#123;</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">addObserver:</span>self <span class="string">selector:</span><span class="meta">@selector</span>(<span class="string">notificationCall:</span>) <span class="string">name:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>self.buttonA];    </div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)buttonAClicked</div><div class="line">&#123;</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">postNotificationName:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>self.buttonA];</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)buttonBClicked</div><div class="line">&#123;</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">postNotificationName:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>self.buttonB];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这时候就只有<code>buttonAClicked</code>buttonA被点击时才会触发通知。</p>
+<h3 id="使用block"><a href="#使用block" class="headerlink" title="使用block"></a>使用block</h3><p>使用block添加观察者时可以调用如下函数：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">id</span> &lt;<span class="built_in">NSObject</span>&gt;)addObserverForName:(<span class="keyword">nullable</span> <span class="built_in">NSNotificationName</span>)name object:(<span class="keyword">nullable</span> <span class="keyword">id</span>)obj queue:(<span class="keyword">nullable</span> <span class="built_in">NSOperationQueue</span> *)queue usingBlock:(<span class="keyword">void</span> (^)(<span class="built_in">NSNotification</span> *note))block API_AVAILABLE(macos(<span class="number">10.6</span>), ios(<span class="number">4.0</span>), watchos(<span class="number">2.0</span>), tvos(<span class="number">9.0</span>));</div></pre></td></tr></table></figure>
+<p>相比较于上一个方法，这种方法中没有指定具体的观察者，并且用block代替了触发的方法，而且新增了一个<code>queue</code>。</p>
+<p>因为用block回调来替代了触发的方法，所以在发送通知时，也不需要去某个具体观察者的方法列表中去找对应的列表了，直接执行block中的内容就可以了。</p>
+<p>比如上边的方法，我们就可以改成这样：</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[[<span class="name">NSNotificationCenter</span> defaultCenter] addObserverForName:@<span class="string">"postNotification"</span> object:nil queue:nil usingBlock:^(<span class="name">NSNotification</span> * _Nonnull note) &#123;</div><div class="line"></div><div class="line">    NSLog(<span class="name">@</span><span class="string">"notification = %@"</span>, note.name)<span class="comment">;</span></div><div class="line"></div><div class="line">&#125;]<span class="comment">;</span></div><div class="line">[[<span class="name">NSNotificationCenter</span> defaultCenter] postNotificationName:@<span class="string">"postNotification"</span> object:nil]<span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>这样写，可以让代码看起来更加紧凑。</p>
+<p>而新增的queue，在默认情况下在post的线程中处理，比如这段代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)addNotificationCenter</div><div class="line">&#123;    </div><div class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserverForName:<span class="string">@"postNotification"</span> object:<span class="literal">nil</span> queue:<span class="literal">nil</span> usingBlock:^(<span class="built_in">NSNotification</span> * _Nonnull note) &#123;</div><div class="line"></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"notification = %@"</span>, note.name);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"receive thread = %@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line"></div><div class="line">    &#125;];</div><div class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] postNotificationName:<span class="string">@"postNotification"</span> object:<span class="literal">nil</span>];</div><div class="line"></div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line"></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"post thread = %@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        [[<span class="built_in">NSNotificationCenter</span> defaultCenter] postNotificationName:<span class="string">@"postNotification"</span> object:<span class="literal">nil</span>];</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印出来我们就会发现：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">49</span>:<span class="number">54.732746</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">51217</span>:<span class="number">3595209</span>] notification = postNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">49</span>:<span class="number">54.733093</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">51217</span>:<span class="number">3595209</span>] receive thread = &lt;NSThread: <span class="number">0</span>x600<span class="number">00006e780</span>&gt;&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">49</span>:<span class="number">54.733711</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">51217</span>:<span class="number">3595267</span>] post thread = &lt;NSThread: <span class="number">0</span>x60<span class="number">00004639c0</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">49</span>:<span class="number">54.734052</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">51217</span>:<span class="number">3595267</span>] notification = postNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">49</span>:<span class="number">54.734320</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">51217</span>:<span class="number">3595267</span>] receive thread = &lt;NSThread: <span class="number">0</span>x60<span class="number">00004639c0</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;</div></pre></td></tr></table></figure>
+<p>除了这部分的不同之外，剩下的两者应该没有什么不同的地方了，还有注意一点就是第二种方法中的<strong>循环引用</strong>问题的发生。</p>
+<h2 id="实现响应方法"><a href="#实现响应方法" class="headerlink" title="实现响应方法"></a>实现响应方法</h2><p>响应方法这边就不多说了，一种是通过调用，一种是通过block，但是两种都会传递一个<strong>NSNotification</strong>对象，<strong>注意</strong>不是<code>NSNotificationCenter</code>，是<code>NSNotification</code>。</p>
+<p>其中包括了</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">readonly</span>, <span class="keyword">copy</span>) <span class="built_in">NSNotificationName</span> name;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nullable</span>, <span class="keyword">readonly</span>, <span class="keyword">retain</span>) <span class="keyword">id</span> object;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nullable</span>, <span class="keyword">readonly</span>, <span class="keyword">copy</span>) <span class="built_in">NSDictionary</span> *userInfo;</div></pre></td></tr></table></figure>
+<p>一般情况下，我们可以通过userInfo来传递一些信息。</p>
+<h2 id="post-通知"><a href="#post-通知" class="headerlink" title="post 通知"></a>post 通知</h2><p>post通知一共有三种方法。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)postNotification:(<span class="built_in">NSNotification</span> *)notification;</div><div class="line">- (<span class="keyword">void</span>)postNotificationName:(<span class="built_in">NSNotificationName</span>)aName object:(<span class="keyword">nullable</span> <span class="keyword">id</span>)anObject;</div><div class="line">- (<span class="keyword">void</span>)postNotificationName:(<span class="built_in">NSNotificationName</span>)aName object:(<span class="keyword">nullable</span> <span class="keyword">id</span>)anObject userInfo:(<span class="keyword">nullable</span> <span class="built_in">NSDictionary</span> *)aUserInfo;</div></pre></td></tr></table></figure>
+<p>同理，name和object也可以为nil，只不过发出去的消息并没有理你罢了。另外userInfo用来传递一些简单的信息。</p>
+<p>比如:</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)addNotificationCenter</div><div class="line">&#123;</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">addObserver:</span>self <span class="string">selector:</span><span class="meta">@selector</span>(<span class="string">notificationCall:</span>) <span class="string">name:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>nil];</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">postNotificationName:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>nil <span class="string">userInfo:</span>@&#123;@<span class="string">"name"</span>:@<span class="string">"zhangsan"</span>,@<span class="string">"age"</span>:@<span class="string">"18"</span>&#125;];</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">- <span class="params">(void)</span>notificationCall:<span class="params">(NSNotification *)</span>notification</div><div class="line">&#123;</div><div class="line">    NSLog<span class="params">(@<span class="string">"notification = %@"</span>, notification.name)</span>;</div><div class="line">    NSLog<span class="params">(@<span class="string">"userinfo = %@"</span>,notification.userInfo)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这边就会输出：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">58:14.998128</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">51452</span>:<span class="number">3608470</span>] notification = postNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">17</span>:<span class="number">58</span>:<span class="number">14.998407</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">51452</span>:<span class="number">3608470</span>] userinfo = &#123;</div><div class="line">    age = <span class="number">18</span><span class="comment">;</span></div><div class="line">    name = zhangsan<span class="comment">;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="移除观察者"><a href="#移除观察者" class="headerlink" title="移除观察者"></a>移除观察者</h2><p>移除观察者一共有两种方法：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)removeObserver:(<span class="keyword">id</span>)observer;</div><div class="line">- (<span class="keyword">void</span>)removeObserver:(<span class="keyword">id</span>)observer name:(<span class="keyword">nullable</span> <span class="built_in">NSNotificationName</span>)aName object:(<span class="keyword">nullable</span> <span class="keyword">id</span>)anObject;</div></pre></td></tr></table></figure>
+<p>第一个方法是不针对某个特定通知，移除全部观察者，第二种是有针对性的移除某个观察者。而如果在第二种方法中name和object参数都传递nil，就和第一种方法完全一样了。</p>
+<p>一般在<code>dealloc</code>中会使用第一种方法移除全部的观察者。而在<code>viewWillDisappear</code>中则使用第二种方式移除。</p>
+<p>这里<strong>注意</strong>，如果我们不在合适的时机移除观察者，导致添加了重复的观察者的话，新注册的已有名字的观察者并不会覆盖之前的观察者，而是会添加两个观察者，这会导致post时响应两次或更多，比如：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)addNotificationCenter</div><div class="line">&#123;</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">addObserver:</span>self <span class="string">selector:</span><span class="meta">@selector</span>(<span class="string">notificationCall:</span>) <span class="string">name:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>nil];</div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">addObserver:</span>self <span class="string">selector:</span><span class="meta">@selector</span>(<span class="string">notificationCall:</span>) <span class="string">name:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>nil];</div><div class="line">    </div><div class="line">    [[NSNotificationCenter defaultCenter] <span class="string">postNotificationName:</span>@<span class="string">"postNotification"</span> <span class="string">object:</span>nil <span class="string">userInfo:</span>@&#123;@<span class="string">"name"</span>:@<span class="string">"zhangsan"</span>,@<span class="string">"age"</span>:@<span class="string">"18"</span>&#125;];</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">removeNotificationCenter</span></div><div class="line">&#123;</div><div class="line">    <span class="selector-attr">[[NSNotificationCenter defaultCenter]</span> <span class="selector-tag">removeObserver</span><span class="selector-pseudo">:self</span>];</div><div class="line">    <span class="selector-attr">[[NSNotificationCenter defaultCenter]</span> <span class="selector-tag">removeObserver</span><span class="selector-pseudo">:self</span> <span class="selector-tag">name</span><span class="selector-pseudo">:nil</span> <span class="selector-tag">object</span><span class="selector-pseudo">:nil</span>];</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印的结果：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-03-08</span> <span class="number">21</span>:<span class="number">27</span>:<span class="number">30.566903</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">52218</span>:<span class="number">3651551</span>] notification = postNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">21</span>:<span class="number">27:30.567124</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">52218</span>:<span class="number">3651551</span>] userinfo = &#123;</div><div class="line">    age = <span class="number">18</span><span class="comment">;</span></div><div class="line">    name = zhangsan<span class="comment">;</span></div><div class="line">&#125;</div><div class="line"><span class="number">2018-03-08</span> <span class="number">21</span>:<span class="number">27:30.567253</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">52218</span>:<span class="number">3651551</span>] notification = postNotification</div><div class="line"><span class="number">2018-03-08</span> <span class="number">21</span>:<span class="number">27</span>:<span class="number">30.567440</span>+<span class="number">0800</span> MessagePassingDemo[<span class="number">52218</span>:<span class="number">3651551</span>] userinfo = &#123;</div><div class="line">    age = <span class="number">18</span><span class="comment">;</span></div><div class="line">    name = zhangsan<span class="comment">;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>NotificationCenter的简单使用就这么多，以上这些内容仅供个人学习使用，如果有什么不对的地方还请各位大佬多多指教。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/02/iOS开发-消息传递方式-KVO/" rel="next" title="iOS开发-消息传递方式-KVO">
+                <i class="fa fa-chevron-left"></i> iOS开发-消息传递方式-KVO
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">45</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何使用NotificationCenter"><span class="nav-number">1.</span> <span class="nav-text">如何使用NotificationCenter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加观察者"><span class="nav-number">2.</span> <span class="nav-text">添加观察者</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#直接添加"><span class="nav-number">2.1.</span> <span class="nav-text">直接添加</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#observer"><span class="nav-number">2.1.1.</span> <span class="nav-text">observer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#aSelector"><span class="nav-number">2.1.2.</span> <span class="nav-text">aSelector</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#aName"><span class="nav-number">2.1.3.</span> <span class="nav-text">aName</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#anObject"><span class="nav-number">2.1.4.</span> <span class="nav-text">anObject</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用block"><span class="nav-number">2.2.</span> <span class="nav-text">使用block</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现响应方法"><span class="nav-number">3.</span> <span class="nav-text">实现响应方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#post-通知"><span class="nav-number">4.</span> <span class="nav-text">post 通知</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移除观察者"><span class="nav-number">5.</span> <span class="nav-text">移除观察者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">6.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
