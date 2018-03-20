@@ -1,0 +1,790 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="已经说完了4种消息传递的方式：target-action 、KVO 、NotificationCenter 、block ，这次我们再说一个一对一的消息传递方式，也是这次消息传递系列的最后一种方式：代理。
+代理是什么代理是一种通用的设计模式，在iOS中对代理设计模式有很好的支持，有特定的语法来支持代理模式。
+通常代理有三部分组成：
+
+1.协议：用来规定应该做什么，必须做什么。
+2.代理方：根据制定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-消息传递方式-代理（delegate）及协议（protocol）">
+<meta property="og:url" content="http://yoursite.com/2018/03/19/iOS开发-消息传递方式-代理（delegate）及协议（protocol）/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="已经说完了4种消息传递的方式：target-action 、KVO 、NotificationCenter 、block ，这次我们再说一个一对一的消息传递方式，也是这次消息传递系列的最后一种方式：代理。
+代理是什么代理是一种通用的设计模式，在iOS中对代理设计模式有很好的支持，有特定的语法来支持代理模式。
+通常代理有三部分组成：
+
+1.协议：用来规定应该做什么，必须做什么。
+2.代理方：根据制定">
+<meta property="og:image" content="http://yoursite.com/2018/03/19/iOS开发-消息传递方式-代理（delegate）及协议（protocol）/delegate.png">
+<meta property="og:updated_time" content="2018-03-20T05:55:34.870Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-消息传递方式-代理（delegate）及协议（protocol）">
+<meta name="twitter:description" content="已经说完了4种消息传递的方式：target-action 、KVO 、NotificationCenter 、block ，这次我们再说一个一对一的消息传递方式，也是这次消息传递系列的最后一种方式：代理。
+代理是什么代理是一种通用的设计模式，在iOS中对代理设计模式有很好的支持，有特定的语法来支持代理模式。
+通常代理有三部分组成：
+
+1.协议：用来规定应该做什么，必须做什么。
+2.代理方：根据制定">
+<meta name="twitter:image" content="http://yoursite.com/2018/03/19/iOS开发-消息传递方式-代理（delegate）及协议（protocol）/delegate.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/19/iOS开发-消息传递方式-代理（delegate）及协议（protocol）/"/>
+
+
+
+
+
+  <title> iOS开发-消息传递方式-代理（delegate）及协议（protocol） | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/19/iOS开发-消息传递方式-代理（delegate）及协议（protocol）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-消息传递方式-代理（delegate）及协议（protocol）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-19T20:56:46+08:00">
+                2018-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>已经说完了4种消息传递的方式：<a href="http://zhangzr.cn/2018/02/28/iOS%E5%BC%80%E5%8F%91-%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F-target-action/" target="_blank" rel="external">target-action</a> 、<a href="http://zhangzr.cn/2018/03/02/iOS%E5%BC%80%E5%8F%91-%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F-KVO/" target="_blank" rel="external">KVO</a> 、<a href="http://zhangzr.cn/2018/03/07/iOS%E5%BC%80%E5%8F%91-%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F-NotificationCenter/" target="_blank" rel="external">NotificationCenter</a> 、<a href="http://zhangzr.cn/2018/03/12/iOS%E5%BC%80%E5%8F%91-%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F-Block/" target="_blank" rel="external">block</a> ，这次我们再说一个一对一的消息传递方式，也是这次消息传递系列的最后一种方式：<strong>代理</strong>。</p>
+<h2 id="代理是什么"><a href="#代理是什么" class="headerlink" title="代理是什么"></a>代理是什么</h2><p>代理是一种通用的设计模式，在iOS中对代理设计模式有很好的支持，有特定的语法来支持代理模式。</p>
+<p>通常代理有三部分组成：</p>
+<ul>
+<li>1.协议：用来规定应该做什么，必须做什么。</li>
+<li>2.代理方：根据制定的协议，完成委托方需要实现的功能。</li>
+<li>3.委托方：根据制定的协议，提出代理方需要实现的功能。</li>
+</ul>
+<p>用一张图来表明大家的关系就是：</p>
+<center><img src="/2018/03/19/iOS开发-消息传递方式-代理（delegate）及协议（protocol）/delegate.png" alt="logo"></center>
+
+
+<p>通过上边的图应该不难理解到，协议就是用来约束代理方和委托方的行为，一般我们都会在协议中写一些方法，委托方来通过协议中的方法传入参数给代理方，代理方可以通过协议完成一些任务，并将结果返回给委托方。</p>
+<p>这里举一个例子：比如我需要买一个只有美国才有卖的东西，而我人在中国，也没办法买到美国的东西，这时候我就需要去网上找美国代购小姐姐来帮我购买这个东西，而交易的方式可能就是通过马云爸爸的淘宝店，那么这个时候淘宝中制定的规则就是我们的协议，而我就是委托方，美国代购小姐姐就是代理方，我给代购小姐姐的钱就是我传入的参数，最后他寄给我的东西就是返回的结果。</p>
+<p>同理，如果这时候我需要买一个应该才有东西时，我和美国代购小姐姐都没办法做到，而英国代购小哥哥却可以做得到，这时候我就可以委托他来帮我代购我要在英国买的东西，所以一个委托方可以拥有多个代理服务。</p>
+<h2 id="代理的使用"><a href="#代理的使用" class="headerlink" title="代理的使用"></a>代理的使用</h2><p>接下来就通过一个小例子来简单介绍一下代理的使用方法。</p>
+<p>这个例子中我们就简单的使用之前举例的代购来看看代理的使用。我们先把每个委托者也就是代购的同学看做是一个view。</p>
+<h3 id="创建协议"><a href="#创建协议" class="headerlink" title="创建协议"></a>创建协议</h3><p>首先我们要先创建一个协议，在里边我们可以写好需要做的事情，比如代购的我们就会写一个给钱买东西的方法。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">MPAmericanBuyDelegate</span> &lt;<span class="title">NSObject</span>&gt;</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)buySomethingFromAmericanWithPrice:(<span class="built_in">CGFloat</span>)aPrice;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>这时候还有两个关键字</p>
+<ul>
+<li>@optional</li>
+<li>@required</li>
+</ul>
+<p>他们的主要作用是用来约束代理是否强制需要遵守协议。默认情况下为<code>@required</code>。</p>
+<p>但是即使<code>@required</code>的情况下没有遵守协议，编译器也只是会抛出一个警告，并不影响编译。</p>
+<h3 id="触发协议条件"><a href="#触发协议条件" class="headerlink" title="触发协议条件"></a>触发协议条件</h3><p>接下来，我们需要在写好一个触发回调的条件，比如说代理方（代购）达到某个条件了之后，调用协议中的方法，告诉委托方委托的事情已经做好，并将数据发送给委托方。</p>
+<p>这里需要<strong>注意</strong>一点，就是在调用方法时，需要先判断一下代理的实例是否存在，并且指向的委托方是否能够响应事件，如果委托方没办法响应事件，而代理方发送了结果时，会因为找不到方法的原因而引起崩溃。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//声明</span></div><div class="line"><span class="variable">@interface</span> <span class="attribute">MPAmericanBuyView </span>: UIView</div><div class="line"></div><div class="line"><span class="variable">@property</span> (nonatomic ,weak) id&lt;MPAmericanBuyDelegate&gt; delegate;</div><div class="line"></div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//实现</span></div><div class="line"></div><div class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">finishedBuyBtnClicked</span></div><div class="line">&#123;</div><div class="line">    <span class="comment">//记得先做判断</span></div><div class="line">    <span class="selector-tag">if</span>(_delegate &amp;&amp; [_delegate <span class="attribute">respondsToSelector</span>:<span class="variable">@selector</span>(<span class="attribute">buySomethingFromAmericanWithPrice</span>:)])</div><div class="line">    &#123;</div><div class="line">        <span class="selector-attr">[_delegate buySomethingFromAmericanWithPrice:[self.priceField.text floatValue]</span>];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="实现协议方法"><a href="#实现协议方法" class="headerlink" title="实现协议方法"></a>实现协议方法</h3><p>现在我们已经处理好了协议和代理方，接下来我们看一下委托方的部分要怎么来实现，首先要遵循协议并建立一个委托方和协议的联系，然后实现回调时委托方要做的事情。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">MPDelegateViewController</span> ()&lt;<span class="title">MPAmericanBuyDelegate</span>&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">MPDelegateViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.view.backgroundColor = [<span class="built_in">UIColor</span> whiteColor];</div><div class="line">    </div><div class="line">    <span class="built_in">MPAmericanBuyView</span> *americanBuy = [[<span class="built_in">MPAmericanBuyView</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, WIDTH, HEIGHT/<span class="number">2</span>)];</div><div class="line">    americanBuy.backgroundColor = [<span class="built_in">UIColor</span> brownColor];</div><div class="line">    americanBuy.delegate = <span class="keyword">self</span>;        <span class="comment">//设置代理</span></div><div class="line">        </div><div class="line">    [<span class="keyword">self</span>.view addSubview:americanBuy];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>buySomethingFromAmericanWithPrice:<span class="params">(CGFloat)</span>aPrice</div><div class="line">&#123;</div><div class="line">    NSLog<span class="params">(@<span class="string">"从美国买好了"</span>)</span>;</div><div class="line">    </div><div class="line">    NSLog<span class="params">(@<span class="string">"花了%.2lf元"</span>,aPrice)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样一个简单的代理的使用就做好了，在输入了价格，然后点击购买之后，系统就会根据代理找到控制器中的对应方法并调用。</p>
+<h2 id="代理的实现原理"><a href="#代理的实现原理" class="headerlink" title="代理的实现原理"></a>代理的实现原理</h2><p>代理的本质其实就是代理对象内存的传递和操作，当我们声明了一个代理对象后，实际上只是用了一个<strong>id</strong>类型（任意类型）的指针将代理对象进行了一个弱引用。</p>
+<p>而我们在发送消息给这个代理对象时，实际上就是通过将消息传递给id指针，而这个id指针就是指向代理对象的对象。</p>
+<p>就以上边的🌰来说</p>
+<p>我们在控制器中将delegate设为了<code>self</code></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">MPAmericanBuyView</span> *americanBuy = [[<span class="built_in">MPAmericanBuyView</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, WIDTH, HEIGHT/<span class="number">2</span>)];</div><div class="line">americanBuy.backgroundColor = [<span class="built_in">UIColor</span> brownColor];</div><div class="line">americanBuy.delegate = <span class="keyword">self</span>;</div></pre></td></tr></table></figure>
+<p>也就是说在<code>MPAmericanBuyView</code>这个类中的<code>delegate</code>指向的就是<code>MPDelegateViewController</code>，所以方法</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>buySomethingFromAmericanWithPrice:<span class="params">(CGFloat)</span>aPrice;</div></pre></td></tr></table></figure>
+<p>也被加入到了<code>MPDelegateViewController</code>的方法列表中，这时候调用方法</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="selector-tag">if</span>(_delegate &amp;&amp; [_delegate <span class="attribute">respondsToSelector</span>:<span class="variable">@selector</span>(<span class="attribute">buySomethingFromAmericanWithPrice</span>:)])</div><div class="line">&#123;</div><div class="line">    <span class="selector-attr">[_delegate buySomethingFromAmericanWithPrice:[self.priceField.text floatValue]</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>时就会去<code>MPDelegateViewController</code>的方法列表中来找对应方法名的方法，如果没有，就会发生找不到方法的崩溃。</p>
+<h3 id="循环引用"><a href="#循环引用" class="headerlink" title="循环引用"></a>循环引用</h3><p>既然是这样，那就有可能会出现一个循环引用的问题。如果代理方强引用了委托方的对象，而委托方又强引用了delegate属性。那这时候两者就会出现循环引用，都无法正常释放。</p>
+<p>这时候就需要我们把delegate属性设置为弱引用，这样在代理的生命周期内，他还是可以正常工作的，在结束了自己的工作之后，因为没有出现强引用，也不会产生循环引用的问题。</p>
+<p>但是一定要用weak么？用assign不可以么？</p>
+<p>首先说明，他们两个用来修饰变量都不会改变引用对象的引用计数，但是在一个对象被释放后，weak会自动将指针指向nil，在iOS中，向nil发送消息是不会产生崩溃的，但是assign则会产生一个野指针，这时候如果想他发送消息，就会出现找不到方法的问题而崩溃。</p>
+<p>所以在使用时最好还是用weak来修饰delegate。</p>
+<h2 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h2><p>好了，代理的基本使用和简单的原理就说到这里了，最后上一个demo，把之前的几种消息传递方式都放在了里边。地址在<a href="https://github.com/rshinich/MessagePassing" target="_blank" rel="external">这里</a></p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>几种常见的消息传递方式系列应该就到此告一段落了，所有的文章内容都仅限个人学习参考使用，如果有什么问题还请各位大佬批评指正。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/12/iOS开发-消息传递方式-Block/" rel="next" title="iOS开发-消息传递方式-Block">
+                <i class="fa fa-chevron-left"></i> iOS开发-消息传递方式-Block
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#代理是什么"><span class="nav-number">1.</span> <span class="nav-text">代理是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理的使用"><span class="nav-number">2.</span> <span class="nav-text">代理的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建协议"><span class="nav-number">2.1.</span> <span class="nav-text">创建协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#触发协议条件"><span class="nav-number">2.2.</span> <span class="nav-text">触发协议条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现协议方法"><span class="nav-number">2.3.</span> <span class="nav-text">实现协议方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理的实现原理"><span class="nav-number">3.</span> <span class="nav-text">代理的实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#循环引用"><span class="nav-number">3.1.</span> <span class="nav-text">循环引用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo"><span class="nav-number">4.</span> <span class="nav-text">Demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">5.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
