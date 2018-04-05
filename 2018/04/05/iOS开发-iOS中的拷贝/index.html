@@ -1,0 +1,906 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="今天来说一下iOS中的copy。
+在iOS中，拷贝有两种方式，深拷贝（Deep copy）和浅拷贝（Shallow copy）。先上一张苹果官方的图来表示一下这两种拷贝。
+
+
+可以看到，深拷贝是直接拷贝整个对象内存到另一块内存中。浅拷贝则是仅仅拷贝一份指向对象的指针，而并不拷贝对象本身。
+有大佬总结的一句话就是，深拷贝就像克隆你的人，你人没有了，你的克隆人还在，而浅拷贝就像是克隆你的影子，你人如果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-iOS中的拷贝">
+<meta property="og:url" content="http://yoursite.com/2018/04/05/iOS开发-iOS中的拷贝/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="今天来说一下iOS中的copy。
+在iOS中，拷贝有两种方式，深拷贝（Deep copy）和浅拷贝（Shallow copy）。先上一张苹果官方的图来表示一下这两种拷贝。
+
+
+可以看到，深拷贝是直接拷贝整个对象内存到另一块内存中。浅拷贝则是仅仅拷贝一份指向对象的指针，而并不拷贝对象本身。
+有大佬总结的一句话就是，深拷贝就像克隆你的人，你人没有了，你的克隆人还在，而浅拷贝就像是克隆你的影子，你人如果">
+<meta property="og:image" content="http://yoursite.com/2018/04/05/iOS开发-iOS中的拷贝/copy1.png">
+<meta property="og:updated_time" content="2018-04-05T03:49:46.834Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-iOS中的拷贝">
+<meta name="twitter:description" content="今天来说一下iOS中的copy。
+在iOS中，拷贝有两种方式，深拷贝（Deep copy）和浅拷贝（Shallow copy）。先上一张苹果官方的图来表示一下这两种拷贝。
+
+
+可以看到，深拷贝是直接拷贝整个对象内存到另一块内存中。浅拷贝则是仅仅拷贝一份指向对象的指针，而并不拷贝对象本身。
+有大佬总结的一句话就是，深拷贝就像克隆你的人，你人没有了，你的克隆人还在，而浅拷贝就像是克隆你的影子，你人如果">
+<meta name="twitter:image" content="http://yoursite.com/2018/04/05/iOS开发-iOS中的拷贝/copy1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/05/iOS开发-iOS中的拷贝/"/>
+
+
+
+
+
+  <title> iOS开发-iOS中的拷贝 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/05/iOS开发-iOS中的拷贝/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-iOS中的拷贝
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-05T10:36:33+08:00">
+                2018-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天来说一下iOS中的<strong>copy</strong>。</p>
+<p>在iOS中，拷贝有两种方式，深拷贝（Deep copy）和浅拷贝（Shallow copy）。先上一张苹果官方的图来表示一下这两种拷贝。</p>
+<center><img src="/2018/04/05/iOS开发-iOS中的拷贝/copy1.png" alt="logo"></center>
+
+<p>可以看到，深拷贝是直接拷贝整个对象内存到另一块内存中。浅拷贝则是仅仅拷贝一份指向对象的指针，而并不拷贝对象本身。</p>
+<p>有大佬总结的一句话就是，深拷贝就像克隆你的人，你人没有了，你的克隆人还在，而浅拷贝就像是克隆你的影子，你人如果没有了，那你的影子也就没有了。</p>
+<p>但是上边说的深拷贝，其实也分成两种，一种是单层深拷贝（one-level-deep copy），还有一种是完全深拷贝（true deep copy）。</p>
+<p>苹果官方有这样一句话：</p>
+<blockquote>
+<p>  This kind of copy is only capable of producing a one-level-deep copy. If you only need a one-level-deep copy, you can explicitly call for one as in Listing 2.</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="built_in">NSArray</span> *deepCopyArray=[[<span class="built_in">NSArray</span> alloc] initWithArray:someArray copyItems:<span class="literal">YES</span>];</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+<p>If you need a true deep copy, such as when you have an array of arrays, you can archive and then unarchive the collection, provided the contents all conform to the NSCoding protocol. An example of this technique is shown in Listing 3.</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="built_in">NSArray</span>* trueDeepCopyArray = [<span class="built_in">NSKeyedUnarchiver</span> unarchiveObjectWithData:</div><div class="line">          [<span class="built_in">NSKeyedArchiver</span> archivedDataWithRootObject:oldArray]];</div><div class="line"></div><div class="line">&gt;</div></pre></td></tr></table></figure>
+</blockquote>
+<p>说白了，单层深拷贝和完全深拷贝从名字就能看出来，只有一层是深复制，而另外一个是每一层都是深复制。</p>
+<p>了解了深浅拷贝的概念，如何使用我们就不过多介绍了，官方文档里都有写的很清楚，那接下来我们来讨论一下开发中用到的各种类型的对象的拷贝吧。</p>
+<p>首先我们先把我们平时用到的对象进行一个分类，分成集合类型、非集合类型和自定义类型，其中集合类型就是NSArray、NSDictionary这种，非集合类型就是NSString、NSNumber这种。</p>
+<p>这些类型也都有对应的可变类型，比如NSMutableArray、NSMutableDictionary、NSMutableString…</p>
+<p>而拷贝也分为两种，有mutableCopy和copy。</p>
+<p>我们在集合类型中选出数组NSArray作为代表，非集合类型中选出NSString作为代表，来研究一下不同情况下的拷贝是深拷贝还是浅拷贝，以及拷贝出来的对象是什么类型。排列组合一下就有如下几种：</p>
+<ul>
+<li>集合类型 + 可变类型 + mutableCopy</li>
+<li>集合类型 + 可变类型 + copy</li>
+<li>集合类型 + 不可变类型 + mutableCopy</li>
+<li>集合类型 + 不可变类型 + copy</li>
+<li>非集合类型 + 可变类型 + mutableCopy</li>
+<li>非集合类型 + 可变类型 + copy</li>
+<li>非集合类型 + 不可变类型 + mutableCopy</li>
+<li>非集合类型 + 不可变类型 + copy</li>
+<li>自定义类型 + mutableCopy</li>
+<li>自定义类型 + copy</li>
+</ul>
+<h2 id="集合类型的拷贝"><a href="#集合类型的拷贝" class="headerlink" title="集合类型的拷贝"></a>集合类型的拷贝</h2><h3 id="集合类型-可变类型"><a href="#集合类型-可变类型" class="headerlink" title="集合类型 + 可变类型"></a>集合类型 + 可变类型</h3><h4 id="集合类型-可变类型-mutableCopy"><a href="#集合类型-可变类型-mutableCopy" class="headerlink" title="集合类型 + 可变类型 + mutableCopy"></a>集合类型 + 可变类型 + mutableCopy</h4><p>先上代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="string">/**</span></div><div class="line"> <span class="string">集合类型</span> <span class="bullet">-</span> <span class="string">可变类型</span> <span class="bullet">-</span> <span class="string">mutableCopy</span></div><div class="line"> <span class="string">*/</span></div><div class="line"><span class="bullet">-</span> <span class="string">(void)setTypeMutableTypeMutableCopy</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">NSMutableArray</span> <span class="meta">*mutableArr</span> <span class="string">=</span> <span class="string">[NSMutableArray</span> <span class="attr">arrayWithObjects:@"first",@"second",@"third",</span> <span class="string">nil];</span></div><div class="line">    <span class="string">NSMutableArray</span> <span class="meta">*mutableCopyMutableArr</span> <span class="string">=</span> <span class="string">[mutableArr</span> <span class="string">mutableCopy];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@",[[mutableArr</span> <span class="string">mutableCopy]</span> <span class="string">class]);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",mutableArr,mutableArr);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",mutableCopyMutableArr</span> <span class="string">,mutableCopyMutableArr);</span></div><div class="line">    </div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.655093+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">__NSArrayM</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.655338+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">(</span></div><div class="line">    <span class="string">first,</span></div><div class="line">    <span class="string">second,</span></div><div class="line">    <span class="string">third</span></div><div class="line"><span class="string">)</span> <span class="meta">---</span> <span class="number">0x60000024c060</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.655475+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">(</span></div><div class="line">    <span class="string">first,</span></div><div class="line">    <span class="string">second,</span></div><div class="line">    <span class="string">third</span></div><div class="line"><span class="string">)</span> <span class="meta">---</span> <span class="number">0x60000024c5a0</span></div></pre></td></tr></table></figure>
+<p>可以看到结果，这种组合的情况下拷贝出的对象是一个可变数组(__NSArrayM)，而两个打印出的数组的地址不同，所以是深拷贝。</p>
+<h4 id="集合类型-可变类型-copy"><a href="#集合类型-可变类型-copy" class="headerlink" title="集合类型 + 可变类型 + copy"></a>集合类型 + 可变类型 + copy</h4><p>先上代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="string">/**</span></div><div class="line"> <span class="string">集合类型</span> <span class="bullet">-</span> <span class="string">可变类型</span> <span class="bullet">-</span> <span class="string">imutableCopy</span></div><div class="line"> <span class="string">*/</span></div><div class="line"><span class="bullet">-</span> <span class="string">(void)setTypeMutableTypeImutableCopy</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">NSMutableArray</span> <span class="meta">*mutableArr</span> <span class="string">=</span> <span class="string">[NSMutableArray</span> <span class="attr">arrayWithObjects:@"first",@"second",@"third",</span> <span class="string">nil];</span></div><div class="line">    <span class="string">NSMutableArray</span> <span class="meta">*mutableCopyImutableArr</span> <span class="string">=</span> <span class="string">[mutableArr</span> <span class="string">copy];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@",[[mutableArr</span> <span class="string">copy]</span> <span class="string">class]);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",mutableArr,mutableArr);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",mutableCopyImutableArr</span> <span class="string">,mutableCopyImutableArr);</span></div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.655633+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">__NSArrayI</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.655754+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">(</span></div><div class="line">    <span class="string">first,</span></div><div class="line">    <span class="string">second,</span></div><div class="line">    <span class="string">third</span></div><div class="line"><span class="string">)</span> <span class="meta">---</span> <span class="number">0x604000250ef0</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.655966+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">(</span></div><div class="line">    <span class="string">first,</span></div><div class="line">    <span class="string">second,</span></div><div class="line">    <span class="string">third</span></div><div class="line"><span class="string">)</span> <span class="meta">---</span> <span class="number">0x604000251400</span></div></pre></td></tr></table></figure>
+<p>可以看到结果拷贝出的是一个不可变数组（__NSArrayI），另外两个数组的地址也不同，所以是深拷贝。</p>
+<h3 id="集合类型-不可变类型"><a href="#集合类型-不可变类型" class="headerlink" title="集合类型 +不可变类型"></a>集合类型 +不可变类型</h3><h4 id="集合类型-不可变类型-mutableCopy"><a href="#集合类型-不可变类型-mutableCopy" class="headerlink" title="集合类型 + 不可变类型 + mutableCopy"></a>集合类型 + 不可变类型 + mutableCopy</h4><p>先上代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="string">/**</span></div><div class="line"> <span class="string">集合类型</span> <span class="bullet">-</span> <span class="string">不可变类型</span> <span class="bullet">-</span> <span class="string">mutableCopy</span></div><div class="line"> <span class="string">*/</span></div><div class="line"></div><div class="line"><span class="bullet">-</span> <span class="string">(void)setTypeImutableTypeMutableCopy</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">NSArray</span> <span class="meta">*imutableArr</span> <span class="string">=</span> <span class="string">[NSArray</span> <span class="attr">arrayWithObjects:@"first",@"second",@"third",</span> <span class="string">nil];</span></div><div class="line">    <span class="string">NSArray</span> <span class="meta">*imutableArrMutableCopy</span> <span class="string">=</span> <span class="string">[imutableArr</span> <span class="string">mutableCopy];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@",[[imutableArr</span> <span class="string">mutableCopy]</span> <span class="string">class]);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",imutableArr,imutableArr);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",imutableArrMutableCopy,imutableArrMutableCopy);</span></div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.656128+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">__NSArrayM</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.656245+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">(</span></div><div class="line">    <span class="string">first,</span></div><div class="line">    <span class="string">second,</span></div><div class="line">    <span class="string">third</span></div><div class="line"><span class="string">)</span> <span class="meta">---</span> <span class="number">0x604000251400</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.656357+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">(</span></div><div class="line">    <span class="string">first,</span></div><div class="line">    <span class="string">second,</span></div><div class="line">    <span class="string">third</span></div><div class="line"><span class="string">)</span> <span class="meta">---</span> <span class="number">0x604000251190</span></div></pre></td></tr></table></figure>
+<p>可以看到，拷贝出来的是一个可变数组，而且两个地址也不相同，为深拷贝。</p>
+<h4 id="集合类型-不可变类型-copy"><a href="#集合类型-不可变类型-copy" class="headerlink" title="集合类型 + 不可变类型 + copy"></a>集合类型 + 不可变类型 + copy</h4><p>先上代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="string">/**</span></div><div class="line"> <span class="string">集合类型</span> <span class="bullet">-</span> <span class="string">不可变类型</span> <span class="bullet">-</span> <span class="string">imutableCopy</span></div><div class="line"> <span class="string">*/</span></div><div class="line"><span class="bullet">-</span> <span class="string">(void)setTypeImutableTypeImutableCopy</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">NSArray</span> <span class="meta">*imutableArr</span> <span class="string">=</span> <span class="string">[NSArray</span> <span class="attr">arrayWithObjects:@"first",@"second",@"third",</span> <span class="string">nil];</span></div><div class="line">    <span class="string">NSArray</span> <span class="meta">*imutableArrImutableCopy</span> <span class="string">=</span> <span class="string">[imutableArr</span> <span class="string">copy];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@",[[imutableArr</span> <span class="string">copy]</span> <span class="string">class]);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",imutableArr,imutableArr);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",imutableArrImutableCopy,imutableArrImutableCopy);</span></div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.656530+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">__NSArrayI</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.656685+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">(</span></div><div class="line">    <span class="string">first,</span></div><div class="line">    <span class="string">second,</span></div><div class="line">    <span class="string">third</span></div><div class="line"><span class="string">)</span> <span class="meta">---</span> <span class="number">0x60000024c5a0</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.656809+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">(</span></div><div class="line">    <span class="string">first,</span></div><div class="line">    <span class="string">second,</span></div><div class="line">    <span class="string">third</span></div><div class="line"><span class="string">)</span> <span class="meta">---</span> <span class="number">0x60000024c5a0</span></div></pre></td></tr></table></figure>
+<p>这个结果好像和之前的有点不同，两个地址是相同的，所以为浅拷贝，另外拷贝出来的是一个不可变数组。</p>
+<h3 id="集合类型总结"><a href="#集合类型总结" class="headerlink" title="集合类型总结"></a>集合类型总结</h3><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>可变类型</th>
+<th>不可变类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mutableCopy</td>
+<td>可变类型，深拷贝</td>
+<td>可变类型，深拷贝</td>
+<td></td>
+</tr>
+<tr>
+<td>copy</td>
+<td>不可变类型，深拷贝</td>
+<td>不可变类型，浅拷贝</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="非集合类型的拷贝"><a href="#非集合类型的拷贝" class="headerlink" title="非集合类型的拷贝"></a>非集合类型的拷贝</h2><p>非集合类型中的拷贝出来的类型结果好像有点不对，这里暂时没找出原因，如果有大佬看到希望能够帮忙指正一下。</p>
+<h3 id="非集合类型-可变类型"><a href="#非集合类型-可变类型" class="headerlink" title="非集合类型 + 可变类型"></a>非集合类型 + 可变类型</h3><h4 id="非集合类型-可变类型-mutableCopy"><a href="#非集合类型-可变类型-mutableCopy" class="headerlink" title="非集合类型 + 可变类型 + mutableCopy"></a>非集合类型 + 可变类型 + mutableCopy</h4><p>先上代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#pragma mark -</span></div><div class="line"><span class="comment">#pragma mark - not set type</span></div><div class="line"></div><div class="line"><span class="string">/**</span></div><div class="line"> <span class="string">非集合类型</span> <span class="bullet">-</span> <span class="string">可变类型</span> <span class="bullet">-</span> <span class="string">mutableCopy</span></div><div class="line"> <span class="string">*/</span></div><div class="line"></div><div class="line"><span class="bullet">-</span> <span class="string">(void)unsetTypeMutableTypeMutableCopy</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">NSMutableString</span> <span class="meta">*mutableStr</span> <span class="string">=</span> <span class="string">[NSMutableString</span> <span class="attr">stringWithFormat:@"mutableStr"];</span></div><div class="line">    <span class="string">NSMutableString</span> <span class="meta">*mutableStrMutableCopy</span> <span class="string">=</span> <span class="string">[mutableStr</span> <span class="string">mutableCopy];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@",[[mutableStr</span> <span class="string">mutableCopy]</span> <span class="string">class]);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",mutableStr,mutableStr);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",mutableStrMutableCopy,mutableStrMutableCopy);</span></div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.656967+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">__NSCFString</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.657094+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">mutableStr</span> <span class="meta">---</span> <span class="number">0x604000251190</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.657223+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">mutableStr</span> <span class="meta">---</span> <span class="number">0x604000251550</span></div></pre></td></tr></table></figure>
+<p>可以看到地址不同，深拷贝。</p>
+<h4 id="非集合类型-可变类型-copy"><a href="#非集合类型-可变类型-copy" class="headerlink" title="非集合类型 + 可变类型 + copy"></a>非集合类型 + 可变类型 + copy</h4><p>先上代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="string">/**</span></div><div class="line"> <span class="string">非集合类型</span> <span class="bullet">-</span> <span class="string">可变类型</span> <span class="bullet">-</span> <span class="string">imutableCopy</span></div><div class="line"> <span class="string">*/</span></div><div class="line"></div><div class="line"><span class="bullet">-</span> <span class="string">(void)unsetTypeMutableTypeImutableCopy</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">NSMutableString</span> <span class="meta">*mutableStr</span> <span class="string">=</span> <span class="string">[NSMutableString</span> <span class="attr">stringWithFormat:@"mutableStr"];</span></div><div class="line">    <span class="string">NSMutableString</span> <span class="meta">*mutableStrImutableCopy</span> <span class="string">=</span> <span class="string">[mutableStr</span> <span class="string">copy];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@",[[mutableStr</span> <span class="string">copy]</span> <span class="string">class]);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",mutableStr,mutableStr);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",mutableStrImutableCopy,mutableStrImutableCopy);</span></div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.661548+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">__NSCFString</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.661682+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">mutableStr</span> <span class="meta">---</span> <span class="number">0x604000251550</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.661850+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">mutableStr</span> <span class="meta">---</span> <span class="number">0x60400003c580</span></div></pre></td></tr></table></figure>
+<p>可以看到地址不同，深拷贝。</p>
+<h3 id="非集合类型-不可变类型"><a href="#非集合类型-不可变类型" class="headerlink" title="非集合类型 + 不可变类型"></a>非集合类型 + 不可变类型</h3><h4 id="非集合类型-不可变类型-mutableCopy"><a href="#非集合类型-不可变类型-mutableCopy" class="headerlink" title="非集合类型 + 不可变类型 + mutableCopy"></a>非集合类型 + 不可变类型 + mutableCopy</h4><p>代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="string">/**</span></div><div class="line"> <span class="string">非集合类型</span> <span class="bullet">-</span> <span class="string">不可变类型</span> <span class="bullet">-</span> <span class="string">mutableCopy</span></div><div class="line"> <span class="string">*/</span></div><div class="line"></div><div class="line"><span class="bullet">-</span> <span class="string">(void)unsetTypeImutableTypeMutableCopy</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">NSString</span> <span class="meta">*str</span> <span class="string">=</span> <span class="string">[NSString</span> <span class="attr">stringWithFormat:@"ImutableStr"];</span></div><div class="line">    <span class="string">NSString</span> <span class="meta">*strMutableCopy</span> <span class="string">=</span> <span class="string">[str</span> <span class="string">mutableCopy];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@",[[str</span> <span class="string">mutableCopy]</span> <span class="string">class]);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",str,str);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",strMutableCopy,strMutableCopy);</span></div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.661968+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">__NSCFString</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.662072+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">ImutableStr</span> <span class="meta">---</span> <span class="number">0x60400003c580</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.662184+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">ImutableStr</span> <span class="meta">---</span> <span class="number">0x604000251340</span></div></pre></td></tr></table></figure>
+<p>同样是深拷贝，地址不同。</p>
+<h4 id="非集合类型-不可变类型-copy"><a href="#非集合类型-不可变类型-copy" class="headerlink" title="非集合类型 + 不可变类型 + copy"></a>非集合类型 + 不可变类型 + copy</h4><p>先上代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="string">/**</span></div><div class="line"> <span class="string">非集合类型</span> <span class="bullet">-</span> <span class="string">不可变类型</span> <span class="bullet">-</span> <span class="string">imutableCopy</span></div><div class="line"> <span class="string">*/</span></div><div class="line"></div><div class="line"><span class="bullet">-</span> <span class="string">(void)unsetTypeImutableTypeImutableCopy</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">NSString</span> <span class="meta">*str</span> <span class="string">=</span> <span class="string">[NSString</span> <span class="attr">stringWithFormat:@"ImtableStr"];</span></div><div class="line">    <span class="string">NSString</span> <span class="meta">*strImutableCopy</span> <span class="string">=</span> <span class="string">[str</span> <span class="string">copy];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@",[[str</span> <span class="string">copy]</span> <span class="string">class]);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",str,str);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",strImutableCopy,strImutableCopy);</span></div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.662703+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">__NSCFString</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.663681+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">ImtableStr</span> <span class="meta">---</span> <span class="number">0x600000237340</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.663882+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">ImtableStr</span> <span class="meta">---</span> <span class="number">0x600000237340</span></div></pre></td></tr></table></figure>
+<p>可以看到，地址是相同的，所以为浅拷贝。</p>
+<h3 id="非集合类型总结"><a href="#非集合类型总结" class="headerlink" title="非集合类型总结"></a>非集合类型总结</h3><p>所以，可以发现，集合与非集合类型的结果基本上相同，但是这里拷贝出的类型好像有点问题。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>可变类型</th>
+<th>不可变类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mutableCopy</td>
+<td>深拷贝</td>
+<td>深拷贝</td>
+<td></td>
+</tr>
+<tr>
+<td>copy</td>
+<td>深拷贝</td>
+<td>浅拷贝</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="自定义类型"><a href="#自定义类型" class="headerlink" title="自定义类型"></a>自定义类型</h2><p>我们先自定义一个model，里边包括一个name，一个location。</p>
+<p><strong>注意</strong>这里要添加NSCopying和NSMutableCopying协议。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CopyModel</span> : <span class="title">NSObject</span>&lt;<span class="title">NSCopying</span>,<span class="title">NSMutableCopying</span>&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">copy</span>) <span class="built_in">NSString</span>            *name;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">copy</span>) <span class="built_in">NSString</span>            *location;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>然后还需要实现两个方法，否则在copy或mutableCopy时会发生崩溃。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"CopyModel.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">CopyModel</span></span></div><div class="line"></div><div class="line"></div><div class="line">- (<span class="keyword">instancetype</span>)copyWithZone:(<span class="built_in">NSZone</span> *)zone</div><div class="line">&#123;</div><div class="line">    CopyModel *copyModel = [[CopyModel alloc] init];</div><div class="line">    </div><div class="line">    copyModel.name = <span class="keyword">self</span>.name;</div><div class="line">    copyModel.location = <span class="keyword">self</span>.location;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> copyModel;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">instancetype</span>)mutableCopyWithZone:(<span class="built_in">NSZone</span> *)zone</div><div class="line">&#123;</div><div class="line">    CopyModel *copyModel = [[CopyModel alloc] init];</div><div class="line">    </div><div class="line">    copyModel.name = <span class="keyword">self</span>.name;</div><div class="line">    copyModel.location = <span class="keyword">self</span>.location;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> copyModel;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>接下来我们来看一下自定义类型的copy和mutableCopy的结果。</p>
+<h3 id="自定义类型-mutableCopy"><a href="#自定义类型-mutableCopy" class="headerlink" title="自定义类型 + mutableCopy"></a>自定义类型 + mutableCopy</h3><p>代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="string">/**</span></div><div class="line"> <span class="string">自定义类型</span> <span class="bullet">-</span> <span class="string">mutableCopy</span></div><div class="line"> <span class="string">*/</span></div><div class="line"></div><div class="line"><span class="bullet">-</span> <span class="string">(void)customTypeMutableCopy</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">CopyModel</span> <span class="meta">*model</span> <span class="string">=</span> <span class="string">[[CopyModel</span> <span class="string">alloc]</span> <span class="string">init];</span></div><div class="line">    </div><div class="line">    <span class="string">model.name</span> <span class="string">=</span> <span class="string">@"name";</span></div><div class="line">    <span class="string">model.location</span> <span class="string">=</span> <span class="string">@"location";</span></div><div class="line">    </div><div class="line">    <span class="string">CopyModel</span> <span class="meta">*copyModel</span> <span class="string">=</span> <span class="string">[model</span> <span class="string">mutableCopy];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%@</span> <span class="meta">---</span> <span class="string">%p",model.name,model.location,model);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%@</span> <span class="meta">---</span> <span class="string">%p",copyModel.name,copyModel.location,copyModel);</span></div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.664868+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">name</span> <span class="meta">---</span> <span class="string">location</span> <span class="meta">---</span> <span class="number">0x60400003c400</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.665014+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">name</span> <span class="meta">---</span> <span class="string">location</span> <span class="meta">---</span> <span class="number">0x60400003c320</span></div></pre></td></tr></table></figure>
+<p>可以看到地址不同，是深拷贝。</p>
+<h3 id="自定义类型-copy"><a href="#自定义类型-copy" class="headerlink" title="自定义类型 + copy"></a>自定义类型 + copy</h3><p>代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="string">/**</span></div><div class="line"> <span class="string">自定义类型</span> <span class="bullet">-</span> <span class="string">ImutableCopy</span></div><div class="line"> <span class="string">*/</span></div><div class="line"></div><div class="line"><span class="bullet">-</span> <span class="string">(void)customTypeImutableCopy</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">CopyModel</span> <span class="meta">*model</span> <span class="string">=</span> <span class="string">[[CopyModel</span> <span class="string">alloc]</span> <span class="string">init];</span></div><div class="line">    </div><div class="line">    <span class="string">model.name</span> <span class="string">=</span> <span class="string">@"name";</span></div><div class="line">    <span class="string">model.location</span> <span class="string">=</span> <span class="string">@"location";</span></div><div class="line">    </div><div class="line">    <span class="string">CopyModel</span> <span class="meta">*copyModel</span> <span class="string">=</span> <span class="string">[model</span> <span class="string">copy];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%@</span> <span class="meta">---</span> <span class="string">%p",model.name,model.location,model);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%@</span> <span class="meta">---</span> <span class="string">%p",copyModel.name,copyModel.location,copyModel);</span></div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.665165+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">name</span> <span class="meta">---</span> <span class="string">location</span> <span class="meta">---</span> <span class="number">0x60400003c400</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:04:59.665404+0800</span> <span class="string">CopyDemo[11202:404553]</span> <span class="string">name</span> <span class="meta">---</span> <span class="string">location</span> <span class="meta">---</span> <span class="number">0x60400003c320</span></div></pre></td></tr></table></figure>
+<p>可以看到地址不同，是深拷贝。 </p>
+<h2 id="property-中的copy"><a href="#property-中的copy" class="headerlink" title="@property 中的copy"></a>@property 中的copy</h2><p>属性的常用修饰符里，就有一个就是copy，那这个copy和其他的修饰符会有什么区别呢？</p>
+<h3 id="copy-vs-strong"><a href="#copy-vs-strong" class="headerlink" title="copy vs strong"></a>copy vs strong</h3><p>一般在修饰NSString属性时，通常会用copy，那如果我们不用copy，而改用strong会发生什么问题呢？？</p>
+<p>先上代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">strong</span>) <span class="built_in">NSString</span>              *myStrongStr;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">copy</span>) <span class="built_in">NSString</span>                *myCopyStr;</div></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="bullet">-</span> <span class="string">(void)strongStrVSCopyStr</span></div><div class="line"><span class="string">&#123;</span></div><div class="line">    <span class="string">NSMutableString</span> <span class="meta">*otherStr</span> <span class="string">=</span> <span class="string">[NSMutableString</span> <span class="attr">stringWithFormat:@"otherStr"];</span></div><div class="line">    </div><div class="line">    <span class="string">self.myStrongStr</span> <span class="string">=</span> <span class="string">otherStr;</span></div><div class="line">    <span class="string">self.myCopyStr</span> <span class="string">=</span> <span class="string">otherStr;</span></div><div class="line">    </div><div class="line">    <span class="string">[otherStr</span> <span class="attr">appendString:@"addSomeThing"];</span></div><div class="line">    </div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",self.myStrongStr,self.myStrongStr);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",self.myCopyStr,self.myCopyStr);</span></div><div class="line">    <span class="string">NSLog(@"%@</span> <span class="meta">---</span> <span class="string">%p",otherStr,otherStr);</span></div><div class="line">    </div><div class="line"><span class="string">&#125;</span></div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:34:04.034151+0800</span> <span class="string">CopyDemo[11944:480031]</span> <span class="string">otherStraddSomeThing</span> <span class="meta">---</span> <span class="number">0x600000241170</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:34:04.034339+0800</span> <span class="string">CopyDemo[11944:480031]</span> <span class="string">otherStr</span> <span class="meta">---</span> <span class="number">0xa000c45401541058</span></div><div class="line"><span class="number">2018</span><span class="bullet">-04</span><span class="bullet">-05</span> <span class="number">11</span><span class="string">:34:04.034619+0800</span> <span class="string">CopyDemo[11944:480031]</span> <span class="string">otherStraddSomeThing</span> <span class="meta">---</span> <span class="number">0x600000241170</span></div></pre></td></tr></table></figure>
+<p>结果应该很明显了，我并没有对myStrongStr进行操作，但是他的结果却变了，而且他与otherStr的地址也是相同的，那这是为什么呢？</p>
+<p>是因为copy修饰的属性setter方法，调用时会先release旧值，copy新值再赋值给成员变量，不可变copy是深拷贝，地址就变化了。</p>
+<p>而strong修饰之后只是强指针引用，并没有改变地址，所以myStrongStr会随着otherStr的值进行变化。他们的地址也是相同的。</p>
+<h3 id="copy-vs-retain"><a href="#copy-vs-retain" class="headerlink" title="copy vs retain"></a>copy vs retain</h3><p>在MRC下进行测试：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)strongVSretain &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSMutableArray</span> *arrM = [<span class="built_in">NSMutableArray</span> arrayWithObjects:<span class="string">@"111"</span>,<span class="string">@"222"</span>,<span class="string">@"333"</span>, <span class="literal">nil</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSMutableArray</span> *arrMRetain = [arrM <span class="keyword">retain</span>];</div><div class="line">    <span class="built_in">NSMutableArray</span> *arrMCopy = [arrM <span class="keyword">copy</span>];</div><div class="line">    [arrM removeLastObject];</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"arrMCopy--%@--%p--%lu"</span>,arrMCopy,arrMCopy,[arrMCopy retainCount]);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"arrMRetain--%@--%p--%lu"</span>,arrMRetain,arrMRetain,[arrMRetain retainCount]);</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">2018<span class="string">-04</span><span class="string">-05</span> 11:34:04.034619<span class="string">+0800</span> CopyDemo[11944:480031] arrMCopy--(</div><div class="line">    111,</div><div class="line">    222,</div><div class="line">    333</div><div class="line">)-<span class="string">-0</span>x60000005cf80-<span class="string">-1</span></div><div class="line">2018<span class="string">-04</span><span class="string">-05</span> 11:34:04.034619<span class="string">+0800</span> CopyDemo[11944:480031] arrMRetain--(</div><div class="line">    111,</div><div class="line">    222</div><div class="line">)-<span class="string">-0</span>x60000005cf50-<span class="string">-2</span></div></pre></td></tr></table></figure>
+<p>可以看到，copy是深拷贝，retainCount为1，retain为浅拷贝，retain是使原来的引用计数+1，所以两个数组时同一个地址，改变的话也会一起改变。</p>
+<h3 id="可变类型使用copy修饰"><a href="#可变类型使用copy修饰" class="headerlink" title="可变类型使用copy修饰"></a>可变类型使用copy修饰</h3><p>当我们创建一个可变类型的变量而使用copy修饰的时候，可能会发生一个问题，就是使用可变类型的方法时，就会发生崩溃。</p>
+<p>比如：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">copy</span>) <span class="built_in">NSMutableArray</span>          *myMutableArr;</div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.myMutableArr = [<span class="built_in">NSMutableArray</span> arrayWithObjects:<span class="string">@"first"</span>,<span class="string">@"second"</span>,<span class="string">@"third"</span>, <span class="literal">nil</span>];</div><div class="line">[<span class="keyword">self</span>.myMutableArr addObject:<span class="string">@"forth"</span>];</div></pre></td></tr></table></figure>
+<p>这段代码运行时就会发生崩溃，报错信息为：</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2018-04-05 11:42:52.239877+0800 CopyDemo[12135:500454] *** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '-[__NSArrayI addObject:]: unrecognized selector sent to<span class="built_in"> instance </span>0x600000250200'</div></pre></td></tr></table></figure>
+<p>我们发现这个报错的原因为不可变数组（__NSArrayI）找不到<code>addObject:</code>的方法。那是为什么呢？</p>
+<p>因为我们之前也说过，在使用copy修饰符的时候，是先release掉旧值，再copy出一个新的值，而在前边的内容中也有说到，可变数组copy出来的是一个不可变数组，所以实际上这时候myMutableArr就是一个不可变数组了，这时候给他发送可变数组的方法，他当然就会崩溃了。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>最后总结一下，可以看到，只有在不可变类型的copy时，才会发生浅拷贝，而其他所有的情况下都为深拷贝，并且一般来说无论是可变还是不可变类型的变量，mutableCopy后都会变成可变类型，copy后都会变成不可变类型。</p>
+<p>最后Demo在<a href="https://github.com/rshinich/CopyDemo" target="_blank" rel="external">这里</a>。</p>
+<p>祝大家清明节快乐~~</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Collections/Articles/Copying.html#//apple_ref/doc/uid/TP40010162-SW3" target="_blank" rel="external">Copying Collections</a></p>
+<p><a href="https://www.zybuluo.com/MicroCai/note/50592" target="_blank" rel="external">iOS 集合的深复制与浅复制</a></p>
+<p><a href="https://www.jianshu.com/p/4e5fde48fcda" target="_blank" rel="external">ios中的拷贝你知道多少？</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/28/iOS开发-RunLoop/" rel="next" title="iOS开发-RunLoop">
+                <i class="fa fa-chevron-left"></i> iOS开发-RunLoop
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#集合类型的拷贝"><span class="nav-number">1.</span> <span class="nav-text">集合类型的拷贝</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#集合类型-可变类型"><span class="nav-number">1.1.</span> <span class="nav-text">集合类型 + 可变类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#集合类型-可变类型-mutableCopy"><span class="nav-number">1.1.1.</span> <span class="nav-text">集合类型 + 可变类型 + mutableCopy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集合类型-可变类型-copy"><span class="nav-number">1.1.2.</span> <span class="nav-text">集合类型 + 可变类型 + copy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合类型-不可变类型"><span class="nav-number">1.2.</span> <span class="nav-text">集合类型 +不可变类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#集合类型-不可变类型-mutableCopy"><span class="nav-number">1.2.1.</span> <span class="nav-text">集合类型 + 不可变类型 + mutableCopy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集合类型-不可变类型-copy"><span class="nav-number">1.2.2.</span> <span class="nav-text">集合类型 + 不可变类型 + copy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合类型总结"><span class="nav-number">1.3.</span> <span class="nav-text">集合类型总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非集合类型的拷贝"><span class="nav-number">2.</span> <span class="nav-text">非集合类型的拷贝</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#非集合类型-可变类型"><span class="nav-number">2.1.</span> <span class="nav-text">非集合类型 + 可变类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#非集合类型-可变类型-mutableCopy"><span class="nav-number">2.1.1.</span> <span class="nav-text">非集合类型 + 可变类型 + mutableCopy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#非集合类型-可变类型-copy"><span class="nav-number">2.1.2.</span> <span class="nav-text">非集合类型 + 可变类型 + copy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非集合类型-不可变类型"><span class="nav-number">2.2.</span> <span class="nav-text">非集合类型 + 不可变类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#非集合类型-不可变类型-mutableCopy"><span class="nav-number">2.2.1.</span> <span class="nav-text">非集合类型 + 不可变类型 + mutableCopy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#非集合类型-不可变类型-copy"><span class="nav-number">2.2.2.</span> <span class="nav-text">非集合类型 + 不可变类型 + copy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非集合类型总结"><span class="nav-number">2.3.</span> <span class="nav-text">非集合类型总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义类型"><span class="nav-number">3.</span> <span class="nav-text">自定义类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义类型-mutableCopy"><span class="nav-number">3.1.</span> <span class="nav-text">自定义类型 + mutableCopy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义类型-copy"><span class="nav-number">3.2.</span> <span class="nav-text">自定义类型 + copy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#property-中的copy"><span class="nav-number">4.</span> <span class="nav-text">@property 中的copy</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-vs-strong"><span class="nav-number">4.1.</span> <span class="nav-text">copy vs strong</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-vs-retain"><span class="nav-number">4.2.</span> <span class="nav-text">copy vs retain</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可变类型使用copy修饰"><span class="nav-number">4.3.</span> <span class="nav-text">可变类型使用copy修饰</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">5.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
