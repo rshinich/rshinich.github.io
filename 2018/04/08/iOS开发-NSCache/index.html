@@ -1,0 +1,755 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="开发时，经常会遇到一个问题，从网络下载的图片应该如何来缓存？难道每次请求都要去下载一次？流量不要钱哇？所以比较好的方法就是把图片资源下载下来，保存到本地，然后下次直接从本地取出图片就可以了，但是用什么来保存这个图片呢？有些人可能说用NSDictionary(应该是NSMutableDictionary)，因为这个类在开发中非常非常常用。但是其实可能有一个更好的选择，是专门为缓存来设计的，没错，就是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-NSCache">
+<meta property="og:url" content="http://yoursite.com/2018/04/08/iOS开发-NSCache/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="开发时，经常会遇到一个问题，从网络下载的图片应该如何来缓存？难道每次请求都要去下载一次？流量不要钱哇？所以比较好的方法就是把图片资源下载下来，保存到本地，然后下次直接从本地取出图片就可以了，但是用什么来保存这个图片呢？有些人可能说用NSDictionary(应该是NSMutableDictionary)，因为这个类在开发中非常非常常用。但是其实可能有一个更好的选择，是专门为缓存来设计的，没错，就是">
+<meta property="og:updated_time" content="2018-04-08T09:46:13.458Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-NSCache">
+<meta name="twitter:description" content="开发时，经常会遇到一个问题，从网络下载的图片应该如何来缓存？难道每次请求都要去下载一次？流量不要钱哇？所以比较好的方法就是把图片资源下载下来，保存到本地，然后下次直接从本地取出图片就可以了，但是用什么来保存这个图片呢？有些人可能说用NSDictionary(应该是NSMutableDictionary)，因为这个类在开发中非常非常常用。但是其实可能有一个更好的选择，是专门为缓存来设计的，没错，就是">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/08/iOS开发-NSCache/"/>
+
+
+
+
+
+  <title> iOS开发-NSCache | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/08/iOS开发-NSCache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-NSCache
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-08T16:45:36+08:00">
+                2018-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>开发时，经常会遇到一个问题，从网络下载的图片应该如何来缓存？难道每次请求都要去下载一次？流量不要钱哇？所以比较好的方法就是把图片资源下载下来，保存到本地，然后下次直接从本地取出图片就可以了，但是用什么来保存这个图片呢？有些人可能说用NSDictionary(应该是NSMutableDictionary)，因为这个类在开发中非常非常常用。但是其实可能有一个更好的选择，是专门为缓存来设计的，没错，就是<strong>NSCache</strong>。非常牛逼的AFN、SDWebImage都是用它来进行图片缓存的。</p>
+<p>就像上边说到的，NSCache和NSDictionary很类似，用key-value键值对来存储，但是相对于NSDictionary，他有几点优势：</p>
+<ul>
+<li>1.NSCache结合了各种自动删除的策略，用来确保不会占用过多的系统内存。</li>
+<li>2.NSCache是线程安全的，在多线程情况下，不需要考虑加锁来保证数据的安全。</li>
+<li>3.不像NSMutableDictionary，NSCache不会copy对象，而是保留它。</li>
+</ul>
+<h2 id="NSCache-框架"><a href="#NSCache-框架" class="headerlink" title="NSCache 框架"></a>NSCache 框架</h2><p>NSCache的类中内容很少，从Xcode进去看也就只有43行，接下来我们来看一下他都提供了哪些方法和属性。</p>
+<h3 id="NSCache-的属性"><a href="#NSCache-的属性" class="headerlink" title="NSCache 的属性"></a>NSCache 的属性</h3><figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@property</span> NSUInteger countLimit;	<span class="comment">// limits are imprecise/not strict</span></div></pre></td></tr></table></figure>
+<p><code>countLimit</code>用来限制缓存最多维护的对象个数，默认为0，0表示不限制数量。<br>但是需要注意的是，这个限制并不是严格的限制，如果缓存的数量超过这个数量，缓存中的一个对象可能会被立即丢弃，也可能稍候丢弃，还可能永远都不会丢弃，具体还要看实现的方式。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@property</span> NSUInteger totalCostLimit;	<span class="comment">// limits are imprecise/not strict</span></div></pre></td></tr></table></figure>
+<p><code>totalCostLimit</code>用来限制缓存最大能够维持的内存，默认也为0，表示没有限制。<br>一般我们会使用字节来作为cost进行限制，在添加缓存时可以指定写入的缓存的cost，当总消耗的cost值超过限制时，就会释放一些缓存对象，这个释放对象的选择使用LRU（Least Recently Used）算法来选择最近没有使用的对象进行淘汰。</p>
+<h3 id="NSCache-方法"><a href="#NSCache-方法" class="headerlink" title="NSCache 方法"></a>NSCache 方法</h3><p>NSCache的存取方法主要是用key-value的形式，存取方法分为set、get、remove三种类型。</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- <span class="comment">(nullable ObjectType)</span>objectForKey:<span class="comment">(KeyType)</span>key;</div><div class="line">- <span class="comment">(void)</span>setObject:<span class="comment">(ObjectType)</span>obj forKey:<span class="comment">(KeyType)</span>key; <span class="comment">// 0 cost</span></div><div class="line">- <span class="comment">(void)</span>setObject:<span class="comment">(ObjectType)</span>obj forKey:<span class="comment">(KeyType)</span>key cost:<span class="comment">(NSUInteger)</span>g;</div><div class="line">- <span class="comment">(void)</span>removeObjectForKey:<span class="comment">(KeyType)</span>key;</div><div class="line"></div><div class="line">- <span class="comment">(void)</span>removeAllObjects;</div></pre></td></tr></table></figure>
+<p>其中</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>setObject:<span class="params">(ObjectType)</span>obj forKey:<span class="params">(KeyType)</span>key cost:<span class="params">(NSUInteger)</span>g;</div></pre></td></tr></table></figure>
+<p>可以指定消耗的cost，配合之前的<code>totalCostLimit</code>来管理缓存大小。</p>
+<h3 id="NSCacheDelegate"><a href="#NSCacheDelegate" class="headerlink" title="NSCacheDelegate"></a>NSCacheDelegate</h3><p>NSCacheDelegate只有一个方法：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (void)<span class="keyword">cache</span>:(NSCache *)<span class="keyword">cache</span> willEvictObject:(<span class="keyword">id</span>)obj;</div></pre></td></tr></table></figure>
+<p>当代理对象即将从缓存中移除时激活。</p>
+<h2 id="NSCache-使用"><a href="#NSCache-使用" class="headerlink" title="NSCache 使用"></a>NSCache 使用</h2><p>NSCache的使用很简单。</p>
+<p>实例化一个cache对象，然后设定缓存内容就可以了，但是我们</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.myCache = [[<span class="built_in">NSCache</span> alloc] init];</div><div class="line"><span class="keyword">self</span>.myCache.delegate = <span class="keyword">self</span>;</div><div class="line"></div><div class="line"><span class="comment">//设置最大缓存数量：10</span></div><div class="line"><span class="keyword">self</span>.myCache.countLimit = <span class="number">10</span>;</div><div class="line"><span class="comment">//设置最大缓存cost：5M</span></div><div class="line"><span class="keyword">self</span>.myCache.totalCostLimit = <span class="number">5</span> * <span class="number">1024</span> * <span class="number">1024</span>;</div><div class="line"></div><div class="line"><span class="keyword">for</span>(<span class="built_in">NSInteger</span> i = <span class="number">0</span> ; i &lt; <span class="number">100</span> ; i ++)</div><div class="line">&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"111.jpg"</span>];</div><div class="line">    <span class="built_in">NSData</span> *data = <span class="built_in">UIImageJPEGRepresentation</span>(image, <span class="number">1.0</span>);</div><div class="line"></div><div class="line">    <span class="built_in">NSString</span> *keyStr = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"image%ld"</span>,i];</div><div class="line">    </div><div class="line">    [<span class="keyword">self</span>.myCache setObject:data forKey:keyStr];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后添加一个按钮，在点击时获取缓存</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">IBAction</span>)getBtnClicked:(<span class="keyword">id</span>)sender</div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="built_in">NSInteger</span> i = <span class="number">0</span> ; i &lt; <span class="number">100</span> ; i ++)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">NSString</span> *keyStr = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"image%ld"</span>,i];</div><div class="line">        </div><div class="line">        <span class="built_in">NSData</span> *data = [<span class="keyword">self</span>.myCache objectForKey:keyStr];</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%ld"</span>,[data length]);</div><div class="line">        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到打印出来的内容：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.916639</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.916978</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41:16.917196</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.917504</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.917818</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.918076</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.918456</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.918640</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.918945</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41:16.919214</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.919521</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.919740</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.920067</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.920571</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.920829</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.921340</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.921631</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.921903</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">9132462</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41:16.922146</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">9132462</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.922386</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">9132462</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.922575</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">9132462</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.922783</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">9132462</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.923082</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">9132462</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.923476</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">9132462</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.923756</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">9132462</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.923991</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">9132462</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">16.924333</span>+<span class="number">0800</span> CacheDemo[<span class="number">56627</span>:<span class="number">2584885</span>] <span class="number">9132462</span></div></pre></td></tr></table></figure>
+<p>发现还是有10个图片被保存了下来，这时候我们把限制的cost大小和存入cost的方法修改一下。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">    <span class="keyword">self</span>.myCache = [[<span class="built_in">NSCache</span> alloc] init];</div><div class="line">    <span class="keyword">self</span>.myCache.delegate = <span class="keyword">self</span>;</div><div class="line">    </div><div class="line">    <span class="comment">//设置最大缓存数量：10</span></div><div class="line">    <span class="keyword">self</span>.myCache.countLimit = <span class="number">10</span>;</div><div class="line">    <span class="comment">//设置最大缓存cost：10M</span></div><div class="line">    <span class="keyword">self</span>.myCache.totalCostLimit = <span class="number">10</span> * <span class="number">1024</span> * <span class="number">1024</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span>(<span class="built_in">NSInteger</span> i = <span class="number">0</span> ; i &lt; <span class="number">100</span> ; i ++)</div><div class="line">    &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"111.jpg"</span>];</div><div class="line">        <span class="built_in">NSData</span> *data = <span class="built_in">UIImageJPEGRepresentation</span>(image, <span class="number">1.0</span>);</div><div class="line"></div><div class="line">        <span class="built_in">NSString</span> *keyStr = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"image%ld"</span>,i];</div><div class="line">        </div><div class="line"><span class="comment">//        [self.myCache setObject:data forKey:keyStr];</span></div><div class="line">        <span class="comment">//存入时添加cost</span></div><div class="line">        [<span class="keyword">self</span>.myCache setObject:data forKey:keyStr cost:[data length]];</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.566623</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.566814</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.567049</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.567326</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.567738</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43:36.568164</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.568451</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.568780</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43:36.569227</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.569489</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.569771</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.569993</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.570265</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.570518</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.570832</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.571092</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.571305</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.571526</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.571921</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.572595</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.572763</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.572979</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.573266</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.573541</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.573775</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.573969</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43:36.574232</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.574565</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43:36.575234</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">0</span></div><div class="line"><span class="number">2018-04-08</span> <span class="number">17</span>:<span class="number">43</span>:<span class="number">36.575364</span>+<span class="number">0800</span> CacheDemo[<span class="number">56686</span>:<span class="number">2587750</span>] <span class="number">9132462</span></div></pre></td></tr></table></figure>
+<p>发现只有最后一次的图片被缓存下来了。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>以上就是NSCache的全部内容了，这个类中的内容不多，但是可能会在开发时帮助我们解决很多麻烦的问题。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/05/iOS开发-iOS中的拷贝/" rel="next" title="iOS开发-iOS中的拷贝">
+                <i class="fa fa-chevron-left"></i> iOS开发-iOS中的拷贝
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NSCache-框架"><span class="nav-number">1.</span> <span class="nav-text">NSCache 框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NSCache-的属性"><span class="nav-number">1.1.</span> <span class="nav-text">NSCache 的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSCache-方法"><span class="nav-number">1.2.</span> <span class="nav-text">NSCache 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSCacheDelegate"><span class="nav-number">1.3.</span> <span class="nav-text">NSCacheDelegate</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSCache-使用"><span class="nav-number">2.</span> <span class="nav-text">NSCache 使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">3.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
