@@ -1,0 +1,834 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在iOS开发中，经常会用到多线程开发的情况，这时候如果多个线程同时访问同一块资源时，就很容易引发数据错乱和数据安全的问题，这个时候我们就需要有一个方法来保证每次只有一个线程访问这一块资源，这个方法就是锁。
+iOS中一共有8中常用的锁，我们用YY大神的一张图来看一下这些锁的性能。
+
+
+
+OSSpinLock 自旋锁OSSpinLock 自旋锁在图表中可以看到，性能是最高的，大概在150us，但是YY">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-iOS中的八种锁">
+<meta property="og:url" content="http://yoursite.com/2018/04/23/iOS开发-iOS中的八种锁/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="在iOS开发中，经常会用到多线程开发的情况，这时候如果多个线程同时访问同一块资源时，就很容易引发数据错乱和数据安全的问题，这个时候我们就需要有一个方法来保证每次只有一个线程访问这一块资源，这个方法就是锁。
+iOS中一共有8中常用的锁，我们用YY大神的一张图来看一下这些锁的性能。
+
+
+
+OSSpinLock 自旋锁OSSpinLock 自旋锁在图表中可以看到，性能是最高的，大概在150us，但是YY">
+<meta property="og:image" content="http://yoursite.com/2018/04/23/iOS开发-iOS中的八种锁/lcok.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/23/iOS开发-iOS中的八种锁/lock_OSSpinLock.png">
+<meta property="og:updated_time" content="2018-04-24T02:51:34.260Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-iOS中的八种锁">
+<meta name="twitter:description" content="在iOS开发中，经常会用到多线程开发的情况，这时候如果多个线程同时访问同一块资源时，就很容易引发数据错乱和数据安全的问题，这个时候我们就需要有一个方法来保证每次只有一个线程访问这一块资源，这个方法就是锁。
+iOS中一共有8中常用的锁，我们用YY大神的一张图来看一下这些锁的性能。
+
+
+
+OSSpinLock 自旋锁OSSpinLock 自旋锁在图表中可以看到，性能是最高的，大概在150us，但是YY">
+<meta name="twitter:image" content="http://yoursite.com/2018/04/23/iOS开发-iOS中的八种锁/lcok.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/23/iOS开发-iOS中的八种锁/"/>
+
+
+
+
+
+  <title> iOS开发-iOS中的八种锁 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/23/iOS开发-iOS中的八种锁/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-iOS中的八种锁
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-23T14:56:23+08:00">
+                2018-04-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在iOS开发中，经常会用到多线程开发的情况，这时候如果多个线程同时访问同一块资源时，就很容易引发数据错乱和数据安全的问题，这个时候我们就需要有一个方法来保证每次只有一个线程访问这一块资源，这个方法就是<strong>锁</strong>。</p>
+<p>iOS中一共有8中常用的锁，我们用YY大神的一张图来看一下这些锁的性能。</p>
+<center><img src="/2018/04/23/iOS开发-iOS中的八种锁/lcok.png" alt="logo"></center>
+
+
+<h2 id="OSSpinLock-自旋锁"><a href="#OSSpinLock-自旋锁" class="headerlink" title="OSSpinLock 自旋锁"></a>OSSpinLock 自旋锁</h2><p>OSSpinLock 自旋锁在图表中可以看到，性能是最高的，大概在150us，但是YY大神在<a href="https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">不再安全的 OSSpinLock</a>中说道OSSpinLock自旋锁已经不再安全了。</p>
+<p>而且也可以看到OSSpinLock已经在iOS 10.0之后废弃了。</p>
+<center><img src="/2018/04/23/iOS开发-iOS中的八种锁/lock_OSSpinLock.png" alt="logo"></center>
+
+<p>好了，接下来看一下OSSpinLock中的方法。</p>
+<ul>
+<li>OS_SPINLOCK_INIT： 默认值为 0,在 locked 状态时就会大于 0，unlocked状态下为 0</li>
+<li>OSSpinLockLock(&amp;oslock)：上锁，参数为 OSSpinLock 地址</li>
+<li>OSSpinLockUnlock(&amp;oslock)：解锁，参数为 OSSpinLock 地址</li>
+<li>OSSpinLockTry(&amp;oslock)：尝试加锁，可以加锁则立即加锁并返回 YES,反之返回 NO</li>
+</ul>
+<p>接下来我们测试一下，比如下面一段代码中，我们开启两个异步线程。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">- (void)setOSSpinLock</div><div class="line">&#123;</div><div class="line">    __block OSSpinLock ossPinLock = OS_SPINLOCK_INIT<span class="comment">;</span></div><div class="line">    __block NSInteger  number = <span class="number">10</span><span class="comment">;</span></div><div class="line">    </div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        number += <span class="number">10</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        </div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        number += <span class="number">20</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        </div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到打印出来的数据都是错乱的：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-04-23</span> <span class="number">16</span>:<span class="number">33</span>:<span class="number">12.655341</span>+<span class="number">0800</span> LockDemo[<span class="number">88725</span>:<span class="number">6234113</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000270d00</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，number=<span class="number">10</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">16</span>:<span class="number">33</span>:<span class="number">12.655341</span>+<span class="number">0800</span> LockDemo[<span class="number">88725</span>:<span class="number">6234116</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x600<span class="number">00026f340</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，number=<span class="number">10</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">16</span>:<span class="number">33</span>:<span class="number">12.655651</span>+<span class="number">0800</span> LockDemo[<span class="number">88725</span>:<span class="number">6234116</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x600<span class="number">00026f340</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，number=<span class="number">40</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">16</span>:<span class="number">33</span>:<span class="number">12.655655</span>+<span class="number">0800</span> LockDemo[<span class="number">88725</span>:<span class="number">6234113</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000270d00</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，number=<span class="number">40</span></div></pre></td></tr></table></figure>
+<p>这时候，我们添加一下上OSSpinLock自旋锁:</p>
+<p>首先引入OSSpinLock自旋锁的库:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;libkern/OSAtomic.h&gt;</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">- (void)setOSSpinLock</div><div class="line">&#123;</div><div class="line">    __block OSSpinLock ossPinLock = OS_SPINLOCK_INIT<span class="comment">;</span></div><div class="line">    __block NSInteger  number = <span class="number">10</span><span class="comment">;</span></div><div class="line">    </div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，OSSpinLock上锁"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        OSSpinLockLock(&amp;ossPinLock)<span class="comment">;</span></div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        number += <span class="number">10</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line"></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，OSSpinLock解锁"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        OSSpinLockUnlock(&amp;ossPinLock)<span class="comment">;</span></div><div class="line">        </div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，OSSpinLock上锁"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        OSSpinLockLock(&amp;ossPinLock)<span class="comment">;</span></div><div class="line"></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        number += <span class="number">20</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line"></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，OSSpinLock解锁"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        OSSpinLockUnlock(&amp;ossPinLock)<span class="comment">;</span></div><div class="line">        </div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到打印的数据：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">16</span>:<span class="number">34</span>:<span class="number">40.764216</span>+<span class="number">0800</span> LockDemo[<span class="number">88797</span>:<span class="number">6236783</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000027dcc0&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，OSSpinLock上锁</div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">16</span>:<span class="number">34</span>:<span class="number">40.764216</span>+<span class="number">0800</span> LockDemo[<span class="number">88797</span>:<span class="number">6236781</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000027da40&gt;&#123;<span class="attr">number</span> = <span class="number">4</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，OSSpinLock上锁</div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">16</span>:<span class="number">34</span>:<span class="number">40.764450</span>+<span class="number">0800</span> LockDemo[<span class="number">88797</span>:<span class="number">6236783</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000027dcc0&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=10</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">16</span>:<span class="number">34</span>:<span class="number">40.764577</span>+<span class="number">0800</span> LockDemo[<span class="number">88797</span>:<span class="number">6236783</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000027dcc0&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=20</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">16</span>:<span class="number">34</span>:<span class="number">40.764736</span>+<span class="number">0800</span> LockDemo[<span class="number">88797</span>:<span class="number">6236783</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000027dcc0&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，OSSpinLock解锁</div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">16</span>:<span class="number">34</span>:<span class="number">40.766647</span>+<span class="number">0800</span> LockDemo[<span class="number">88797</span>:<span class="number">6236781</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000027da40&gt;&#123;<span class="attr">number</span> = <span class="number">4</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=20</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">16</span>:<span class="number">34</span>:<span class="number">40.766910</span>+<span class="number">0800</span> LockDemo[<span class="number">88797</span>:<span class="number">6236781</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000027da40&gt;&#123;<span class="attr">number</span> = <span class="number">4</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=40</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">16</span>:<span class="number">34</span>:<span class="number">40.768117</span>+<span class="number">0800</span> LockDemo[<span class="number">88797</span>:<span class="number">6236781</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000027da40&gt;&#123;<span class="attr">number</span> = <span class="number">4</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，OSSpinLock解锁</div></pre></td></tr></table></figure>
+<h2 id="dispatch-semaphore-信号量"><a href="#dispatch-semaphore-信号量" class="headerlink" title="dispatch_semaphore 信号量"></a>dispatch_semaphore 信号量</h2><p>信号量是仅次于自旋锁的方法，使用的是GCD提供的API：</p>
+<ul>
+<li>dispatch_semaphore_create 创建一个Semphore并初始化信号的总量。</li>
+<li>dispatch_semaphore_signal 发送一个信号，让信号总量加1。</li>
+<li>dispatch_semaphore_wait 可以使总信号量减1，让信号总量为0时就会一直等待，否则就可以正常执行。</li>
+</ul>
+<p>这次我们就不上测试的代码了，直接放上增加信号量的代码：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">- (void)setSemaphore</div><div class="line">&#123;</div><div class="line">    <span class="keyword">dispatch_semaphore_t </span>semaphore = <span class="keyword">dispatch_semaphore_create(0);</span></div><div class="line">    <span class="keyword">dispatch_time_t </span>overTime = <span class="keyword">dispatch_time(DISPATCH_TIME_NOW, </span><span class="number">3</span>.<span class="number">0</span>f * NSEC_PER_SEC)<span class="comment">;</span></div><div class="line">    __block NSInteger  number = <span class="number">10</span><span class="comment">;</span></div><div class="line"></div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，semaphore信号量+1"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        <span class="keyword">dispatch_semaphore_signal(semaphore);</span></div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        number += <span class="number">10</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，semaphore信号量-1"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        <span class="keyword">dispatch_semaphore_wait(semaphore, </span>overTime)<span class="comment">;</span></div><div class="line">        </div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，semaphore信号量+1"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        <span class="keyword">dispatch_semaphore_signal(semaphore);</span></div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        number += <span class="number">20</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，semaphore信号量-1"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        <span class="keyword">dispatch_semaphore_wait(semaphore, </span>overTime)<span class="comment">;</span></div><div class="line"></div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">05</span>:<span class="number">22.368340</span>+<span class="number">0800</span> LockDemo[<span class="number">89577</span>:<span class="number">6266694</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000026ed00&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，semaphore信号量+<span class="number">1</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">05</span>:<span class="number">22.368340</span>+<span class="number">0800</span> LockDemo[<span class="number">89577</span>:<span class="number">6266693</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000026ed80&gt;&#123;<span class="attr">number</span> = <span class="number">4</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，semaphore信号量+<span class="number">1</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">05</span>:<span class="number">22.368625</span>+<span class="number">0800</span> LockDemo[<span class="number">89577</span>:<span class="number">6266694</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000026ed00&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=10</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">05</span>:<span class="number">22.368630</span>+<span class="number">0800</span> LockDemo[<span class="number">89577</span>:<span class="number">6266693</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000026ed80&gt;&#123;<span class="attr">number</span> = <span class="number">4</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=10</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">05</span>:<span class="number">22.368763</span>+<span class="number">0800</span> LockDemo[<span class="number">89577</span>:<span class="number">6266694</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000026ed00&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=20</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">05</span>:<span class="number">22.368888</span>+<span class="number">0800</span> LockDemo[<span class="number">89577</span>:<span class="number">6266694</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000026ed00&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，semaphore信号量-<span class="number">1</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">05</span>:<span class="number">22.368887</span>+<span class="number">0800</span> LockDemo[<span class="number">89577</span>:<span class="number">6266693</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000026ed80&gt;&#123;<span class="attr">number</span> = <span class="number">4</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=40</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">05</span>:<span class="number">22.369799</span>+<span class="number">0800</span> LockDemo[<span class="number">89577</span>:<span class="number">6266693</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000026ed80&gt;&#123;<span class="attr">number</span> = <span class="number">4</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，semaphore信号量-<span class="number">1</span></div></pre></td></tr></table></figure>
+<h2 id="pthread-mutex-互斥锁"><a href="#pthread-mutex-互斥锁" class="headerlink" title="pthread_mutex 互斥锁"></a>pthread_mutex 互斥锁</h2><p>YY大神在之前的文章中已经说过OSSpinLock已经不再是线程安全的并把自己开源项目中的OSSpinLock都换成了pthread_mutex。</p>
+<p>接下来我们看一下互斥锁提供的方法：</p>
+<ul>
+<li>pthread_mutex_init(&amp;pLock, NULL);：参数为 pthread_mutex 地址，第二个参数默认PTHREAD_MUTEX_NORMAL</li>
+<li>pthread_mutex_lock(&amp;pLock)：上锁，参数为 pthread_mutex 地址</li>
+<li>pthread_mutex_unlock(&amp;pLock)：解锁，参数为 pthread_mutex 地址</li>
+<li>pthread_mutex_trylock(&amp;pLock)：尝试加锁，可以加锁则立即加锁并返回 0 ,否者返回一个错误提示码。</li>
+</ul>
+<p>接下来看代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setPthread_mutex</div><div class="line">&#123;</div><div class="line">    <span class="keyword">static</span> pthread_mutex_t pLock;</div><div class="line">    pthread_mutex_init(&amp;pLock, <span class="literal">NULL</span>);</div><div class="line">    __block <span class="built_in">NSInteger</span>  number = <span class="number">10</span>;</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，上锁"</span>,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        pthread_mutex_lock(&amp;pLock);</div><div class="line"></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">        number += <span class="number">10</span>;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，解锁"</span>,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        pthread_mutex_unlock(&amp;pLock);</div><div class="line">        </div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，上锁"</span>,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        pthread_mutex_lock(&amp;pLock);</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">        number += <span class="number">20</span>;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，解锁"</span>,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        pthread_mutex_unlock(&amp;pLock);</div><div class="line">        </div><div class="line">    &#125;);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后是打印结果：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">13:09.376128</span>+<span class="number">0800</span> LockDemo[<span class="number">89821</span>:<span class="number">6278824</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000474900</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，上锁</div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">13:09.376128</span>+<span class="number">0800</span> LockDemo[<span class="number">89821</span>:<span class="number">6278825</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60<span class="number">00004744c0</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，上锁</div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">13</span>:<span class="number">09.376419</span>+<span class="number">0800</span> LockDemo[<span class="number">89821</span>:<span class="number">6278824</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000474900</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，number=<span class="number">10</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">13</span>:<span class="number">09.376547</span>+<span class="number">0800</span> LockDemo[<span class="number">89821</span>:<span class="number">6278824</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000474900</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，number=<span class="number">20</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">13</span>:<span class="number">09.376759</span>+<span class="number">0800</span> LockDemo[<span class="number">89821</span>:<span class="number">6278824</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000474900</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，解锁</div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">13</span>:<span class="number">09.378000</span>+<span class="number">0800</span> LockDemo[<span class="number">89821</span>:<span class="number">6278825</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60<span class="number">00004744c0</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，number=<span class="number">20</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">13</span>:<span class="number">09.378627</span>+<span class="number">0800</span> LockDemo[<span class="number">89821</span>:<span class="number">6278825</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60<span class="number">00004744c0</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，number=<span class="number">40</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">13</span>:<span class="number">09.378846</span>+<span class="number">0800</span> LockDemo[<span class="number">89821</span>:<span class="number">6278825</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60<span class="number">00004744c0</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，解锁</div></pre></td></tr></table></figure>
+<h2 id="pthread-mutex-recursive-递归锁"><a href="#pthread-mutex-recursive-递归锁" class="headerlink" title="pthread_mutex(recursive) 递归锁"></a>pthread_mutex(recursive) 递归锁</h2><p>递归锁最大的特点就是允许同一个线程在未释放其拥有的锁时反复对该锁进行加锁操作。而之前介绍的几种锁可以看到，加锁后只能有一个线程访问该对象，后面的线程需要排队，并且lock和unlock都是对应出现的。</p>
+<p>下面是代码：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setPthreadMutexRecursive</div><div class="line">&#123;</div><div class="line">    <span class="keyword">static</span> pthread_mutex_t pLock;</div><div class="line">    pthread_mutexattr_t attr;</div><div class="line">    <span class="comment">//初始化attr并且给它赋予默认</span></div><div class="line">    pthread_mutexattr_init(&amp;attr);</div><div class="line">    <span class="comment">//设置锁类型，这边是设置为递归锁</span></div><div class="line">    pthread_mutexattr_settype(&amp;attr, PTHREAD_MUTEX_RECURSIVE);</div><div class="line">    pthread_mutex_init(&amp;pLock, &amp;attr);</div><div class="line">    <span class="comment">//销毁一个属性对象，在重新进行初始化之前该结构不能重新使用</span></div><div class="line">    pthread_mutexattr_destroy(&amp;attr);</div><div class="line">    </div><div class="line">    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        <span class="function"><span class="keyword">static</span> <span class="title">void</span> (<span class="params">^RecursiveBlock</span>)(<span class="params"><span class="keyword">int</span></span>)</span>;</div><div class="line">        RecursiveBlock = ^(<span class="keyword">int</span> <span class="keyword">value</span>) &#123;</div><div class="line">            pthread_mutex_lock(&amp;pLock);</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">value</span> &gt; <span class="number">0</span>) &#123;</div><div class="line">                NSLog(<span class="string">@"当前线程：%@，number=%ld"</span>,[NSThread currentThread],<span class="keyword">value</span>);</div><div class="line">                RecursiveBlock(<span class="keyword">value</span> - <span class="number">1</span>);</div><div class="line">            &#125;</div><div class="line">            pthread_mutex_unlock(&amp;pLock);</div><div class="line">        &#125;;</div><div class="line">        RecursiveBlock(<span class="number">5</span>);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">34</span>:<span class="number">36.252635</span>+<span class="number">0800</span> LockDemo[<span class="number">90381</span>:<span class="number">6304880</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000046ec00&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=5</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">34</span>:<span class="number">36.252947</span>+<span class="number">0800</span> LockDemo[<span class="number">90381</span>:<span class="number">6304880</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000046ec00&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=4</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">34</span>:<span class="number">36.253129</span>+<span class="number">0800</span> LockDemo[<span class="number">90381</span>:<span class="number">6304880</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000046ec00&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=3</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">34</span>:<span class="number">36.254451</span>+<span class="number">0800</span> LockDemo[<span class="number">90381</span>:<span class="number">6304880</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000046ec00&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=2</span></div><div class="line"><span class="number">2018</span>-<span class="number">04</span>-<span class="number">23</span> <span class="number">17</span>:<span class="number">34</span>:<span class="number">36.254692</span>+<span class="number">0800</span> LockDemo[<span class="number">90381</span>:<span class="number">6304880</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60000046ec00&gt;&#123;<span class="attr">number</span> = <span class="number">3</span>, <span class="attr">name</span> = (<span class="literal">null</span>)&#125;，<span class="attr">number=1</span></div></pre></td></tr></table></figure>
+<h2 id="NSLock"><a href="#NSLock" class="headerlink" title="NSLock"></a>NSLock</h2><p>NSLock看名字就会熟悉一些了，我们来看一下他的API：</p>
+<ul>
+<li>lock：上锁</li>
+<li>unlock：解锁</li>
+<li>trylock：能加锁返回 YES 并执行加锁操作，相当于 lock，反之返回 NO。</li>
+<li>lockBeforeDate：这个方法表示会在传入的时间内尝试加锁，若能加锁则执行加锁操作并返回 YES，反之返回 NO。</li>
+</ul>
+<p>接下来上代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setNSLock</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSLock</span> *lock = [<span class="built_in">NSLock</span> new];</div><div class="line">    __block <span class="built_in">NSInteger</span>  number = <span class="number">10</span>;</div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，NSLock上锁"</span>,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        [lock lock];</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">        number += <span class="number">10</span>;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，NSLock解锁"</span>,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        [lock unlock];</div><div class="line">        </div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，NSLock上锁"</span>,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        [lock lock];</div><div class="line"></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">        number += <span class="number">20</span>;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">        </div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，NSLock解锁"</span>,[<span class="built_in">NSThread</span> currentThread]);</div><div class="line">        [lock unlock];</div><div class="line"></div><div class="line">    &#125;);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">40.355403</span>+<span class="number">0800</span> LockDemo[<span class="number">90636</span>:<span class="number">6315709</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000464340</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，NSLock上锁</div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">40.355403</span>+<span class="number">0800</span> LockDemo[<span class="number">90636</span>:<span class="number">6315707</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000464400</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，NSLock上锁</div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">40.355620</span>+<span class="number">0800</span> LockDemo[<span class="number">90636</span>:<span class="number">6315709</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000464340</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，number=<span class="number">10</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">40.355768</span>+<span class="number">0800</span> LockDemo[<span class="number">90636</span>:<span class="number">6315709</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000464340</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，number=<span class="number">30</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">40.355913</span>+<span class="number">0800</span> LockDemo[<span class="number">90636</span>:<span class="number">6315709</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000464340</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，NSLock解锁</div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">41:40.357151</span>+<span class="number">0800</span> LockDemo[<span class="number">90636</span>:<span class="number">6315707</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000464400</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，number=<span class="number">30</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">40.357313</span>+<span class="number">0800</span> LockDemo[<span class="number">90636</span>:<span class="number">6315707</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000464400</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，number=<span class="number">40</span></div><div class="line"><span class="number">2018-04-23</span> <span class="number">17</span>:<span class="number">41</span>:<span class="number">40.357522</span>+<span class="number">0800</span> LockDemo[<span class="number">90636</span>:<span class="number">6315707</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000464400</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，NSLock解锁</div></pre></td></tr></table></figure>
+<h2 id="NSCondition"><a href="#NSCondition" class="headerlink" title="NSCondition"></a>NSCondition</h2><p>这个方法和信号量有点相似：</p>
+<ul>
+<li>wait：进入等待状态</li>
+<li>waitUntilDate:：让一个线程等待一定的时间</li>
+<li>signal：唤醒一个等待的线程</li>
+<li>broadcast：唤醒所有等待的线程</li>
+</ul>
+<h3 id="线程延迟执行"><a href="#线程延迟执行" class="headerlink" title="线程延迟执行"></a>线程延迟执行</h3><p>上代码：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (void)setNSConditionUntilDate</div><div class="line">&#123;</div><div class="line">    NSCondition *conditionLock = [NSCondition new]<span class="comment">;</span></div><div class="line">    __block NSInteger  number = <span class="number">10</span><span class="comment">;</span></div><div class="line">    </div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        NSLog(@<span class="string">"当前线程：%@，NSCondition上锁"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        [conditionLock lock]<span class="comment">;</span></div><div class="line">        [conditionLock <span class="keyword">waitUntilDate:[NSDate </span>dateWithTimeIntervalSinceNow:<span class="number">3</span>]]<span class="comment">;</span></div><div class="line">        number = number + <span class="number">1</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"number=%ld"</span>,number)<span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，number=%ld"</span>,[NSThread currentThread],number)<span class="comment">;</span></div><div class="line">        [conditionLock unlock]<span class="comment">;</span></div><div class="line">    &#125;)<span class="comment">;   </span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到打印代码中<code>number=11</code>的代码在第一次输出的3s之后。</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">13:22.892167</span>+<span class="number">0800</span> LockDemo[<span class="number">92613</span>:<span class="number">6424100</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000277300</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，NSCondition上锁</div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">13</span>:<span class="number">25.895626</span>+<span class="number">0800</span> LockDemo[<span class="number">92613</span>:<span class="number">6424100</span>] number=<span class="number">11</span></div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">13:25.896116</span>+<span class="number">0800</span> LockDemo[<span class="number">92613</span>:<span class="number">6424100</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000277300</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，number=<span class="number">11</span></div></pre></td></tr></table></figure>
+<h3 id="唤醒等待线程"><a href="#唤醒等待线程" class="headerlink" title="唤醒等待线程"></a>唤醒等待线程</h3><p>上代码：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">- (void)setNSConditionWait</div><div class="line">&#123;</div><div class="line">    NSCondition *conditionLock = [NSCondition new]<span class="comment">;</span></div><div class="line">    __block NSInteger  number = <span class="number">10</span><span class="comment">;</span></div><div class="line"></div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">       </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，NSCondition上锁"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        [conditionLock lock]<span class="comment">;</span></div><div class="line">        [conditionLock <span class="keyword">wait];</span></div><div class="line">        number = number + <span class="number">10</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"number=%ld"</span>,number)<span class="comment">;</span></div><div class="line">        [conditionLock unlock]<span class="comment">;</span></div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">    </div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，NSCondition上锁"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        [conditionLock lock]<span class="comment">;</span></div><div class="line">        [conditionLock <span class="keyword">wait];</span></div><div class="line">        number = number + <span class="number">20</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"number=%ld"</span>,number)<span class="comment">;</span></div><div class="line">        [conditionLock unlock]<span class="comment">;</span></div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line"></div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        sleep(<span class="number">2</span>)<span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，NSCondition唤醒等待的线程"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        [conditionLock signal]<span class="comment">;</span></div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">21:48.119910</span>+<span class="number">0800</span> LockDemo[<span class="number">92914</span>:<span class="number">6437121</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">04000466d00</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，NSCondition上锁</div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">21:48.119911</span>+<span class="number">0800</span> LockDemo[<span class="number">92914</span>:<span class="number">6437122</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x604000466dc0&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，NSCondition上锁</div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">21:50.121817</span>+<span class="number">0800</span> LockDemo[<span class="number">92914</span>:<span class="number">6437120</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60<span class="number">00002764c0</span>&gt;&#123;number = <span class="number">5</span>, name = (null)&#125;，NSCondition唤醒等待的线程</div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">21:50.122050</span>+<span class="number">0800</span> LockDemo[<span class="number">92914</span>:<span class="number">6437121</span>] number=<span class="number">30</span></div></pre></td></tr></table></figure>
+<h3 id="唤醒所有等待线程"><a href="#唤醒所有等待线程" class="headerlink" title="唤醒所有等待线程"></a>唤醒所有等待线程</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">- (void)setNSConditionBroadcast</div><div class="line">&#123;</div><div class="line">    NSCondition *conditionLock = [NSCondition new]<span class="comment">;</span></div><div class="line">    __block NSInteger  number = <span class="number">10</span><span class="comment">;</span></div><div class="line">    </div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，NSCondition上锁"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        [conditionLock lock]<span class="comment">;</span></div><div class="line">        [conditionLock <span class="keyword">wait];</span></div><div class="line">        number = number + <span class="number">10</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"number=%ld"</span>,number)<span class="comment">;</span></div><div class="line">        [conditionLock unlock]<span class="comment">;</span></div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">    </div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        NSLog(@<span class="string">"当前线程：%@，NSCondition上锁"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        [conditionLock lock]<span class="comment">;</span></div><div class="line">        [conditionLock <span class="keyword">wait];</span></div><div class="line">        number = number + <span class="number">20</span><span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"number=%ld"</span>,number)<span class="comment">;</span></div><div class="line">        [conditionLock unlock]<span class="comment">;</span></div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line">    </div><div class="line">    <span class="keyword">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, </span><span class="number">0</span>), ^&#123;</div><div class="line">        sleep(<span class="number">2</span>)<span class="comment">;</span></div><div class="line">        NSLog(@<span class="string">"当前线程：%@，NSCondition唤醒所有等待的线程"</span>,[NSThread currentThread])<span class="comment">;</span></div><div class="line">        [conditionLock <span class="keyword">broadcast];</span></div><div class="line">    &#125;)<span class="comment">;</span></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">23</span>:<span class="number">26.901406</span>+<span class="number">0800</span> LockDemo[<span class="number">92991</span>:<span class="number">6440383</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000277480</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，NSCondition上锁</div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">23</span>:<span class="number">26.901406</span>+<span class="number">0800</span> LockDemo[<span class="number">92991</span>:<span class="number">6440385</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x604<span class="number">00026d7c0</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，NSCondition上锁</div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">23:28.904168</span>+<span class="number">0800</span> LockDemo[<span class="number">92991</span>:<span class="number">6440386</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x60400026df40&gt;&#123;number = <span class="number">5</span>, name = (null)&#125;，NSCondition唤醒所有等待的线程</div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">23</span>:<span class="number">28.904544</span>+<span class="number">0800</span> LockDemo[<span class="number">92991</span>:<span class="number">6440383</span>] number=<span class="number">20</span></div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">23</span>:<span class="number">28.904763</span>+<span class="number">0800</span> LockDemo[<span class="number">92991</span>:<span class="number">6440385</span>] number=<span class="number">40</span></div></pre></td></tr></table></figure>
+<h2 id="synchronized-条件锁"><a href="#synchronized-条件锁" class="headerlink" title="@synchronized 条件锁"></a>@synchronized 条件锁</h2><p>@synchronized 应该是一种比较简单的锁。</p>
+<p>直接上代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setSynchronized</div><div class="line">&#123;</div><div class="line">    __block <span class="built_in">NSInteger</span>  number = <span class="number">10</span>;</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        <span class="keyword">@synchronized</span> (<span class="keyword">self</span>)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">            number += <span class="number">10</span>;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        </div><div class="line">        <span class="keyword">@synchronized</span> (<span class="keyword">self</span>)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">            number += <span class="number">20</span>;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"当前线程：%@，number=%ld"</span>,[<span class="built_in">NSThread</span> currentThread],number);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">29</span>:<span class="number">48.814631</span>+<span class="number">0800</span> LockDemo[<span class="number">93300</span>:<span class="number">6451071</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000467900</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，number=<span class="number">10</span></div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">29</span>:<span class="number">48.815056</span>+<span class="number">0800</span> LockDemo[<span class="number">93300</span>:<span class="number">6451071</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000467900</span>&gt;&#123;number = <span class="number">3</span>, name = (null)&#125;，number=<span class="number">20</span></div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">29</span>:<span class="number">48.815291</span>+<span class="number">0800</span> LockDemo[<span class="number">93300</span>:<span class="number">6451070</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000468000</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，number=<span class="number">20</span></div><div class="line"><span class="number">2018-04-24</span> <span class="number">10</span>:<span class="number">29</span>:<span class="number">48.816572</span>+<span class="number">0800</span> LockDemo[<span class="number">93300</span>:<span class="number">6451070</span>] 当前线程：&lt;NSThread: <span class="number">0</span>x6<span class="number">00000468000</span>&gt;&#123;number = <span class="number">4</span>, name = (null)&#125;，number=<span class="number">40</span></div></pre></td></tr></table></figure>
+<h2 id="NSConditionLock-条件锁"><a href="#NSConditionLock-条件锁" class="headerlink" title="NSConditionLock 条件锁"></a>NSConditionLock 条件锁</h2><p>这个锁和NSLock相差不大，多了一个condition参数，可以理解为一个条件标示。也可以实现任务之前的互相依赖。</p>
+<p>放代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setConditionLock</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSConditionLock</span> *condationLock = [[<span class="built_in">NSConditionLock</span> alloc] init];</div><div class="line">    </div><div class="line">    <span class="comment">//线程1</span></div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        <span class="keyword">if</span>([condationLock tryLockWhenCondition:<span class="number">0</span>])&#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"线程1"</span>);</div><div class="line">            [condationLock unlockWithCondition:<span class="number">1</span>];</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"失败"</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">//线程2</span></div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        [condationLock lockWhenCondition:<span class="number">3</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"线程2"</span>);</div><div class="line">        [condationLock unlockWithCondition:<span class="number">2</span>];</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">//线程3</span></div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        [condationLock lockWhenCondition:<span class="number">1</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"线程3"</span>);</div><div class="line">        [condationLock unlockWithCondition:<span class="number">3</span>];</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">2018<span class="selector-tag">-04-24</span> 10<span class="selector-pseudo">:46</span><span class="selector-pseudo">:04.325347+0800</span> <span class="selector-tag">LockDemo</span><span class="selector-attr">[93661:6468125]</span> 线程1</div><div class="line">2018<span class="selector-tag">-04-24</span> 10<span class="selector-pseudo">:46</span><span class="selector-pseudo">:04.325573+0800</span> <span class="selector-tag">LockDemo</span><span class="selector-attr">[93661:6468124]</span> 线程3</div><div class="line">2018<span class="selector-tag">-04-24</span> 10<span class="selector-pseudo">:46</span><span class="selector-pseudo">:04.325775+0800</span> <span class="selector-tag">LockDemo</span><span class="selector-attr">[93661:6468122]</span> 线程2</div></pre></td></tr></table></figure>
+<p>由上可知，我们在初始化 NSConditionLock 对象时，给了他的标示为 0；执行 tryLockWhenCondition:时，我们传入的条件标示也是 0，所 以线程1 加锁成功；执行 unlockWithCondition:时，这时候会把condition由 0 修改为 1；因为condition 修改为了 1， 会先走到 线程3，然后 线程3 又将 condition 修改为 3，最后走了线程2 的流程。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>以上就是全部的内容，还是放一个<a href="https://github.com/rshinich/LockDemo" target="_blank" rel="external">demo</a>在这里吧。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/19/iOS开发-iOS中的修饰符/" rel="next" title="iOS开发-iOS中的修饰符">
+                <i class="fa fa-chevron-left"></i> iOS开发-iOS中的修饰符
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSSpinLock-自旋锁"><span class="nav-number">1.</span> <span class="nav-text">OSSpinLock 自旋锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch-semaphore-信号量"><span class="nav-number">2.</span> <span class="nav-text">dispatch_semaphore 信号量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pthread-mutex-互斥锁"><span class="nav-number">3.</span> <span class="nav-text">pthread_mutex 互斥锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pthread-mutex-recursive-递归锁"><span class="nav-number">4.</span> <span class="nav-text">pthread_mutex(recursive) 递归锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSLock"><span class="nav-number">5.</span> <span class="nav-text">NSLock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSCondition"><span class="nav-number">6.</span> <span class="nav-text">NSCondition</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#线程延迟执行"><span class="nav-number">6.1.</span> <span class="nav-text">线程延迟执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#唤醒等待线程"><span class="nav-number">6.2.</span> <span class="nav-text">唤醒等待线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#唤醒所有等待线程"><span class="nav-number">6.3.</span> <span class="nav-text">唤醒所有等待线程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#synchronized-条件锁"><span class="nav-number">7.</span> <span class="nav-text">@synchronized 条件锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSConditionLock-条件锁"><span class="nav-number">8.</span> <span class="nav-text">NSConditionLock 条件锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">9.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
