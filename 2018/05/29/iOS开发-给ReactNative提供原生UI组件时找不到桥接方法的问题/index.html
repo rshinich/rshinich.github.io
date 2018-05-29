@@ -87,73 +87,27 @@
 
 
 
-<meta name="description" content="概述iOS 10.3当中苹果推出了一个新的评论应用的特性。官方文档
-这个新的特性总体来说就是这样的：
-
-
-这个是Xcode文档中的说明：
-
-
-大概的意思呢就是
-
-开发的时候，无论什么时候都会弹出这个弹框；
-
-在产品上线了之后，你可以调用这个方法，但是我们（苹果）不一定会弹出它（这个接口的显示逻辑由苹果决定）；
-
-不建议通过点击按钮来弹出这个弹框。
-
-
-如何使用使用的方法非常简单
-
-1.首先在项目的">
+<meta name="description" content="最近做的项目里有跟React Native（以下简称RN）共同开发的部分，因为有些功能RN不是很好实现，所以这些任务就落到了Native（原生）的肩上。
+因为之前对RN接触较少，有很多东西都不太了解，以后会多学习RN相关的知识，这里先对昨天遇到的一个坑做一个记录。其实也不算是一个坑，算作是我自己没有仔细看文档导致的问题。
+好了，废话不多说，我们先看一下是什么问题。
+场景当RN中需要调用Native">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS 10.3新特性-在应用内评分">
-<meta property="og:url" content="http://yoursite.com/2017/07/30/iOS-10-3新特性-在应用内评分/index.html">
+<meta property="og:title" content="iOS开发-给ReactNative提供原生UI组件时找不到桥接方法的问题">
+<meta property="og:url" content="http://yoursite.com/2018/05/29/iOS开发-给ReactNative提供原生UI组件时找不到桥接方法的问题/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
-<meta property="og:description" content="概述iOS 10.3当中苹果推出了一个新的评论应用的特性。官方文档
-这个新的特性总体来说就是这样的：
-
-
-这个是Xcode文档中的说明：
-
-
-大概的意思呢就是
-
-开发的时候，无论什么时候都会弹出这个弹框；
-
-在产品上线了之后，你可以调用这个方法，但是我们（苹果）不一定会弹出它（这个接口的显示逻辑由苹果决定）；
-
-不建议通过点击按钮来弹出这个弹框。
-
-
-如何使用使用的方法非常简单
-
-1.首先在项目的">
-<meta property="og:image" content="http://yoursite.com/2017/07/30/iOS-10-3新特性-在应用内评分/FullSizeRender.png">
-<meta property="og:image" content="http://yoursite.com/2017/07/30/iOS-10-3新特性-在应用内评分/DeclarationAnd Discussion.png">
-<meta property="og:updated_time" content="2017-07-30T11:59:50.000Z">
+<meta property="og:description" content="最近做的项目里有跟React Native（以下简称RN）共同开发的部分，因为有些功能RN不是很好实现，所以这些任务就落到了Native（原生）的肩上。
+因为之前对RN接触较少，有很多东西都不太了解，以后会多学习RN相关的知识，这里先对昨天遇到的一个坑做一个记录。其实也不算是一个坑，算作是我自己没有仔细看文档导致的问题。
+好了，废话不多说，我们先看一下是什么问题。
+场景当RN中需要调用Native">
+<meta property="og:image" content="http://yoursite.com/2018/05/29/iOS开发-给ReactNative提供原生UI组件时找不到桥接方法的问题/example.png">
+<meta property="og:updated_time" content="2018-05-29T08:12:30.315Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS 10.3新特性-在应用内评分">
-<meta name="twitter:description" content="概述iOS 10.3当中苹果推出了一个新的评论应用的特性。官方文档
-这个新的特性总体来说就是这样的：
-
-
-这个是Xcode文档中的说明：
-
-
-大概的意思呢就是
-
-开发的时候，无论什么时候都会弹出这个弹框；
-
-在产品上线了之后，你可以调用这个方法，但是我们（苹果）不一定会弹出它（这个接口的显示逻辑由苹果决定）；
-
-不建议通过点击按钮来弹出这个弹框。
-
-
-如何使用使用的方法非常简单
-
-1.首先在项目的">
-<meta name="twitter:image" content="http://yoursite.com/2017/07/30/iOS-10-3新特性-在应用内评分/FullSizeRender.png">
+<meta name="twitter:title" content="iOS开发-给ReactNative提供原生UI组件时找不到桥接方法的问题">
+<meta name="twitter:description" content="最近做的项目里有跟React Native（以下简称RN）共同开发的部分，因为有些功能RN不是很好实现，所以这些任务就落到了Native（原生）的肩上。
+因为之前对RN接触较少，有很多东西都不太了解，以后会多学习RN相关的知识，这里先对昨天遇到的一个坑做一个记录。其实也不算是一个坑，算作是我自己没有仔细看文档导致的问题。
+好了，废话不多说，我们先看一下是什么问题。
+场景当RN中需要调用Native">
+<meta name="twitter:image" content="http://yoursite.com/2018/05/29/iOS开发-给ReactNative提供原生UI组件时找不到桥接方法的问题/example.png">
 
 
 
@@ -181,13 +135,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/07/30/iOS-10-3新特性-在应用内评分/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/05/29/iOS开发-给ReactNative提供原生UI组件时找不到桥接方法的问题/"/>
 
 
 
 
 
-  <title> iOS 10.3新特性-在应用内评分 | zhangzr's blog </title>
+  <title> iOS开发-给ReactNative提供原生UI组件时找不到桥接方法的问题 | zhangzr's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -356,7 +310,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/30/iOS-10-3新特性-在应用内评分/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/29/iOS开发-给ReactNative提供原生UI组件时找不到桥接方法的问题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhangzr">
@@ -377,7 +331,7 @@
             
             
               
-                iOS 10.3新特性-在应用内评分
+                iOS开发-给ReactNative提供原生UI组件时找不到桥接方法的问题
               
             
           </h1>
@@ -392,8 +346,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-30T19:41:44+08:00">
-                2017-07-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-29T15:50:45+08:00">
+                2018-05-29
               </time>
             
 
@@ -428,37 +382,34 @@
       
 
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>iOS 10.3当中苹果推出了一个新的评论应用的特性。<a href="https://developer.apple.com/library/content/releasenotes/General/WhatsNewIniOS/Articles/iOS10_3.html" target="_blank" rel="external">官方文档</a></p>
-<p>这个新的特性总体来说就是这样的：</p>
-<center><img src="/2017/07/30/iOS-10-3新特性-在应用内评分/FullSizeRender.png" alt="logo"></center>
-
-<p>这个是Xcode文档中的说明：</p>
-<center><img src="/2017/07/30/iOS-10-3新特性-在应用内评分/DeclarationAnd Discussion.png" alt="logo"></center>
-
-<p>大概的意思呢就是</p>
+        <p>最近做的项目里有跟React Native（以下简称RN）共同开发的部分，因为有些功能RN不是很好实现，所以这些任务就落到了Native（原生）的肩上。</p>
+<p>因为之前对RN接触较少，有很多东西都不太了解，以后会多学习RN相关的知识，这里先对昨天遇到的一个坑做一个记录。其实也不算是一个坑，算作是我自己没有仔细看文档导致的问题。</p>
+<p>好了，废话不多说，我们先看一下是什么问题。</p>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>当RN中需要调用Native原生的UI控件时，我们通常需要提供一个接口，具体的使用方法可以看<a href="http://facebook.github.io/react-native/docs/native-components-ios.html" target="_blank" rel="external">官方文档</a>，如果不喜欢看英文文档也可以去看<a href="https://reactnative.cn/docs/0.51/native-component-ios.html#content" target="_blank" rel="external">中文文档</a>。</p>
+<p>可以看到原生这边需要做的事情大致分为这么几步：</p>
 <ul>
-<li><p>开发的时候，无论什么时候都会弹出这个弹框；</p>
-</li>
-<li><p>在产品上线了之后，你可以调用这个方法，但是我们（苹果）不一定会弹出它（这个接口的显示逻辑由苹果决定）；</p>
-</li>
-<li><p>不建议通过点击按钮来弹出这个弹框。</p>
-</li>
+<li>1.创建一个基于<code>RCTViewManager</code>的子类；</li>
+<li>2.添加<code>RCT_EXPORT_MODULE();</code>作为桥接文件；</li>
+<li>3.实现<code>- (UIView *)view</code>方法返回RN需要的UI样式；</li>
 </ul>
-<h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><p>使用的方法非常简单</p>
-<ul>
-<li><p>1.首先在项目的<code>target</code>-&gt;<code>Bulid Phases</code>-&gt;<code>Link Binary With Libraries</code>中引入 <code>StoreKit.framework</code></p>
-</li>
-<li><p>2.在需要弹出的控制器中引入</p>
-</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;StoreKit/StoreKit.h&gt;</span></span></div></pre></td></tr></table></figure>
-<ul>
-<li>3.在需要弹出评分弹窗的地方调用方法</li>
-</ul>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="section">[SKStoreReviewController requestReview]</span><span class="comment">;</span></div></pre></td></tr></table></figure>
-<p><strong>注意</strong> 最好在调用之前先判断一下当前系统的版本，大于10.3的系统才弹出提示框</p>
-<figure class="highlight prolog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">if([[[<span class="symbol">UIDevice</span> currentDevice] systemVersion] floatValue] &gt;= <span class="number">10.3</span>)</div><div class="line">&#123;</div><div class="line">    //...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>以上就是在应用中评分的使用方法，相信如果在合适的时候，比如用户刚刚完成了一项很有成就感的动作之后弹出，App Store中的5星好评率就会蹭蹭蹭的网上上了！</p>
+<p>最多就算你需要传入参数或者回调，也只需要：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RCT_EXPORT_VIEW_PROPERTY(<span class="name">data</span>, NSString)<span class="comment">;</span></div><div class="line">RCT_EXPORT_VIEW_PROPERTY(<span class="name">onCallBack</span>, RCTBubblingEventBlock)<span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>乍看一下其实很简单，其实写起来也很简单。</p>
+<p>RN部分也只需要很简单的代码就可以将这个原生的UI控件引入进来：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// MapView.js</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> &#123; requireNativeComponent &#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</div><div class="line"></div><div class="line"><span class="comment">// requireNativeComponent automatically resolves 'RNTMap' to 'RNTMapManager'</span></div><div class="line"><span class="built_in">module</span>.exports = requireNativeComponent(<span class="string">'RNTMap'</span>, <span class="literal">null</span>);</div><div class="line"></div><div class="line"><span class="comment">// MyApp.js</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> MapView <span class="keyword">from</span> <span class="string">'./MapView.js'</span>;</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">render() &#123;</div><div class="line">  <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">MapView</span> <span class="attr">style</span>=<span class="string">&#123;&#123;</span> <span class="attr">flex:</span> <span class="attr">1</span> &#125;&#125; /&gt;</span>;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h2><p>于是我兴致勃勃的创建了一个文件<strong>xxx.m</strong> + <strong>xxx.h</strong>。<br>然后跟RN的小伙伴报告了我的文件名，然后愉快的调试了起来。<br>。<br>。<br>。<br>可是撸完代码之后发现RN这边根本没有显示原生的UI，无论怎么修改位置大小都显示不出来。</p>
+<h2 id="填坑"><a href="#填坑" class="headerlink" title="填坑"></a>填坑</h2><p>最后我们改变了桥接文件：</p>
+<p>将</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">RCT_EXPORT_MODULE()<span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>改为</p>
+<p>RCT_EXPORT_MODULE(xxx);</p>
+<p>发现可以实现，但是人家官方的例子是没有这个指向的哇，这时候仔细看文档时发现了这样的一句话…</p>
+<p><cenrer><img src="/2018/05/29/iOS开发-给ReactNative提供原生UI组件时找不到桥接方法的问题/example.png" alt="logo"> </cenrer></p>
+<p>所以我们的名字应该是<strong>xxxManager</strong>，然后告诉RN的应该是<strong>xxx</strong>。</p>
+<p>好吧，就这样解决了问题。</p>
+<p>一切都是因为没有仔细看文档，所以。。。同学们还是仔细看文档吧！太丢人了。。。</p>
+<p>溜了溜了。。。。</p>
+<p>回头喊一句。。难道我真的只是一个人么？</p>
 
       
     </div>
@@ -495,8 +446,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/09/斯坦福大学iOS公开课笔记（12）-CoreData/" rel="next" title="斯坦福大学iOS公开课笔记（12）-CoreData">
-                <i class="fa fa-chevron-left"></i> 斯坦福大学iOS公开课笔记（12）-CoreData
+              <a href="/2018/04/23/iOS开发-iOS中的八种锁/" rel="next" title="iOS开发-iOS中的八种锁">
+                <i class="fa fa-chevron-left"></i> iOS开发-iOS中的八种锁
               </a>
             
           </div>
@@ -504,10 +455,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/02/iOS获取当前显示的控制器/" rel="prev" title="iOS获取当前显示的控制器">
-                iOS获取当前显示的控制器 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -627,7 +574,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何使用"><span class="nav-number">2.</span> <span class="nav-text">如何使用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#场景"><span class="nav-number">1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#坑"><span class="nav-number">2.</span> <span class="nav-text">坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#填坑"><span class="nav-number">3.</span> <span class="nav-text">填坑</span></a></li></ol></div>
             
 
           </div>
