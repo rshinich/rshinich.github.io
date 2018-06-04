@@ -1,0 +1,780 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在iOS开发中，一个必不可少的资源就是图片资源，而图片除了一部分是从网络获取下来的，还有一部分是存储在本地的，而存储在本地的图片中，有很大一部分是作为icon来使用的。所以接下来我们讨论的图片大多数都可以把它看做是我们项目中用到的图标。那么图片的使用方式有很多种，可以直接将图片文件拖入项目，也可以将图片文件添加到Assets.xcassets中，还有一种方法就是使用iconFont，那么iconF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-使用iconFont配置图片">
+<meta property="og:url" content="http://yoursite.com/2018/06/04/iOS开发-使用iconFont配置图片/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="在iOS开发中，一个必不可少的资源就是图片资源，而图片除了一部分是从网络获取下来的，还有一部分是存储在本地的，而存储在本地的图片中，有很大一部分是作为icon来使用的。所以接下来我们讨论的图片大多数都可以把它看做是我们项目中用到的图标。那么图片的使用方式有很多种，可以直接将图片文件拖入项目，也可以将图片文件添加到Assets.xcassets中，还有一种方法就是使用iconFont，那么iconF">
+<meta property="og:image" content="http://yoursite.com/2018/06/04/iOS开发-使用iconFont配置图片/addIcon.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/04/iOS开发-使用iconFont配置图片/addIcon2.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/04/iOS开发-使用iconFont配置图片/addIcon3.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/04/iOS开发-使用iconFont配置图片/addIcon4.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/04/iOS开发-使用iconFont配置图片/addIcon5.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/04/iOS开发-使用iconFont配置图片/addIcon6.png">
+<meta property="og:updated_time" content="2018-06-04T14:44:21.913Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-使用iconFont配置图片">
+<meta name="twitter:description" content="在iOS开发中，一个必不可少的资源就是图片资源，而图片除了一部分是从网络获取下来的，还有一部分是存储在本地的，而存储在本地的图片中，有很大一部分是作为icon来使用的。所以接下来我们讨论的图片大多数都可以把它看做是我们项目中用到的图标。那么图片的使用方式有很多种，可以直接将图片文件拖入项目，也可以将图片文件添加到Assets.xcassets中，还有一种方法就是使用iconFont，那么iconF">
+<meta name="twitter:image" content="http://yoursite.com/2018/06/04/iOS开发-使用iconFont配置图片/addIcon.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/04/iOS开发-使用iconFont配置图片/"/>
+
+
+
+
+
+  <title> iOS开发-使用iconFont配置图片 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/04/iOS开发-使用iconFont配置图片/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-使用iconFont配置图片
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-04T21:17:47+08:00">
+                2018-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在iOS开发中，一个必不可少的资源就是图片资源，而图片除了一部分是从网络获取下来的，还有一部分是存储在本地的，而存储在本地的图片中，有很大一部分是作为icon来使用的。所以接下来我们讨论的图片大多数都可以把它看做是我们项目中用到的图标。那么图片的使用方式有很多种，可以直接将图片文件拖入项目，也可以将图片文件添加到<code>Assets.xcassets</code>中，还有一种方法就是使用iconFont，那么iconFont到底是个什么东西呢。</p>
+<h2 id="什么是iconFont"><a href="#什么是iconFont" class="headerlink" title="什么是iconFont"></a>什么是iconFont</h2><p>iconFont，看名字，我们可以把它分解成icon + font，这两个单词分开看可能大家都能理解，那么icon和font又有什么关系呢？既然我们这次讨论的是配置图片，那么。。对！就是把icon图片变成字体，像使用字体一样使用图片！</p>
+<h2 id="为什么要用iconFont"><a href="#为什么要用iconFont" class="headerlink" title="为什么要用iconFont"></a>为什么要用iconFont</h2><p>那么为什么要使用iconFont呢，平时使用图片使用习惯了的同学都知道，虽然现在iPhone大多数的设备都是retain屏幕，但是我们开发的时候还是要为了适配多种屏幕分辨率而让设计小姐姐切出 @1x,@2x,@3x三种分辨率的图，如果有些应用有不同的主题，这个图片的数量更是多的不想看，不仅增加了开发和设计的工作量，也会大大的增加打包出的ipa的体积，虽说现在大家手机的容量都很大，但是能省一点是一点么。</p>
+<p>看到这里你可能会问，那iconFont有什么好的，首先，iconFont是使用.ttf的字体格式文件，而且iconFont中的图片都为矢量图，矢量图的好处就是icon不会因为分辨率的改变缩放照成失真，所以只需要做一套icon，就可以适配多种屏幕需求。</p>
+<h2 id="怎么用iconFont"><a href="#怎么用iconFont" class="headerlink" title="怎么用iconFont"></a>怎么用iconFont</h2><p>iconFont需要一个矢量图，有很多网站也提供在线生成iconFont的服务，使用起来也很方便，这里我们就不多介绍了，如果想知道，可以去问问你们的设计小姐姐，毕竟多一个借口让你们和设计小姐姐聊天不是很好么，如果他还不知道iconFont是什么。。那，不是更好么。好了跑题了。</p>
+<p>先提供几个拥有大量优秀iconFont的网站，他们大多数也有在线生成iconFont的功能：</p>
+<ul>
+<li><a href="http://www.iconfont.cn/" target="_blank" rel="external">阿里巴巴矢量图片库</a></li>
+<li><a href="https://www.easyicon.net/" target="_blank" rel="external">easy icon</a></li>
+<li><a href="http://fontello.com/" target="_blank" rel="external">fontello</a></li>
+<li><a href="https://icomoon.io/" target="_blank" rel="external">icomoon</a></li>
+</ul>
+<p>这里我们就用阿里爸爸的矢量图片库举个例子吧。</p>
+<h3 id="阿里巴巴矢量图片库中获取icon"><a href="#阿里巴巴矢量图片库中获取icon" class="headerlink" title="阿里巴巴矢量图片库中获取icon"></a>阿里巴巴矢量图片库中获取icon</h3><p>首先点击这里的添加入库的按钮。</p>
+<center><img src="/2018/06/04/iOS开发-使用iconFont配置图片/addIcon.png" alt="logo"></center>
+
+<p>当你选择完一堆想要的图片之后点击右上角的购物车按钮。</p>
+<center><img src="/2018/06/04/iOS开发-使用iconFont配置图片/addIcon2.png" alt="logo"></center>
+
+<p>然后点击下载代码就可以啦。</p>
+<center><img src="/2018/06/04/iOS开发-使用iconFont配置图片/addIcon3.png" alt="logo"></center>
+
+<p>下载下来之后可以看到这个压缩包里有很多个文件，而我们需要的就是后缀为<code>.ttf</code>的字体文件。</p>
+<center><img src="/2018/06/04/iOS开发-使用iconFont配置图片/addIcon4.png" alt="logo"></center>
+
+
+
+<h3 id="Xcode中的操作"><a href="#Xcode中的操作" class="headerlink" title="Xcode中的操作"></a>Xcode中的操作</h3><p>首先我们把刚刚的文件拖入Xcode。</p>
+<p>然后在plist文件中引入字体文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>UIAppFonts<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">array</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>iconfont.ttf<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">array</span>&gt;</span></div></pre></td></tr></table></figure>
+<center><img src="/2018/06/04/iOS开发-使用iconFont配置图片/addIcon5.png" alt="logo"></center>
+
+
+<h3 id="代码编写"><a href="#代码编写" class="headerlink" title="代码编写"></a>代码编写</h3><p>首先既然作为一个字体，肯定是可以显示在UILabel上的，但是我们怎么样在字体库中找到我们想要的字体呢，这还是一个技术活，首先打开之前下载下来的文件夹，找到后缀为.svg的文件并打开他，可以看到一大堆的代码，这都是啥玩意儿啊。</p>
+<p>仔细看会发现，这一段一段就是我们下载下来的icon，稍微仔细点看，就能看出来这里的名字就是我们下载的icon的名字，而后边这串字符就是我们需要的字符。</p>
+<center><img src="/2018/06/04/iOS开发-使用iconFont配置图片/addIcon6.png" alt="logo"></center>
+
+
+<p>但是现在还是用<code>&amp;#xXXXX;</code>的格式显示的，而我们使用时需要将其转换成<code>\UXXXXXXXX</code>的格式，这个格式的转换在一些<a href="http://bianma.55cha.com/" target="_blank" rel="external">在线转换格式网站</a>上就可以很容易的转换。</p>
+<p>接下来就是把它显示出来：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">UILabel *<span class="keyword">label</span><span class="bash"> = [[UILabel alloc] initWithFrame:CGRectMake(50, 50, WIDTH-100, 40)];</span></div><div class="line"><span class="keyword">label</span>.<span class="bash">font = [UIFont fontWithName:@<span class="string">"iconfont"</span> size:35];</span></div><div class="line"><span class="keyword">label</span>.<span class="bash">text = @<span class="string">"\U00059030"</span>;</span></div><div class="line"><span class="keyword">label</span>.<span class="bash">textColor = [UIColor redColor];</span></div><div class="line">[self.view addSubview:<span class="keyword">label</span><span class="bash">];</span></div></pre></td></tr></table></figure>
+<p>但是我们要用iconFont又不是为了在UILabel上显示，我们是为了让他显示在UIImageView，别急，我们可以把他作为UIImage显示出来。</p>
+<p>写一个UIImage的扩展类<code>UIImage+iconFont</code></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">+ (<span class="built_in">UIImage</span>*)imageWithIcon:(<span class="built_in">NSString</span>*)iconCode inFont:(<span class="built_in">NSString</span>*)fontName size:(<span class="built_in">NSUInteger</span>)size color:(<span class="built_in">UIColor</span>*)color</div><div class="line">&#123;</div><div class="line">    <span class="built_in">CGSize</span> imageSize = <span class="built_in">CGSizeMake</span>(size, size);</div><div class="line">    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(imageSize, <span class="literal">NO</span>, [[<span class="built_in">UIScreen</span> mainScreen] scale]);</div><div class="line">    <span class="built_in">UILabel</span> *label = [[<span class="built_in">UILabel</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, size, size)];</div><div class="line">    label.font = [<span class="built_in">UIFont</span> fontWithName:fontName size:size];</div><div class="line">    label.text = iconCode;</div><div class="line">    <span class="keyword">if</span>(color)</div><div class="line">    &#123;</div><div class="line">        label.textColor = color;</div><div class="line">    &#125;</div><div class="line">    [label.layer renderInContext:<span class="built_in">UIGraphicsGetCurrentContext</span>()];</div><div class="line">    <span class="built_in">UIImage</span> *retImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</div><div class="line">    <span class="keyword">return</span> retImage;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="TBCityIconFont"><a href="#TBCityIconFont" class="headerlink" title="TBCityIconFont"></a>TBCityIconFont</h3><p>如果不想自己实现根据字体文件转换UIImage，可以使用淘点点的<code>TBCityIconFont</code>。</p>
+<p>使用时现在AppDelegate中全局注册一下字体</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="name">TBCityIconFont</span> setFontName:@<span class="string">"iconfont"</span>]<span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>接下来就可以愉快的使用了：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIImageView</span> *imageView = [[<span class="built_in">UIImageView</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">50</span>, <span class="number">250</span>, WIDTH<span class="number">-100</span>, <span class="number">40</span>)];</div><div class="line"><span class="comment">//图标编码是&amp;#xe600，需要转成\U0000e600</span></div><div class="line">imageView.image = [<span class="built_in">UIImage</span> iconWithInfo:TBCityIconInfoMake(<span class="string">@"\U00059030"</span>, <span class="number">35</span>, [<span class="built_in">UIColor</span> redColor])];</div><div class="line">[<span class="keyword">self</span>.view addSubview:imageView];</div></pre></td></tr></table></figure>
+<h2 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h2><p>以上就是iconFont在iOS中的使用，还有几个小时WWDC18就要开始了。。。我要去洗个澡准备一下了。。</p>
+<p>哦，demo在<a href="https://github.com/rshinich/iconFontDemo" target="_blank" rel="external">这里</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/29/iOS开发-与ReactNative交互时bridge-is-not-set/" rel="next" title="iOS开发-与ReactNative交互时bridge is not set.">
+                <i class="fa fa-chevron-left"></i> iOS开发-与ReactNative交互时bridge is not set.
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">58</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是iconFont"><span class="nav-number">1.</span> <span class="nav-text">什么是iconFont</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要用iconFont"><span class="nav-number">2.</span> <span class="nav-text">为什么要用iconFont</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么用iconFont"><span class="nav-number">3.</span> <span class="nav-text">怎么用iconFont</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#阿里巴巴矢量图片库中获取icon"><span class="nav-number">3.1.</span> <span class="nav-text">阿里巴巴矢量图片库中获取icon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Xcode中的操作"><span class="nav-number">3.2.</span> <span class="nav-text">Xcode中的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码编写"><span class="nav-number">3.3.</span> <span class="nav-text">代码编写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TBCityIconFont"><span class="nav-number">3.4.</span> <span class="nav-text">TBCityIconFont</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结束"><span class="nav-number">4.</span> <span class="nav-text">结束</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
