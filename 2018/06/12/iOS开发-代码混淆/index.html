@@ -1,0 +1,802 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="iOS表面上看来是比android安全的多的，在网络上针对android的加密保护也比iOS多得多，但是这并不意味着iOS就是很安全的，如果在正常的设备上还好，但是在越狱的设备上，我们的代码信息就会暴露的一干二净，不仅可以被别人看到我们的方法是如何调用的，就连我们那些写的很垃圾的代码也会被人看的一清二楚，想想就是很丢人的事情，我这个菜鸡对iOS安全了解的也并不是很多，这篇文章也就仅根据念茜女神的博">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-代码混淆">
+<meta property="og:url" content="http://yoursite.com/2018/06/12/iOS开发-代码混淆/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="iOS表面上看来是比android安全的多的，在网络上针对android的加密保护也比iOS多得多，但是这并不意味着iOS就是很安全的，如果在正常的设备上还好，但是在越狱的设备上，我们的代码信息就会暴露的一干二净，不仅可以被别人看到我们的方法是如何调用的，就连我们那些写的很垃圾的代码也会被人看的一清二楚，想想就是很丢人的事情，我这个菜鸡对iOS安全了解的也并不是很多，这篇文章也就仅根据念茜女神的博">
+<meta property="og:image" content="http://yoursite.com/2018/06/12/iOS开发-代码混淆/CodeObfuscation1.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/12/iOS开发-代码混淆/CodeObfuscation2.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/12/iOS开发-代码混淆/CodeObfuscation3.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/12/iOS开发-代码混淆/CodeObfuscation4.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/12/iOS开发-代码混淆/CodeObfuscation5.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/12/iOS开发-代码混淆/CodeObfuscation6.png">
+<meta property="og:updated_time" content="2018-06-12T14:37:51.217Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-代码混淆">
+<meta name="twitter:description" content="iOS表面上看来是比android安全的多的，在网络上针对android的加密保护也比iOS多得多，但是这并不意味着iOS就是很安全的，如果在正常的设备上还好，但是在越狱的设备上，我们的代码信息就会暴露的一干二净，不仅可以被别人看到我们的方法是如何调用的，就连我们那些写的很垃圾的代码也会被人看的一清二楚，想想就是很丢人的事情，我这个菜鸡对iOS安全了解的也并不是很多，这篇文章也就仅根据念茜女神的博">
+<meta name="twitter:image" content="http://yoursite.com/2018/06/12/iOS开发-代码混淆/CodeObfuscation1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/12/iOS开发-代码混淆/"/>
+
+
+
+
+
+  <title> iOS开发-代码混淆 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/12/iOS开发-代码混淆/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-代码混淆
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-12T15:19:02+08:00">
+                2018-06-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>iOS表面上看来是比android安全的多的，在网络上针对android的加密保护也比iOS多得多，但是这并不意味着iOS就是很安全的，如果在正常的设备上还好，但是在越狱的设备上，我们的代码信息就会暴露的一干二净，不仅可以被别人看到我们的方法是如何调用的，就连我们那些写的很垃圾的代码也会被人看的一清二楚，想想就是很丢人的事情，我这个菜鸡对iOS安全了解的也并不是很多，这篇文章也就仅根据念茜女神的博客对iOS中的代码混淆做一些初步的处理，如果你是稍微知道一点点iOS安全的东西，这时候就可以cmd+w拜拜了。</p>
+<p>好了，开始正文。</p>
+<h2 id="class-dump"><a href="#class-dump" class="headerlink" title="class-dump"></a>class-dump</h2><blockquote>
+<p>This is a command-line utility for examining the Objective-C runtime information stored in Mach-O files. It generates declarations for the classes, categories and protocols. This is the same information provided by using ‘otool -ov’, but presented as normal Objective-C declarations, so it is much more compact and readable.</p>
+</blockquote>
+<p>以上是class-dump的简介，他可以利用OC的runtime属性，把存储在mach-O文件中的@interface和@protocol信息提取出来，并生成对应的.h文件。说白了他就是可以把你的代码中.h头文件里的所有方法和参数挖掘出来，那他具体要怎么样来使用呢？</p>
+<h3 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h3><ul>
+<li><p>1.首先是<a href="http://stevenygard.com/projects/class-dump/" target="_blank" rel="external">下载地址</a>，我下载的是3.5.dmg的版本。</p>
+</li>
+<li><p>2.然后打开终端输入：<code>open /usr/local/bin</code>。</p>
+</li>
+<li><p>3.然后把dmg文件中的<strong>class-dump</strong>文件复制到刚刚打开的文件夹中。</p>
+</li>
+<li><p>4.然后修改权限在终端输入：<code>sudo chmod 777 /usr/local/bin/class-dump</code>。</p>
+</li>
+</ul>
+<p>到此为止就完成了class-dump的安装，具体的使用方法可以使用<code>class-dump --help</code>查看。</p>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><p>首先我们要获取到我们要解析的.app文件，这里需要注意一点，直接从App Store下载下来的应用是没办法解析的，因为苹果对他们进行了一层加密，需要砸壳之后才能解析。</p>
+<p>这里我们就直接用Demo中打包出来的ipa进行示例。</p>
+<ul>
+<li>1.首先修改ipa文件的后缀为.zip；</li>
+<li>2.然后解压.zip文件，解压出Payload文件夹，这里边的.app文件就是我们需要的目标文件；</li>
+<li>3.在终端使用命令<code>class-dump -H[.app文件路径] -o [输出文件夹路径]</code>；就会生成我们需要解析的文件中的.h文件了。</li>
+</ul>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">class-dump -H /Users/zhangzhongzui/Desktop/ConfusionDemo\ <span class="number">2018</span><span class="number">-06</span><span class="number">-12</span>\ <span class="number">21</span><span class="number">-54</span><span class="number">-54</span>/Payload/ConfusionDemo.app -o /Users/zhangzhongzui/Desktop/ConfusionDemo\ <span class="number">2018</span><span class="number">-06</span><span class="number">-12</span>\ <span class="number">21</span><span class="number">-54</span><span class="number">-54</span>/Payload</div></pre></td></tr></table></figure>
+<p>可以看到我们在代码里写的方法名，参数名都被解析出来了。</p>
+<center><img src="/2018/06/12/iOS开发-代码混淆/CodeObfuscation1.png" alt="logo"></center>
+
+
+
+<p>真的是很可怕，有了这些方法名，坏人们就很容易利用他们来做坏事了。那接下来我们就来看看怎么样进行代码混淆，让我们的代码不是那么容易被解析出来吧。</p>
+<h2 id="代码混淆"><a href="#代码混淆" class="headerlink" title="代码混淆"></a>代码混淆</h2><h3 id="创建准备文件"><a href="#创建准备文件" class="headerlink" title="创建准备文件"></a>创建准备文件</h3><p>这里生成混淆代码的方法我们通过shell脚本来实现，同时我们需要一个文档来写入我们需要进行混淆的方法名或是变量名。</p>
+<p>打开终端，cd到文件所在目录，使用</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="section">touch</span> confuse.sh</div><div class="line"><span class="section">touch</span> func.<span class="type">list</span></div></pre></td></tr></table></figure>
+<p>然后将这两个文件加入到项目中。</p>
+<center><img src="/2018/06/12/iOS开发-代码混淆/CodeObfuscation2.png" alt="logo"></center>
+
+
+<h3 id="写入shell脚本"><a href="#写入shell脚本" class="headerlink" title="写入shell脚本"></a>写入shell脚本</h3><p>接下来我们在confuse.sh中写入脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line"><span class="comment"># 这是Shell脚本，如果不懂shell，自行修炼：http://www.runoob.com/linux/linux-shell.html</span></div><div class="line"><span class="comment"># 以下使用sqlite3进行增加数据，如果不了解sqlite3命令，自行修炼：http://www.runoob.com/sqlite/sqlite-tutorial.html</span></div><div class="line"></div><div class="line"><span class="comment">#数据表名</span></div><div class="line">TABLENAME=<span class="string">"CodeObfuscationOC"</span></div><div class="line"></div><div class="line"><span class="comment">#数据库名</span></div><div class="line">SYMBOL_DB_FILE=<span class="string">"CodeObfuscation.db"</span></div><div class="line"></div><div class="line"><span class="comment">#要被替换的方法列表文件</span></div><div class="line">STRING_SYMBOL_FILE=<span class="string">"<span class="variable">$PROJECT_DIR</span>/ConfusionDemo/func.list"</span></div><div class="line"></div><div class="line"><span class="comment">#被替换后的宏定义在此文件里</span></div><div class="line">HEAD_FILE=<span class="string">"<span class="variable">$PROJECT_DIR</span>/<span class="variable">$PROJECT_NAME</span>/CodeObfuscation.h"</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#维护数据库方便日后做bug排查</span></div><div class="line"><span class="function"><span class="title">createTable</span></span>()</div><div class="line">&#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"create table <span class="variable">$TABLENAME</span>(src text,des text);"</span> | sqlite3 <span class="variable">$SYMBOL_DB_FILE</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">insertValue</span></span>()</div><div class="line">&#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"insert into <span class="variable">$TABLENAME</span> values('<span class="variable">$1</span>','<span class="variable">$2</span>');"</span> | sqlite3 <span class="variable">$SYMBOL_DB_FILE</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">query</span></span>()</div><div class="line">&#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"select * from <span class="variable">$TABLENAME</span> where src='<span class="variable">$1</span>';"</span> | sqlite3 <span class="variable">$SYMBOL_DB_FILE</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">#生成随机16位名称</span></div><div class="line"><span class="function"><span class="title">randomString</span></span>()</div><div class="line">&#123;</div><div class="line">openssl rand -base64 64 | tr -cd <span class="string">'a-zA-Z'</span> | head -c 16</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">#删除旧数据库文件</span></div><div class="line">rm <span class="_">-f</span> <span class="variable">$SYMBOL_DB_FILE</span></div><div class="line"></div><div class="line"><span class="comment">#删除就宏定义文件</span></div><div class="line">rm <span class="_">-f</span> <span class="variable">$HEAD_FILE</span></div><div class="line"></div><div class="line"><span class="comment">#创建数据表</span></div><div class="line">createTable</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#touch命令创建空文件，根据指定的路径</span></div><div class="line">touch <span class="variable">$HEAD_FILE</span></div><div class="line"><span class="built_in">echo</span> <span class="string">'#ifndef CodeObfuscation_h</span></div><div class="line">#define CodeObfuscation_h' &gt;&gt; <span class="variable">$HEAD_FILE</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"//confuse string at `date`"</span> &gt;&gt; <span class="variable">$HEAD_FILE</span></div><div class="line"></div><div class="line"><span class="comment">#使用cat将方法列表文件里的内容全部读取出来，形成数组，然后逐行读取，并进行替换</span></div><div class="line">cat <span class="string">"<span class="variable">$STRING_SYMBOL_FILE</span>"</span> | <span class="keyword">while</span> <span class="built_in">read</span> -ra line;</div><div class="line"><span class="keyword">do</span></div><div class="line"><span class="keyword">if</span> [[ ! -z <span class="string">"<span class="variable">$line</span>"</span> ]]</div><div class="line"><span class="keyword">then</span></div><div class="line">random=`randomString`</div><div class="line"><span class="built_in">echo</span> <span class="variable">$line</span> <span class="variable">$random</span></div><div class="line"></div><div class="line"><span class="comment">#将生成的随机字符串插入到表格中</span></div><div class="line">insertValue <span class="variable">$line</span> <span class="variable">$random</span></div><div class="line"></div><div class="line"><span class="comment">#将生成的字符串写入到宏定义文件中，变量是$HEAD_FILE</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"#define <span class="variable">$line</span> <span class="variable">$random</span>"</span> &gt;&gt; <span class="variable">$HEAD_FILE</span></div><div class="line"><span class="keyword">fi</span></div><div class="line"><span class="keyword">done</span></div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">"#endif"</span> &gt;&gt; <span class="variable">$HEAD_FILE</span></div><div class="line"></div><div class="line">sqlite3 <span class="variable">$SYMBOL_DB_FILE</span> .dump</div></pre></td></tr></table></figure>
+<h3 id="添加run-script命令"><a href="#添加run-script命令" class="headerlink" title="添加run script命令"></a>添加run script命令</h3><p>接下来打开<strong>Targets</strong> -&gt; <strong>Bulid Phases</strong> -&gt; <strong>+</strong> -&gt; <strong>New Run Script Phase</strong></p>
+<center><img src="/2018/06/12/iOS开发-代码混淆/CodeObfuscation3.png" alt="logo"></center>
+
+<p>然后添加<code>$PROJECT_DIR/ConfusionDemo/confuse.sh</code>，让应用每次启动时去跑一下我们的脚本。</p>
+<h3 id="给脚本授权"><a href="#给脚本授权" class="headerlink" title="给脚本授权"></a>给脚本授权</h3><p>接下来还是在我们项目的文件夹下，给我们的脚本赋予最高权限</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">chmod</span> 777 <span class="selector-tag">confuse</span><span class="selector-class">.sh</span></div></pre></td></tr></table></figure>
+<p>这里有人说用 755 ，但是用755好像还是不行，干脆给最高权限，用777。</p>
+<h3 id="添加预编译文件PCH"><a href="#添加预编译文件PCH" class="headerlink" title="添加预编译文件PCH"></a>添加预编译文件PCH</h3><p>接下来再添加一个PCH文件，实现整个项目的替换。</p>
+<center><img src="/2018/06/12/iOS开发-代码混淆/CodeObfuscation4.png" alt="logo"></center>
+
+<p>然后配置一下PCH文件。</p>
+<center><img src="/2018/06/12/iOS开发-代码混淆/CodeObfuscation5.png" alt="logo"></center>
+
+<p>添加<code>$PROJECT_DIR/ConfusionDemo/PrefixHeader.pch</code></p>
+<h3 id="生成CodeObfuscation-h文件"><a href="#生成CodeObfuscation-h文件" class="headerlink" title="生成CodeObfuscation.h文件"></a>生成CodeObfuscation.h文件</h3><p>这时候我们编译一下代码，会发现项目中多出了一个<code>CodeObfuscation.h</code>文件。这个文件就是替换方法名的文件，我们在PCH文件中引入他。</p>
+<h3 id="在func中添加准备替换的方法名"><a href="#在func中添加准备替换的方法名" class="headerlink" title="在func中添加准备替换的方法名"></a>在func中添加准备替换的方法名</h3><p>ok，到了最后一步了，这时候我们只需要打开func.list文件，写入我们想要混淆的方法名。就大功告成了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">viewControllerTestMethodA</div><div class="line">viewControllerTestMethodB</div><div class="line">viewControllerTestMethodC</div><div class="line">viewControllerMethodWithParameter</div><div class="line"></div><div class="line"><span class="built_in">test</span>String</div><div class="line"><span class="built_in">test</span>Array</div><div class="line"><span class="built_in">test</span>MutDic</div></pre></td></tr></table></figure>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p>OK，该做的已经做完了，接下来我们再打一个包，看一下结果。</p>
+<p>编译之后我们就可以看到，CodeObfuscation.h文件中就发生了变化。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> CodeObfuscation_h</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> CodeObfuscation_h</span></div><div class="line"><span class="comment">//confuse string at Tue Jun 12 22:28:04 CST 2018</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> viewControllerTestMethodA CTBxmOXAbJYekhnH</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> viewControllerTestMethodB RnPEjnXygFXLdikO</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> viewControllerTestMethodC IzHlDYOpaAFYFTXa</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> viewControllerMethodWithParameter nWqyalBcfoUSRVpc</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> testString MNPoVYdmCcklAnCO</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> testArray kHMRxPlGXGeqekxL</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> testMutDic hphPSODIvbBFSTHX</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<center><img src="/2018/06/12/iOS开发-代码混淆/CodeObfuscation6.png" alt="logo"></center>
+
+<p>可以看到，原来的代码都变成了一些乱七八糟的代码，混淆成功了。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>到此，今天的内容就基本结束了，这只是iOS安防的最基本最初级的工作，而且用的方法也是念茜女神很久以前提出的一个方案。并且这里有几点需要<strong>注意!!!</strong></p>
+<ul>
+<li>1.不可以混淆iOS中的系统方法；</li>
+<li>2.不可以混淆iOS中init等初始化方法；</li>
+<li>3.不可以混淆xib的文件，会导致找不到对应文件；</li>
+<li>4.不可以混淆storyboard中用到的类名；</li>
+<li>5.混淆有风险，有可能会被App Store以2.1大礼包拒掉。</li>
+</ul>
+<p>以上文章有什么不对的地方还请大佬多多指教和批评。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://www.jianshu.com/p/1e3fe0a8c048" target="_blank" rel="external">class-dump的安装和使用</a><br><a href="http://www.cocoachina.com/ios/20180208/22213.html" target="_blank" rel="external">iOS开发／App安全／代码自动混淆&lt;笔记&gt;</a><br><a href="https://blog.csdn.net/yiyaaixuexi/article/details/29201699" target="_blank" rel="external">iOS安全攻防（二十三）：Objective-C代码混淆</a><br><a href="http://www.ilovedsy.com/wordpress/2017/09/18/ios-%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86/" target="_blank" rel="external">iOS-代码混淆</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/04/iOS开发-使用iconFont配置图片/" rel="next" title="iOS开发-使用iconFont配置图片">
+                <i class="fa fa-chevron-left"></i> iOS开发-使用iconFont配置图片
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#class-dump"><span class="nav-number">1.</span> <span class="nav-text">class-dump</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载安装包"><span class="nav-number">1.1.</span> <span class="nav-text">下载安装包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方法"><span class="nav-number">1.2.</span> <span class="nav-text">使用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码混淆"><span class="nav-number">2.</span> <span class="nav-text">代码混淆</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建准备文件"><span class="nav-number">2.1.</span> <span class="nav-text">创建准备文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写入shell脚本"><span class="nav-number">2.2.</span> <span class="nav-text">写入shell脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加run-script命令"><span class="nav-number">2.3.</span> <span class="nav-text">添加run script命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#给脚本授权"><span class="nav-number">2.4.</span> <span class="nav-text">给脚本授权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加预编译文件PCH"><span class="nav-number">2.5.</span> <span class="nav-text">添加预编译文件PCH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成CodeObfuscation-h文件"><span class="nav-number">2.6.</span> <span class="nav-text">生成CodeObfuscation.h文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在func中添加准备替换的方法名"><span class="nav-number">2.7.</span> <span class="nav-text">在func中添加准备替换的方法名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结果"><span class="nav-number">3.</span> <span class="nav-text">结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">5.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
