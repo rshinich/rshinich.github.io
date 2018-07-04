@@ -1,0 +1,872 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="之前我们说过了iOS中相对比较安全的存储用户数据方式KeyChain但是实际上，如果在将数据存入KeyChain中时，如果使用加密后的密文存储，会比直接明文存储更加安全。但是加密的方式都有哪些？又要怎么样来选择加密的算法呢？这篇文章先简单介绍一下常用的加密算法都有哪些。
+常见的加密算法可以分成三种：
+
+对称加密算法；
+非对称加密算法；
+Hash算法；
+
+接下来我们就来看看这些算法。
+对称加密算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用加密算法简介">
+<meta property="og:url" content="http://yoursite.com/2018/07/04/常用加密算法简介/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="之前我们说过了iOS中相对比较安全的存储用户数据方式KeyChain但是实际上，如果在将数据存入KeyChain中时，如果使用加密后的密文存储，会比直接明文存储更加安全。但是加密的方式都有哪些？又要怎么样来选择加密的算法呢？这篇文章先简单介绍一下常用的加密算法都有哪些。
+常见的加密算法可以分成三种：
+
+对称加密算法；
+非对称加密算法；
+Hash算法；
+
+接下来我们就来看看这些算法。
+对称加密算法">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/常用加密算法简介/security.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/常用加密算法简介/security2.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/常用加密算法简介/security3.png">
+<meta property="og:updated_time" content="2018-07-04T08:13:53.354Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常用加密算法简介">
+<meta name="twitter:description" content="之前我们说过了iOS中相对比较安全的存储用户数据方式KeyChain但是实际上，如果在将数据存入KeyChain中时，如果使用加密后的密文存储，会比直接明文存储更加安全。但是加密的方式都有哪些？又要怎么样来选择加密的算法呢？这篇文章先简单介绍一下常用的加密算法都有哪些。
+常见的加密算法可以分成三种：
+
+对称加密算法；
+非对称加密算法；
+Hash算法；
+
+接下来我们就来看看这些算法。
+对称加密算法">
+<meta name="twitter:image" content="http://yoursite.com/2018/07/04/常用加密算法简介/security.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/04/常用加密算法简介/"/>
+
+
+
+
+
+  <title> 常用加密算法简介 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/04/常用加密算法简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                常用加密算法简介
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-04T15:11:04+08:00">
+                2018-07-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前我们说过了iOS中相对比较安全的存储用户数据方式<a href="http://zhangzr.cn/2018/06/22/iOS%E5%BC%80%E5%8F%91-%E2%80%9C%E5%AE%89%E5%85%A8%E2%80%9D%E5%AD%98%E5%82%A8KeyChain/" target="_blank" rel="external">KeyChain</a>但是实际上，如果在将数据存入KeyChain中时，如果使用加密后的密文存储，会比直接明文存储更加安全。但是加密的方式都有哪些？又要怎么样来选择加密的算法呢？这篇文章先简单介绍一下常用的加密算法都有哪些。</p>
+<p>常见的加密算法可以分成三种：</p>
+<ul>
+<li>对称加密算法；</li>
+<li>非对称加密算法；</li>
+<li>Hash算法；</li>
+</ul>
+<p>接下来我们就来看看这些算法。</p>
+<h2 id="对称加密算法"><a href="#对称加密算法" class="headerlink" title="对称加密算法"></a>对称加密算法</h2><p><center><img src="/2018/07/04/常用加密算法简介/security.png" alt="logo"><center></center></center></p>
+<p>对称加密算法，如其名，就是使用同一个秘钥进行加密和解密。</p>
+<p>优点是速度较快，适合对数据量比较大的数据进行加密。</p>
+<p>缺点是密钥的保存方式需要保证，一旦加密或者解密的哪一方泄漏了密钥，都会导致信息的泄漏。</p>
+<p>常用的对称加密算法有:<strong>DES</strong>、<strong>3DES</strong>、<strong>DESX</strong>、<strong>Blowfish</strong>、<strong>IDEA</strong>、<strong>RC4</strong>、<strong>RC5</strong>、<strong>RC6</strong>、<strong>AES</strong>。</p>
+<h3 id="DES"><a href="#DES" class="headerlink" title="DES"></a>DES</h3><p>DES加密算法是一种分组加密算法，以64位为分组对数据进行加密，他的密钥长度为56位，速度较快，适合用于大量数据加密的场合。</p>
+<h3 id="3DES"><a href="#3DES" class="headerlink" title="3DES"></a>3DES</h3><p>基于DES加密，对一块数据使用三个不同的密钥进行加密三次，强度更高。</p>
+<h3 id="AES"><a href="#AES" class="headerlink" title="AES"></a>AES</h3><p>高级加密标准，是新一代加密算法标准，取代DES，速度快，安全级别高。密钥长度最少支持128、192、256，分租长度128位。</p>
+<h2 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h2><p><center><img src="/2018/07/04/常用加密算法简介/security2.png" alt="logo"><center></center></center></p>
+<p>与对称加密相对的，非对称加密需要两个密钥，一个公开密钥（Public Key）,一个私有密钥（Private Key）。公钥和私钥是一对，如果使用公钥进行加密的数据，只有对应的私钥才能解密。相对的，如果是使用私钥加密的数据，只有对应的公钥才能解密。</p>
+<p>优点是公钥可以被任何人知道，而公钥的泄漏也不会导致信息泄漏，但是一旦私钥泄漏了就会导致信息泄漏。</p>
+<p>常用的非对称加密算法有：<strong>RSA</strong>、<strong>ECC（移动设备用）</strong>、<strong>Diffie-Hellman</strong>、<strong>El Gamal</strong>、<strong>DSA（数字签名用）</strong>。</p>
+<h3 id="RSA"><a href="#RSA" class="headerlink" title="RSA"></a>RSA</h3><p>RSA加密算法是目前最有影响力的公钥加密算法，并且被普遍任务是最优秀的公钥方案之一。RSA是第一个能同时加密和数字签名的算法，它能够抵抗到目前为止已知的所有密码攻击。</p>
+<p>RSA算法基于一个十分简单的数论事实：将两个大素数相乘十分容易，但是如果想要对其进行因式分解却极其困难，因此可以将乘积公开作为密钥。</p>
+<h3 id="ECC"><a href="#ECC" class="headerlink" title="ECC"></a>ECC</h3><p>ECC使用的是椭圆曲线编码学，相对于RSA，ECC的抗攻击性更强，并且计算量小，处理速度快，存储空间占用小，所以适用于移动设备使用。</p>
+<h2 id="Hash算法"><a href="#Hash算法" class="headerlink" title="Hash算法"></a>Hash算法</h2><p><center><img src="/2018/07/04/常用加密算法简介/security3.png" alt="logo"><center></center></center></p>
+<p>Hash算法（哈希散列算法）特别之处在于它是一种单向算法，即不可逆，用户可以通过Hash算法对目标信息生成一段特定长度的唯一的Hash值，但是却不能通过这个Hash值重新获得目标信息。</p>
+<p>因为此特点，Hash算法通常用在存储不可还原的密码存储，信息完整校验等地方。</p>
+<p>常用的Hash算法有：<strong>MD2</strong>、<strong>MD4</strong>、<strong>MD5</strong>、<strong>HAVAL</strong>、<strong>SHA</strong>、<strong>SHA-1</strong>、<strong>HMAC</strong>、<strong>HMAC-MD5</strong>、<strong>HMAC-SHA1</strong>。</p>
+<h3 id="MD5"><a href="#MD5" class="headerlink" title="MD5"></a>MD5</h3><p>MD5加密算法可以简单的分析为以512位分组来处理输入的信息，且每一个分组又被划分为16个32位的子分组，经过一系列的处理之后，算法的输出由4个32位分组组成，将这4个32位分组级联后就会生成一个128位散列值。</p>
+<p>MD5大多被用于软件的密码认证和钥匙识别上。</p>
+<h3 id="SHA1"><a href="#SHA1" class="headerlink" title="SHA1"></a>SHA1</h3><p>SHA1和MD5一样是流行的信息摘要算法。对于长度小于2’64位的消息，SHA1会生成一个160位的信息摘要，当接收到消息的时候，这个消息摘要可以用来验证数据的完整性，在传输的过程中，数据很可能发生变化，那么这时候就会生成不同的信息摘要。SHA1不可以从消息摘要中复原信息，而两个不同的消息不会产生同样的信息摘要。这样，SHA1就可以用来验证数据的完整性。</p>
+<h2 id="算法对比"><a href="#算法对比" class="headerlink" title="算法对比"></a>算法对比</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>密钥长度</th>
+<th>运算速度</th>
+<th>安全性</th>
+<th>资源消耗</th>
+<th>加密类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DES</td>
+<td>56位</td>
+<td>较快</td>
+<td>低</td>
+<td>中</td>
+<td>对称加密</td>
+</tr>
+<tr>
+<td>3DES</td>
+<td>168位</td>
+<td>慢</td>
+<td>中</td>
+<td>高</td>
+<td>对称加密</td>
+</tr>
+<tr>
+<td>IDEA</td>
+<td>128位</td>
+<td>较慢</td>
+<td>中</td>
+<td>高</td>
+<td>对称加密</td>
+</tr>
+<tr>
+<td>AES</td>
+<td>128、192、256位</td>
+<td>快</td>
+<td>高</td>
+<td>低</td>
+<td>对称加密</td>
+</tr>
+<tr>
+<td>RSA</td>
+<td>1024、2048、3072、4096位</td>
+<td>慢</td>
+<td>高</td>
+<td>高</td>
+<td>非对称加密</td>
+</tr>
+<tr>
+<td>DSA</td>
+<td>1024、2048、3072、4096位</td>
+<td>慢</td>
+<td>高</td>
+<td>低</td>
+<td>非对称加密</td>
+</tr>
+<tr>
+<td>ECC</td>
+<td>256</td>
+<td>快</td>
+<td>高</td>
+<td>低</td>
+<td>非对称加密</td>
+</tr>
+<tr>
+<td>SHA-1</td>
+<td></td>
+<td>慢</td>
+<td>高</td>
+<td>低</td>
+<td>Hash加密</td>
+</tr>
+<tr>
+<td>MD5</td>
+<td></td>
+<td>快</td>
+<td>中</td>
+<td>低</td>
+<td>Hash加密</td>
+</tr>
+</tbody>
+</table>
+<h2 id="算法选择"><a href="#算法选择" class="headerlink" title="算法选择"></a>算法选择</h2><p>对称加密的算法相较于非对称加密算法会快很多，如果需要对大量的数据进行加密时，建议采用对称加密算法，加快加密解密速度。</p>
+<p>而对于需要签名的情况，只能使用非对称加密。</p>
+<p>当数据量很小，而密钥的管理用来决定数据安全时，最好使用非对称加密。</p>
+<p>在选定了算法之后，选择多少位的密钥也是一个难题，一般情况下，密钥越长，运行的速度越慢，所以我们要根据实际需要选择加密的位数，一般来说，<strong>RSA采用1024位</strong>，<strong>ECC采用160位</strong>，<strong>AES采用128位</strong>。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://www.cnblogs.com/colife/p/5566789.html" target="_blank" rel="external">常用加密算法概述</a></p>
+<p><a href="http://ispeedboy.com/2018/04/06/%E5%B8%B8%E7%94%A8%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E6%8E%A2%E5%AF%BB/" target="_blank" rel="external">常用加密算法探寻</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/22/iOS开发-“安全”存储KeyChain/" rel="next" title="iOS开发-“安全”存储KeyChain">
+                <i class="fa fa-chevron-left"></i> iOS开发-“安全”存储KeyChain
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">61</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#对称加密算法"><span class="nav-number">1.</span> <span class="nav-text">对称加密算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DES"><span class="nav-number">1.1.</span> <span class="nav-text">DES</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3DES"><span class="nav-number">1.2.</span> <span class="nav-text">3DES</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AES"><span class="nav-number">1.3.</span> <span class="nav-text">AES</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非对称加密"><span class="nav-number">2.</span> <span class="nav-text">非对称加密</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RSA"><span class="nav-number">2.1.</span> <span class="nav-text">RSA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ECC"><span class="nav-number">2.2.</span> <span class="nav-text">ECC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash算法"><span class="nav-number">3.</span> <span class="nav-text">Hash算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MD5"><span class="nav-number">3.1.</span> <span class="nav-text">MD5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SHA1"><span class="nav-number">3.2.</span> <span class="nav-text">SHA1</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法对比"><span class="nav-number">4.</span> <span class="nav-text">算法对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法选择"><span class="nav-number">5.</span> <span class="nav-text">算法选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
