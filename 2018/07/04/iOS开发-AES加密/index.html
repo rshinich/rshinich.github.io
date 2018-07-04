@@ -1,0 +1,1543 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="上次的文章中对常用的加密算法进行了一些简单的介绍，这次我们就挑一个出来说说，今天的主角的是对称加密中的当头大哥AES加密。
+AES加密简介AES全称Advanced Encryption Standard，中文名称叫高级加密标准，在密码学中被叫做Rijndael加密法，这个标准已经替代原来的DES，成为美国政府采用的一种区块加密标准。微信小程序中的加密传输就是使用的AES加密算法。
+
+
+根据上图，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-AES加密">
+<meta property="og:url" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="上次的文章中对常用的加密算法进行了一些简单的介绍，这次我们就挑一个出来说说，今天的主角的是对称加密中的当头大哥AES加密。
+AES加密简介AES全称Advanced Encryption Standard，中文名称叫高级加密标准，在密码学中被叫做Rijndael加密法，这个标准已经替代原来的DES，成为美国政府采用的一种区块加密标准。微信小程序中的加密传输就是使用的AES加密算法。
+
+
+根据上图，">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes1.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes2.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes3.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes4.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes5.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes6.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes7.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes8.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes9.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes10.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes11.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes12.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes13.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes14.png">
+<meta property="og:updated_time" content="2018-07-04T14:28:48.390Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-AES加密">
+<meta name="twitter:description" content="上次的文章中对常用的加密算法进行了一些简单的介绍，这次我们就挑一个出来说说，今天的主角的是对称加密中的当头大哥AES加密。
+AES加密简介AES全称Advanced Encryption Standard，中文名称叫高级加密标准，在密码学中被叫做Rijndael加密法，这个标准已经替代原来的DES，成为美国政府采用的一种区块加密标准。微信小程序中的加密传输就是使用的AES加密算法。
+
+
+根据上图，">
+<meta name="twitter:image" content="http://yoursite.com/2018/07/04/iOS开发-AES加密/aes1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/04/iOS开发-AES加密/"/>
+
+
+
+
+
+  <title> iOS开发-AES加密 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/04/iOS开发-AES加密/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-AES加密
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-04T17:43:20+08:00">
+                2018-07-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上次的<a href="http://zhangzr.cn/2018/07/04/%E5%B8%B8%E7%94%A8%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B/" target="_blank" rel="external">文章</a>中对常用的加密算法进行了一些简单的介绍，这次我们就挑一个出来说说，今天的主角的是对称加密中的当头大哥<strong>AES</strong>加密。</p>
+<h2 id="AES加密简介"><a href="#AES加密简介" class="headerlink" title="AES加密简介"></a>AES加密简介</h2><p>AES全称Advanced Encryption Standard，中文名称叫高级加密标准，在密码学中被叫做Rijndael加密法，这个标准已经替代原来的DES，成为美国政府采用的一种区块加密标准。微信小程序中的加密传输就是使用的AES加密算法。</p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes1.png" alt="logo"></center>
+
+<p>根据上图，解释一下各个部分的作用：</p>
+<p>明文P：没有经过加密的数据。</p>
+<p>密钥K：用来加密明文的密码，在对称加密中，加密和解密的密钥是相同的，所以密钥要保证安全，如果一旦密钥泄漏了，那么数据就基本上不存在安全性了。</p>
+<p>AES加密函数：设AES加密函数为E，则C = E(K,P)，其中K为密钥，C为密文。所以通过加密函数E，可以把明文+密钥生成密文。</p>
+<p>密文C：经过加密处理后的数据。</p>
+<p>AES解密函数：如加密函数一样，设AES解密函数为D，则P = D（C,P），也就是说，可以通过解密函数D，将密文+密钥生成明文。</p>
+<h2 id="AES的基本结构"><a href="#AES的基本结构" class="headerlink" title="AES的基本结构"></a>AES的基本结构</h2><p>AES为分组密码，分组密码就是把明文分成一组一组的，每组的长度相等，每次加密一组数据，一直到整个明文被加密完毕。</p>
+<p>在AES标准规范中，分组长度只能是128位，也就是说每个分组为16个字节（每个字节8位）。密钥的长度可以使用128位、192位或256位。密钥的长度不同，推荐加密的轮数也不同。一般加密的轮数如下：</p>
+<table>
+<thead>
+<tr>
+<th>AES</th>
+<th>密钥长度（32位比特字）</th>
+<th>分组长度（32位比特字）</th>
+<th>加密轮数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AES-128</td>
+<td>4</td>
+<td>4</td>
+<td>10</td>
+</tr>
+<tr>
+<td>AES-192</td>
+<td>6</td>
+<td>4</td>
+<td>12</td>
+</tr>
+<tr>
+<td>AES-256</td>
+<td>8</td>
+<td>4</td>
+<td>14</td>
+</tr>
+</tbody>
+</table>
+<p>这个加密轮数是什么意思呢？</p>
+<p>就比如说上边的加密公式C = E（K,P），如果加密10轮，就是需要执行10次这个函数，这个轮函数的前9次都是相同的，只有第10次时有所不同。</p>
+<p>AES处理的单位是字节，128位的输入明文分组P和输入密钥K都被分为16个字节，分别记为P = P0 P1 … P15 和 K = K0 K1 … K15，如明文分组P = abcdefghijklmnop，其中的字符a对应P0，p对应P15。一般地，明文分组用字节为单位的正方形矩阵 描述，成为状态矩阵。在算法的每一轮中，状态矩阵的内容不断发生变化，最后的结果作为密文输出。该矩阵的排列顺序为从上到下、从左至右依次排列，如图所示：</p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes2.png" alt="logo"></center>
+
+<p>现在假设明文分组P = abcdefghijklmnop，则对应的矩阵图为：</p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes3.png" alt="logo"></center>
+
+<p>图中使用十六进制表示，即使用0x61表示a，可以看到，经过AES加密之后，得到的结果已经看不出原来的样子。</p>
+<p>同样的，128位密钥也是用字节为单位的矩阵表示，矩阵的每一列被成为1个32位比特字。通过密钥编排函数该密钥矩阵被扩展成一个44个字组成的序列W[0]，w[1]，…，w[43]，该序列的前4个元素W[0],W[1],W[2],W[3]是原始密钥，用于加密运算中的初始密钥，后边40个字分为10组，每组4个字（128比特）分别用于10轮加密运算中的轮密钥加，如下图：</p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes4.png" alt="logo"></center>
+
+<p>上图中，设K = “abcdefghijklmnop”，则K0 = a, K15 = p, W[0] = K0 K1 K2 K3 = “abcd”。</p>
+<p>AES的整体结构如下图所示，其中的W[0,3]是指W[0]、W[1]、W[2]和W[3]串联组成的128位密钥。加密的第1轮到第9轮的轮函数一样，包括4个操作：字节代换、行位移、列混合和轮密钥加。最后一轮迭代不执行列混合。另外，在第一轮迭代之前，先将明文和原始密钥进行一次异或加密操作。 </p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes5.png" alt="logo"></center>
+
+<p>上图为AES加密过程和解密过程，解密过程也为10轮，每一轮操作都是之前加密操作的逆操作。由于AES的4个轮操作都是可逆的，因此，解密的操作的第一轮就是顺序执行逆位移位，逆字节代换，轮密钥加和逆列混合。</p>
+<h2 id="AES的算法流程"><a href="#AES的算法流程" class="headerlink" title="AES的算法流程"></a>AES的算法流程</h2><p>AES加密算法主要有4个操作：</p>
+<ul>
+<li>字节替代（SubBytes）</li>
+<li>行位移（ShiftRows）</li>
+<li>列混淆（MixColumns）</li>
+<li>轮密钥加（AddRoundKey）</li>
+</ul>
+<p>通过之前的介绍，我们也可以了解到，加密和解密是一个相互可逆的过程。而且所有的顺序刚好是相反的。</p>
+<h3 id="字节替代"><a href="#字节替代" class="headerlink" title="字节替代"></a>字节替代</h3><p>AES的字节替代实际上就是一个简单的查表操作，AES定义了一个S盒和一个逆S盒。</p>
+<h4 id="正向字节替代"><a href="#正向字节替代" class="headerlink" title="正向字节替代"></a>正向字节替代</h4><p>S盒 ：</p>
+<table>
+<thead>
+<tr>
+<th>行/列</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0x63</td>
+<td>0x7c</td>
+<td>0x77</td>
+<td>0x7b</td>
+<td>0xf2</td>
+<td>0x6b</td>
+<td>0x6f</td>
+<td>0xc5</td>
+<td>0x30</td>
+<td>0x01</td>
+<td>0x67</td>
+<td>0x2b</td>
+<td>0xfe</td>
+<td>0xd7</td>
+<td>0xab</td>
+<td>0x76 </td>
+</tr>
+<tr>
+<td>1</td>
+<td>0xca</td>
+<td>0x82</td>
+<td>0xc9</td>
+<td>0x7d</td>
+<td>0xfa</td>
+<td>0x59</td>
+<td>0x47</td>
+<td>0xf0</td>
+<td>0xad</td>
+<td>0xd4</td>
+<td>0xa2</td>
+<td>0xaf</td>
+<td>0x9c</td>
+<td>0xa4</td>
+<td>0x72</td>
+<td>0xc0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0xb7</td>
+<td>0xfd</td>
+<td>0x93</td>
+<td>0x26</td>
+<td>0x36</td>
+<td>0x3f</td>
+<td>0xf7</td>
+<td>0xcc</td>
+<td>0x34</td>
+<td>0xa5</td>
+<td>0xe5</td>
+<td>0xf1</td>
+<td>0x71</td>
+<td>0xd8</td>
+<td>0x31</td>
+<td>0x15</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0x04</td>
+<td>0xc7</td>
+<td>0x23</td>
+<td>0xc3</td>
+<td>0x18</td>
+<td>0x96</td>
+<td>0x05</td>
+<td>0x9a</td>
+<td>0x07</td>
+<td>0x12</td>
+<td>0x80</td>
+<td>0xe2</td>
+<td>0xeb</td>
+<td>0x27</td>
+<td>0xb2</td>
+<td>0x75</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0x09</td>
+<td>0x83</td>
+<td>0x2c</td>
+<td>0x1a</td>
+<td>0x1b</td>
+<td>0x6e</td>
+<td>0x5a</td>
+<td>0xa0</td>
+<td>0x52</td>
+<td>0x3b</td>
+<td>0xd6</td>
+<td></td>
+</tr>
+<tr>
+<td>0xb3</td>
+<td>0x29</td>
+<td>0xe3</td>
+<td>0x2f</td>
+<td>0x84</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0x53</td>
+<td>0xd1</td>
+<td>0x00</td>
+<td>0xed</td>
+<td>0x20</td>
+<td>0xfc</td>
+<td>0xb1</td>
+<td>0x5b</td>
+<td>0x6a</td>
+<td>0xcb</td>
+<td>0xbe</td>
+<td>0x39</td>
+<td>0x4a</td>
+<td>0x4c</td>
+<td>0x58</td>
+<td>0xcf</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0xd0</td>
+<td>0xef</td>
+<td>0xaa</td>
+<td>0xfb</td>
+<td>0x43</td>
+<td>0x4d</td>
+<td>0x33</td>
+<td>0x85</td>
+<td>0x45</td>
+<td>0xf9</td>
+<td>0x02</td>
+<td>0x7f</td>
+<td>0x50</td>
+<td>0x3c</td>
+<td>0x9f</td>
+<td>0xa8</td>
+</tr>
+<tr>
+<td>7</td>
+<td>0x51</td>
+<td>0xa3</td>
+<td>0x40</td>
+<td>0x8f</td>
+<td>0x92</td>
+<td>0x9d</td>
+<td>0x38</td>
+<td>0xf5</td>
+<td>0xbc</td>
+<td>0xb6</td>
+<td>0xda</td>
+<td>0x21</td>
+<td>0x10</td>
+<td>0xff</td>
+<td>0xf3</td>
+<td>0xd2</td>
+</tr>
+<tr>
+<td>8</td>
+<td>0xcd</td>
+<td>0x0c</td>
+<td>0x13</td>
+<td>0xec</td>
+<td>0x5f</td>
+<td>0x97</td>
+<td>0x44</td>
+<td>0x17</td>
+<td>0xc4</td>
+<td>0xa7</td>
+<td>0x7e</td>
+<td>0x3d</td>
+<td>0x64</td>
+<td>0x5d</td>
+<td>0x19</td>
+<td>0x73</td>
+</tr>
+<tr>
+<td>9</td>
+<td>0x60</td>
+<td>0x81</td>
+<td>0x4f</td>
+<td>0xdc</td>
+<td>0x22</td>
+<td>0x2a</td>
+<td>0x90</td>
+<td>0x88</td>
+<td>0x46</td>
+<td>0xee</td>
+<td>0xb8</td>
+<td>0x14</td>
+<td>0xde</td>
+<td>0x5e</td>
+<td>0x0b</td>
+<td>0xdb</td>
+</tr>
+<tr>
+<td>A</td>
+<td>0xe0</td>
+<td>0x32</td>
+<td>0x3a</td>
+<td>0x0a</td>
+<td>0x49</td>
+<td>0x06</td>
+<td>0x24</td>
+<td>0x5c</td>
+<td>0xc2</td>
+<td>0xd3</td>
+<td>0xac</td>
+<td>0x62</td>
+<td>0x91</td>
+<td>0x95</td>
+<td>0xe4</td>
+<td>0x79</td>
+</tr>
+<tr>
+<td>B</td>
+<td>0xe7</td>
+<td>0xc8</td>
+<td>0x37</td>
+<td>0x6d</td>
+<td>0x8d</td>
+<td>0xd5</td>
+<td>0x4e</td>
+<td>0xa9</td>
+<td>0x6c</td>
+<td>0x56</td>
+<td>0xf4</td>
+<td>0xea</td>
+<td>0x65</td>
+<td>0x7a</td>
+<td>0xae</td>
+<td>0x08</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0xba</td>
+<td>0x78</td>
+<td>0x25</td>
+<td>0x2e</td>
+<td>0x1c</td>
+<td>0xa6</td>
+<td>0xb4</td>
+<td>0xc6</td>
+<td>0xe8</td>
+<td>0xdd</td>
+<td>0x74</td>
+<td>0x1f</td>
+<td>0x4b</td>
+<td>0xbd</td>
+<td>0x8b</td>
+<td>0x8a</td>
+</tr>
+<tr>
+<td>D</td>
+<td>0x70</td>
+<td>0x3e</td>
+<td>0xb5</td>
+<td>0x6</td>
+<td>0x48</td>
+<td>0x03</td>
+<td>0xf6</td>
+<td>0x0e</td>
+<td>0x61</td>
+<td>0x35</td>
+<td>0x57</td>
+<td>0xb9</td>
+<td>0x86</td>
+<td>0xc1</td>
+<td>0x1d</td>
+<td>0x9e</td>
+</tr>
+<tr>
+<td>E</td>
+<td>0xe1</td>
+<td>0xf8</td>
+<td>0x98</td>
+<td>0x11</td>
+<td>0x69</td>
+<td>0xd9</td>
+<td>0x8e</td>
+<td>0x94</td>
+<td>0x9b</td>
+<td>0x1e</td>
+<td>0x87</td>
+<td>0xe9</td>
+<td>0xce</td>
+<td>0x55</td>
+<td>0x28</td>
+<td>0xdf</td>
+</tr>
+<tr>
+<td>F</td>
+<td>0x8c</td>
+<td>0xa1</td>
+<td>0x89</td>
+<td>0x0d</td>
+<td>0xbf</td>
+<td>0xe6</td>
+<td>0x42</td>
+<td>0x68</td>
+<td>0x41</td>
+<td>0x99</td>
+<td>0x2d</td>
+<td>0x0f</td>
+<td>0xb0</td>
+<td>0x54</td>
+<td>0xbb</td>
+<td>0x16</td>
+</tr>
+</tbody>
+</table>
+<p>状态矩阵中的元素按照下面的方式映射为一个新的字节：把该字节的高4位作为行值，低4位作为列值，取出S盒或者逆S盒中对应的行的元素作为输出。例如，加密时，输出的字节S1为0x12,则查S盒的第0x01行和0x02列，得到值0xc9,然后替换S1原有的0x12为0xc9。状态矩阵经字节代换后的图如下： </p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes6.png" alt="logo"></center>
+
+
+<h4 id="逆向字节替代"><a href="#逆向字节替代" class="headerlink" title="逆向字节替代"></a>逆向字节替代</h4><p> 逆向字节替代也就是查询逆S盒来变换，逆S盒如下：</p>
+<table>
+<thead>
+<tr>
+<th>行/列</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0x52</td>
+<td>0x09</td>
+<td>0x6a</td>
+<td>0xd5</td>
+<td>0x30</td>
+<td>0x36</td>
+<td>0xa5</td>
+<td>0x38</td>
+<td>0xbf</td>
+<td>0x40</td>
+<td>0xa3</td>
+<td>0x9e</td>
+<td>0x81</td>
+<td>0xf3</td>
+<td>0xd7</td>
+<td>0xfb</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0x7c</td>
+<td>0xe3</td>
+<td>0x39</td>
+<td>0x82</td>
+<td>0x9b</td>
+<td>0x2f</td>
+<td>0xff</td>
+<td>0x87</td>
+<td>0x34</td>
+<td>0x8e</td>
+<td>0x43</td>
+<td>0x44</td>
+<td>0xc4</td>
+<td>0xde</td>
+<td>0xe9</td>
+<td>0xcb</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0x54</td>
+<td>0x7b</td>
+<td>0x94</td>
+<td>0x32</td>
+<td>0xa6</td>
+<td>0xc2</td>
+<td>0x23</td>
+<td>0x3d</td>
+<td>0xee</td>
+<td>0x4c</td>
+<td>0x95</td>
+<td>0x0b</td>
+<td>0x42</td>
+<td>0xfa</td>
+<td>0xc3</td>
+<td>0x4e</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0x08</td>
+<td>0x2e</td>
+<td>0xa1</td>
+<td>0x66</td>
+<td>0x28</td>
+<td>0xd9</td>
+<td>0x24</td>
+<td>0xb2</td>
+<td>0x76</td>
+<td>0x5b</td>
+<td>0xa2</td>
+<td>0x49</td>
+<td>0x6d</td>
+<td>0x8b</td>
+<td>0xd1</td>
+<td>0x25</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0x72</td>
+<td>0xf8</td>
+<td>0xf6</td>
+<td>0x64</td>
+<td>0x86</td>
+<td>0x68</td>
+<td>0x98</td>
+<td>0x16</td>
+<td>0xd4</td>
+<td>0xa4</td>
+<td>0x5c</td>
+<td>0xcc</td>
+<td>0x5d</td>
+<td>0x65</td>
+<td>0xb6</td>
+<td>0x92</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0x6c</td>
+<td>0x70</td>
+<td>0x48</td>
+<td>0x50</td>
+<td>0xfd</td>
+<td>0xed</td>
+<td>0xb9</td>
+<td>0xda</td>
+<td>0x5e</td>
+<td>0x15</td>
+<td>0x46</td>
+<td>0x57</td>
+<td>0xa7</td>
+<td>0x8d</td>
+<td>0x9d</td>
+<td>0x84</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0x90</td>
+<td>0xd8</td>
+<td>0xab</td>
+<td>0x00</td>
+<td>0x8c</td>
+<td>0xbc</td>
+<td>0xd3</td>
+<td>0x0a</td>
+<td>0xf7</td>
+<td>0xe4</td>
+<td>0x58</td>
+<td>0x05</td>
+<td>0xb8</td>
+<td>0xb3</td>
+<td>0x45</td>
+<td>0x06</td>
+</tr>
+<tr>
+<td>7</td>
+<td>0xd0</td>
+<td>0x2c</td>
+<td>0x1e</td>
+<td>0x8f</td>
+<td>0xca</td>
+<td>0x3f</td>
+<td>0x0f</td>
+<td>0x02</td>
+<td>0xc1</td>
+<td>0xaf</td>
+<td>0xbd</td>
+<td>0x03</td>
+<td>0x01</td>
+<td>0x13</td>
+<td>0x8a</td>
+<td>0x6b</td>
+</tr>
+<tr>
+<td>8</td>
+<td>0x3a</td>
+<td>0x91</td>
+<td>0x11</td>
+<td>0x41</td>
+<td>0x4f</td>
+<td>0x67</td>
+<td>0xdc</td>
+<td>0xea</td>
+<td>0x97</td>
+<td>0xf2</td>
+<td>0xcf</td>
+<td>0xce</td>
+<td>0xf0</td>
+<td>0xb4</td>
+<td>0xe6</td>
+<td>0x73</td>
+</tr>
+<tr>
+<td>9</td>
+<td>0x96</td>
+<td>0xac</td>
+<td>0x74</td>
+<td>0x22</td>
+<td>0xe7</td>
+<td>0xad</td>
+<td>0x35</td>
+<td>0x85</td>
+<td>0xe2</td>
+<td>0xf9</td>
+<td>0x37</td>
+<td>0xe8</td>
+<td>0x1c</td>
+<td>0x75</td>
+<td>0xdf</td>
+<td>0x6e</td>
+</tr>
+<tr>
+<td>A</td>
+<td>0x47</td>
+<td>0xf1</td>
+<td>0x1a</td>
+<td>0x71</td>
+<td>0x1d</td>
+<td>0x29</td>
+<td>0xc5</td>
+<td>0x89</td>
+<td>0x6f</td>
+<td>0xb7</td>
+<td>0x62</td>
+<td>0x0e</td>
+<td>0xaa</td>
+<td>0x18</td>
+<td>0xbe</td>
+<td>0x1b</td>
+</tr>
+<tr>
+<td>B</td>
+<td>0xfc</td>
+<td>0x56</td>
+<td>0x3e</td>
+<td>0x4b</td>
+<td>0xc6</td>
+<td>0xd2</td>
+<td>0x79</td>
+<td>0x20</td>
+<td>0x9a</td>
+<td>0xdb</td>
+<td>0xc0</td>
+<td>0xfe</td>
+<td>0x78</td>
+<td>0xcd</td>
+<td>0x5a</td>
+<td>0xf4</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0x1f</td>
+<td>0xdd</td>
+<td>0xa8</td>
+<td>0x33</td>
+<td>0x88</td>
+<td>0x07</td>
+<td>0xc7</td>
+<td>0x31</td>
+<td>0xb1</td>
+<td>0x12</td>
+<td>0x10</td>
+<td>0x59</td>
+<td>0x27</td>
+<td>0x80</td>
+<td>0xec</td>
+<td>0x5f</td>
+</tr>
+<tr>
+<td>D</td>
+<td>0x60</td>
+<td>0x51</td>
+<td>0x7f</td>
+<td>0xa9</td>
+<td>0x19</td>
+<td>0xb5</td>
+<td>0x4a</td>
+<td>0x0d</td>
+<td>0x2d</td>
+<td>0xe5</td>
+<td>0x7a</td>
+<td>0x9f</td>
+<td>0x93</td>
+<td>0xc9</td>
+<td>0x9c</td>
+<td>0xef</td>
+</tr>
+<tr>
+<td>E</td>
+<td>0xa0</td>
+<td>0xe0</td>
+<td>0x3b</td>
+<td>0x4d</td>
+<td>0xae</td>
+<td>0x2a</td>
+<td>0xf5</td>
+<td>0xb0</td>
+<td>0xc8</td>
+<td>0xeb</td>
+<td>0xbb</td>
+<td>0x3c</td>
+<td>0x83</td>
+<td>0x53</td>
+<td>0x99</td>
+<td>0x61</td>
+</tr>
+<tr>
+<td>F</td>
+<td>0x17</td>
+<td>0x2b</td>
+<td>0x04</td>
+<td>0x7e</td>
+<td>0xba</td>
+<td>0x77</td>
+<td>0xd6</td>
+<td>0x26</td>
+<td>0xe1</td>
+<td>0x69</td>
+<td>0x14</td>
+<td>0x63</td>
+<td>0x55</td>
+<td>0x21</td>
+<td>0x0c</td>
+<td>0x7d</td>
+</tr>
+</tbody>
+</table>
+<h3 id="行位移"><a href="#行位移" class="headerlink" title="行位移"></a>行位移</h3><h4 id="正向行位移"><a href="#正向行位移" class="headerlink" title="正向行位移"></a>正向行位移</h4><p>行移位是一个简单的左循环移位操作。当密钥长度为128比特时，状态矩阵的第0行左移0字节，第1行左移1字节，第2行左移2字节，第3行左移3字节，如下图所示： </p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes7.png" alt="logo"></center>
+
+
+<h4 id="逆向行位移"><a href="#逆向行位移" class="headerlink" title="逆向行位移"></a>逆向行位移</h4><p>行移位的逆变换是将状态矩阵中的每一行执行相反的移位操作，例如AES-128中，状态矩阵的第0行右移0字节，第1行右移1字节，第2行右移2字节，第3行右移3字节。</p>
+<h3 id="列混淆"><a href="#列混淆" class="headerlink" title="列混淆"></a>列混淆</h3><h4 id="正向列混淆"><a href="#正向列混淆" class="headerlink" title="正向列混淆"></a>正向列混淆</h4><p>列混合变换是通过矩阵相乘来实现的，经行移位后的状态矩阵与固定的矩阵相乘，得到混淆后的状态矩阵，如下图的公式所示： </p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes8.png" alt="logo"></center>
+
+
+<p>状态矩阵中的第j列(0 ≤j≤3)的列混合可以表示为下图所示： </p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes9.png" alt="logo"></center>
+
+<p>其中，矩阵元素的乘法和加法都是定义在基于GF(2^8)上的二元运算,并不是通常意义上的乘法和加法。这里涉及到一些信息安全上的数学知识，不过不懂这些知识也行。其实这种二元运算的加法等价于两个字节的异或，乘法则复杂一点。对于一个8位的二进制数来说，使用域上的乘法乘以(00000010)等价于左移1位(低位补0)后，再根据情况同(00011011)进行异或运算，设S1 = (a7 a6 a5 a4 a3 a2 a1 a0)，刚0x02 * S1如下图所示： </p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes10.png" alt="logo"></center>
+
+<p>也就是说，如果a7为1，则进行异或运算，否则不进行。<br>类似地，乘以(00000100)可以拆分成两次乘以(00000010)的运算： </p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes11.png" alt="logo"></center>
+
+<p>乘以(0000 0011)可以拆分成先分别乘以(0000 0001)和(0000 0010)，再将两个乘积异或： </p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes12.png" alt="logo"></center>
+
+
+<h4 id="逆向列混淆"><a href="#逆向列混淆" class="headerlink" title="逆向列混淆"></a>逆向列混淆</h4><p>逆向列混合变换可由下图的矩阵乘法定义： </p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes13.png" alt="logo"></center>
+
+<p>可以验证，逆变换矩阵同正变换矩阵的乘积恰好为单位矩阵。</p>
+<h3 id="轮密钥加"><a href="#轮密钥加" class="headerlink" title="轮密钥加"></a>轮密钥加</h3><p>轮密钥加是将128位轮密钥Ki同状态矩阵中的数据进行逐位异或操作，如下图所示。其中，密钥Ki中每个字W[4i],W[4i+1],W[4i+2],W[4i+3]为32位比特字，包含4个字节，他们的生成算法下面在下面介绍。轮密钥加过程可以看成是字逐位异或的结果，也可以看成字节级别或者位级别的操作。也就是说，可以看成S0 S1 S2 S3 组成的32位字与W[4i]的异或运算。 </p>
+<center><img src="/2018/07/04/iOS开发-AES加密/aes14.png" alt="logo"></center>
+
+<p>轮密钥加的逆运算同正向的轮密钥加运算完全一致，这是因为异或的逆操作是其自身。轮密钥加非常简单，但却能够影响S数组中的每一位。</p>
+<h2 id="iOS中的AES"><a href="#iOS中的AES" class="headerlink" title="iOS中的AES"></a>iOS中的AES</h2><p>在iOS中使用AES进行加密解密的一个关键的函数就是：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function">CCCryptorStatus <span class="title">CCCrypt</span><span class="params">(</span></span></div><div class="line">    CCOperation op,         <span class="comment">/* kCCEncrypt, etc. */</span></div><div class="line">    CCAlgorithm alg,        <span class="comment">/* kCCAlgorithmAES128, etc. */</span></div><div class="line">    CCOptions options,      <span class="comment">/* kCCOptionPKCS7Padding, etc. */</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">void</span> *key,</div><div class="line">    <span class="keyword">size_t</span> keyLength,</div><div class="line">    <span class="keyword">const</span> <span class="keyword">void</span> *iv,         <span class="comment">/* optional initialization vector */</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">void</span> *dataIn,     <span class="comment">/* optional per op and alg */</span></div><div class="line">    <span class="keyword">size_t</span> dataInLength,</div><div class="line">    <span class="keyword">void</span> *dataOut,          <span class="comment">/* data RETURNED here */</span></div><div class="line">    <span class="keyword">size_t</span> dataOutAvailable,</div><div class="line">    <span class="keyword">size_t</span> *dataOutMoved)</div><div class="line">    __<span class="title">OSX_AVAILABLE_STARTING</span><span class="params">(__MAC_10_4, __IPHONE_2_0)</span>;</div></pre></td></tr></table></figure>
+<p>我们首先来介绍一下这么一大堆参数都是什么用：</p>
+<ul>
+<li>CCOperation op：用来代表加密或者解密，kCCEncrypt = 加密，kCCDecrypt = 解密；</li>
+<li>CCAlgorithm alg：用来代表加密算法，有kCCAlgorithmAES128…具体的可以cmd+ctl点击进去看；</li>
+<li>CCOptions options：填充模式，iOS中只提供了kCCOptionPKCS7Padding和kCCOptionECBMode两种，这个在于后台和安卓交互时要注意一点。</li>
+<li>const void *key：密钥长度，一般使用<code>char keyPtr[kCCKeySizeAES256+1];</code>，</li>
+<li>const void *dataIn：加密信息的比特数</li>
+<li>size_t dataInLength：加密信息的长度</li>
+<li>void *dataOut：用来输出加密结果</li>
+<li>size_t dataOutAvailable：输出的大小</li>
+</ul>
+<p>了解了这个函数大概的工作方式之后，我们就可以开始撸起袖子写代码了。</p>
+<p>这里我们主要对NSData和NSString进行加密解密。其实实际上NSString也是转换为了NSData，然后再进行加密解密的。</p>
+<h3 id="引入框架"><a href="#引入框架" class="headerlink" title="引入框架"></a>引入框架</h3><p>第一步，重中之重的一步就是引入框架了</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;CommonCrypto/CommonCrypto.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;CommonCrypto/CommonDigest.h&gt;</span></span></div></pre></td></tr></table></figure>
+<h3 id="NSData-加密"><a href="#NSData-加密" class="headerlink" title="NSData 加密"></a>NSData 加密</h3><p>首先我们先写一下对NSData的加密，因为之前介绍过了主要的函数，这里就直接上代码了。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//对NSData 进行加密</span></div><div class="line">- (<span class="built_in">NSData</span> *)encryptDataWithData:(<span class="built_in">NSData</span> *)data Key:(<span class="built_in">NSString</span> *)key</div><div class="line">&#123;</div><div class="line">    <span class="keyword">char</span> keyPtr[kCCKeySizeAES128 + <span class="number">1</span>];</div><div class="line">    bzero(keyPtr, <span class="keyword">sizeof</span>(keyPtr));</div><div class="line">    [key getCString:keyPtr maxLength:<span class="keyword">sizeof</span>(key) encoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSUInteger</span> dataLength = [data length];</div><div class="line">    size_t bufferSize = dataLength + kCCBlockSizeAES128;</div><div class="line">    <span class="keyword">void</span> *buffer = malloc(bufferSize);</div><div class="line">    size_t numBytesEncrypted = <span class="number">0</span>;</div><div class="line">    </div><div class="line">    CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt,</div><div class="line">                                          kCCAlgorithmAES128,</div><div class="line">                                          kCCOptionPKCS7Padding | kCCOptionECBMode,</div><div class="line">                                          keyPtr,</div><div class="line">                                          kCCBlockSizeAES128,</div><div class="line">                                          <span class="literal">NULL</span>,</div><div class="line">                                          [data bytes],</div><div class="line">                                          dataLength,</div><div class="line">                                          buffer,</div><div class="line">                                          bufferSize,</div><div class="line">                                          &amp;numBytesEncrypted);</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(cryptStatus == kCCSuccess)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> [<span class="built_in">NSData</span> dataWithBytesNoCopy:buffer length:numBytesEncrypted];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    free(buffer);</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="NSData-解密"><a href="#NSData-解密" class="headerlink" title="NSData 解密"></a>NSData 解密</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 解密</span></div><div class="line">- (<span class="built_in">NSData</span> *)decryptDataWithData:(<span class="built_in">NSData</span> *)data andKey:(<span class="built_in">NSString</span> *)key</div><div class="line">&#123;</div><div class="line">    <span class="keyword">char</span> keyPtr[kCCKeySizeAES128 + <span class="number">1</span>];</div><div class="line">    bzero(keyPtr, <span class="keyword">sizeof</span>(keyPtr));</div><div class="line">    [key getCString:keyPtr maxLength:<span class="keyword">sizeof</span>(keyPtr) encoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSUInteger</span> dataLength = [data length];</div><div class="line">    size_t bufferSize = dataLength + kCCBlockSizeAES128;</div><div class="line">    <span class="keyword">void</span> *buffer = malloc(bufferSize);</div><div class="line">    size_t numBytesDecrypted = <span class="number">0</span>;</div><div class="line">    CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding | kCCOptionECBMode, keyPtr, kCCBlockSizeAES128, <span class="literal">NULL</span>, [data bytes], dataLength, buffer, bufferSize, &amp;numBytesDecrypted);</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(cryptStatus == kCCSuccess)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> [<span class="built_in">NSData</span> dataWithBytesNoCopy:buffer length:numBytesDecrypted];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    free(buffer);</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="NSString-加密"><a href="#NSString-加密" class="headerlink" title="NSString 加密"></a>NSString 加密</h3><p>对NSString加密的时候需要注意一点，当计算中文字符串长度时，需要使用char字符长度计算，而不要使用[NSString length]计算。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSString</span> *)encryptStringWithString:(<span class="built_in">NSString</span> *)string andKey:(<span class="built_in">NSString</span> *)key</div><div class="line">&#123;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *cStr = [string cStringUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    <span class="built_in">NSData</span> *data = [<span class="built_in">NSData</span> dataWithBytes:cStr length:[string length]];</div><div class="line">    </div><div class="line">    <span class="comment">//对数据进行加密</span></div><div class="line">    <span class="built_in">NSData</span> *result = [<span class="keyword">self</span> encryptDataWithData:data Key:key];</div><div class="line">    </div><div class="line">    <span class="comment">//转换为2进制字符串</span></div><div class="line">    <span class="keyword">if</span>(result &amp;&amp; result.length &gt; <span class="number">0</span>)</div><div class="line">    &#123;</div><div class="line">        Byte *datas = (Byte *)[result bytes];</div><div class="line">        <span class="built_in">NSMutableString</span> *outPut = [<span class="built_in">NSMutableString</span> stringWithCapacity:result.length];</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; result.length ; i++)</div><div class="line">        &#123;</div><div class="line">            [outPut appendFormat:<span class="string">@"%02x"</span>,datas[i]];</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> outPut;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="NSString-解密"><a href="#NSString-解密" class="headerlink" title="NSString 解密"></a>NSString 解密</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSString</span> *)decryptStringWithString:(<span class="built_in">NSString</span> *)string andKey:(<span class="built_in">NSString</span> *)key</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSMutableData</span> *data = [<span class="built_in">NSMutableData</span> dataWithCapacity:string.length/<span class="number">2.0</span>];</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> whole_bytes;</div><div class="line">    <span class="keyword">char</span> byte_chars[<span class="number">3</span>] = &#123;<span class="string">'\0'</span>,<span class="string">'\0'</span>,<span class="string">'\0'</span>&#125;;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    <span class="keyword">for</span>(i = <span class="number">0</span> ; i &lt; [string length]/<span class="number">2</span> ; i++)</div><div class="line">    &#123;</div><div class="line">        byte_chars[<span class="number">0</span>] = [string characterAtIndex:i * <span class="number">2</span>];</div><div class="line">        byte_chars[<span class="number">1</span>] = [string characterAtIndex:i * <span class="number">2</span> + <span class="number">1</span>];</div><div class="line">        whole_bytes = strtol(byte_chars, <span class="literal">NULL</span>, <span class="number">16</span>);</div><div class="line">        [data appendBytes:&amp;whole_bytes length:<span class="number">1</span>];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">NSData</span> *result = [<span class="keyword">self</span> decryptDataWithData:data andKey:key];</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(result &amp;&amp; result.length &gt; <span class="number">0</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> [[<span class="built_in">NSString</span> alloc] initWithData:result encoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h2><p>以上就是AES加密的简单原理以及iOS中对AES加密解密的简单使用，其中的图片和大部分内容都是来自一位大神博客中的内容。</p>
+<p>本文章也仅限个人学习使用，如果有哪里不对的地方请大佬们多多指正。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://blog.csdn.net/qq_28205153/article/details/55798628" target="_blank" rel="external">AES加密算法的详细介绍与实现</a></p>
+<p><a href="https://www.cnblogs.com/luop/p/4334160.html" target="_blank" rel="external">密码算法详解——AES</a></p>
+<p><a href="https://www.jianshu.com/p/0f941a79ed99" target="_blank" rel="external">iOS开发_AES加密和解密算法的实现</a></p>
+<p><a href="https://www.lidaren.com/archives/1470" target="_blank" rel="external">iOS开发之Objective-c的AES加密和解密算法的实现</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/04/常用加密算法简介/" rel="next" title="常用加密算法简介">
+                <i class="fa fa-chevron-left"></i> 常用加密算法简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">62</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AES加密简介"><span class="nav-number">1.</span> <span class="nav-text">AES加密简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AES的基本结构"><span class="nav-number">2.</span> <span class="nav-text">AES的基本结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AES的算法流程"><span class="nav-number">3.</span> <span class="nav-text">AES的算法流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字节替代"><span class="nav-number">3.1.</span> <span class="nav-text">字节替代</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#正向字节替代"><span class="nav-number">3.1.1.</span> <span class="nav-text">正向字节替代</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逆向字节替代"><span class="nav-number">3.1.2.</span> <span class="nav-text">逆向字节替代</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#行位移"><span class="nav-number">3.2.</span> <span class="nav-text">行位移</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#正向行位移"><span class="nav-number">3.2.1.</span> <span class="nav-text">正向行位移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逆向行位移"><span class="nav-number">3.2.2.</span> <span class="nav-text">逆向行位移</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列混淆"><span class="nav-number">3.3.</span> <span class="nav-text">列混淆</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#正向列混淆"><span class="nav-number">3.3.1.</span> <span class="nav-text">正向列混淆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逆向列混淆"><span class="nav-number">3.3.2.</span> <span class="nav-text">逆向列混淆</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#轮密钥加"><span class="nav-number">3.4.</span> <span class="nav-text">轮密钥加</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iOS中的AES"><span class="nav-number">4.</span> <span class="nav-text">iOS中的AES</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引入框架"><span class="nav-number">4.1.</span> <span class="nav-text">引入框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSData-加密"><span class="nav-number">4.2.</span> <span class="nav-text">NSData 加密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSData-解密"><span class="nav-number">4.3.</span> <span class="nav-text">NSData 解密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSString-加密"><span class="nav-number">4.4.</span> <span class="nav-text">NSString 加密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSString-解密"><span class="nav-number">4.5.</span> <span class="nav-text">NSString 解密</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结束"><span class="nav-number">5.</span> <span class="nav-text">结束</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
