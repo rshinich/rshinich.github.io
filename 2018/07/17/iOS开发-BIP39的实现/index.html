@@ -1,0 +1,808 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="今天来说一下区块链-比特币中的一个概念，并且在iOS中将它实现。
+首先介绍一下什么是BIP，BIP全称是Bitcoin Improvement Proposals,是用来提出Bitcoin的新功能或改进措施的文件。可以由任何人提出，经过审核后会公布在bitcoin/bips中。
+其中BIP32、BIP39和BID44又是HD wallet中使用的核心概念。
+BIP-39 介绍HD wallet具有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-BIP39的实现">
+<meta property="og:url" content="http://yoursite.com/2018/07/17/iOS开发-BIP39的实现/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="今天来说一下区块链-比特币中的一个概念，并且在iOS中将它实现。
+首先介绍一下什么是BIP，BIP全称是Bitcoin Improvement Proposals,是用来提出Bitcoin的新功能或改进措施的文件。可以由任何人提出，经过审核后会公布在bitcoin/bips中。
+其中BIP32、BIP39和BID44又是HD wallet中使用的核心概念。
+BIP-39 介绍HD wallet具有">
+<meta property="og:image" content="http://yoursite.com/2018/07/17/iOS开发-BIP39的实现/BIP39_1.PNG">
+<meta property="og:updated_time" content="2018-07-17T13:57:06.247Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-BIP39的实现">
+<meta name="twitter:description" content="今天来说一下区块链-比特币中的一个概念，并且在iOS中将它实现。
+首先介绍一下什么是BIP，BIP全称是Bitcoin Improvement Proposals,是用来提出Bitcoin的新功能或改进措施的文件。可以由任何人提出，经过审核后会公布在bitcoin/bips中。
+其中BIP32、BIP39和BID44又是HD wallet中使用的核心概念。
+BIP-39 介绍HD wallet具有">
+<meta name="twitter:image" content="http://yoursite.com/2018/07/17/iOS开发-BIP39的实现/BIP39_1.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/17/iOS开发-BIP39的实现/"/>
+
+
+
+
+
+  <title> iOS开发-BIP39的实现 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/17/iOS开发-BIP39的实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-BIP39的实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-17T20:38:15+08:00">
+                2018-07-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天来说一下区块链-比特币中的一个概念，并且在iOS中将它实现。</p>
+<p>首先介绍一下什么是BIP，BIP全称是Bitcoin Improvement Proposals,是用来提出Bitcoin的新功能或改进措施的文件。可以由任何人提出，经过审核后会公布在<a href="https://github.com/bitcoin/bips" target="_blank" rel="external">bitcoin/bips</a>中。</p>
+<p>其中BIP32、BIP39和BID44又是HD wallet中使用的核心概念。</p>
+<h2 id="BIP-39-介绍"><a href="#BIP-39-介绍" class="headerlink" title="BIP-39 介绍"></a>BIP-39 介绍</h2><p>HD wallet具有管理多个密钥和地址的机制，我们可以使用一个随机字符串seed通过BIP32或BIP44协议创建一个HD wallet，但是一串字符串的记忆成本太高，而且摘抄下来也会很麻烦。所以BIP39协议应运而生，他是可以使用12-24单字（可以是英文、中文、日文等等语言）来帮助用户更好的保存seed。一般我们使用长度为12个的英文单词来生成BIP39的内容，这串单词被称为mnemonic code，中文名叫助记词。</p>
+<h2 id="BIP-39-词典"><a href="#BIP-39-词典" class="headerlink" title="BIP-39 词典"></a>BIP-39 词典</h2><p>可以在<a href="https://github.com/bitcoin/bips/tree/master/bip-0039" target="_blank" rel="external">bitcoin/bips</a>下的bip-0039中来获取助记词字典，现在已经支持简体中文、繁体中文、英文、法文、意大利文、日文、韩文、西班牙文每种2048个词来生成助记词。</p>
+<h2 id="BIP-39-生成助记词流程"><a href="#BIP-39-生成助记词流程" class="headerlink" title="BIP-39 生成助记词流程"></a>BIP-39 生成助记词流程</h2><p>助记词钱包是通过BIP-39中定义的标准化过程自动生成的，钱包从熵源开始，增加校验和，然后将熵映射到字典列表中。</p>
+<ul>
+<li>1.创建一个128-256位的随机序列（熵）</li>
+<li>2.提出SHA256哈希的前几位（熵长/32）,就可以创建一个随机序列的校验和。</li>
+<li>3.将校验和添加到随机序列的末尾。</li>
+<li>4.将序列划分为包含11位的不同部分。</li>
+<li>5.将每个包含11位部分的值与一个预先定义的2048个单词的字典做对应。</li>
+<li>6.生成的有顺序的单词组就是助记词。</li>
+</ul>
+<center><img src="/2018/07/17/iOS开发-BIP39的实现/BIP39_1.PNG" alt="logo"></center>
+
+
+<table>
+<thead>
+<tr>
+<th>熵（bits）</th>
+<th>校验和（bits）</th>
+<th>熵+校验和（bits）</th>
+<th>助记词长度（单词个数）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>128</td>
+<td>4</td>
+<td>132</td>
+<td>12</td>
+</tr>
+<tr>
+<td>160</td>
+<td>5</td>
+<td>165</td>
+<td>15</td>
+</tr>
+<tr>
+<td>192</td>
+<td>6</td>
+<td>198</td>
+<td>18</td>
+</tr>
+<tr>
+<td>224</td>
+<td>7</td>
+<td>231</td>
+<td>21</td>
+</tr>
+<tr>
+<td>256</td>
+<td>8</td>
+<td>264</td>
+<td>24</td>
+</tr>
+</tbody>
+</table>
+<h2 id="使用iOS代码生成BIP-39-助记词"><a href="#使用iOS代码生成BIP-39-助记词" class="headerlink" title="使用iOS代码生成BIP-39 助记词"></a>使用iOS代码生成BIP-39 助记词</h2><h3 id="引入库"><a href="#引入库" class="headerlink" title="引入库"></a>引入库</h3><p>首先肯定是引入iOS中哈希需要用到的库</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;CommonCrypto/CommonHMAC.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;CommonCrypto/CommonKeyDerivation.h&gt;</span></span></div></pre></td></tr></table></figure>
+<h3 id="生成随机熵"><a href="#生成随机熵" class="headerlink" title="生成随机熵"></a>生成随机熵</h3><p>我们可以使用<code>SecRandomCopyBytes()</code>函数来生成一个随机的NSData比特组</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSString</span> *)generateMnemonicString:(<span class="built_in">NSNumber</span> *)strlength language:(<span class="built_in">NSString</span> *)language</div><div class="line">&#123;</div><div class="line">    <span class="comment">//输入长度必须为128、160、192、224、256</span></div><div class="line">    <span class="keyword">if</span>([strlength integerValue] % <span class="number">32</span> != <span class="number">0</span>)</div><div class="line">    &#123;</div><div class="line">        [<span class="built_in">NSException</span> raise:<span class="string">@"Strength must be divisible by 32"</span> format:<span class="string">@"Strength Was: %@"</span>,strlength];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//创建比特数组</span></div><div class="line">    <span class="built_in">NSMutableData</span> *bytes = [<span class="built_in">NSMutableData</span> dataWithLength:([strlength integerValue]/<span class="number">8</span>)];</div><div class="line">    </div><div class="line">    <span class="comment">//生成随机data</span></div><div class="line">    <span class="keyword">int</span> status = SecRandomCopyBytes(kSecRandomDefault, bytes.length, bytes.mutableBytes);</div><div class="line">    </div><div class="line">    <span class="comment">//如果生成成功</span></div><div class="line">    <span class="keyword">if</span>(status == <span class="number">0</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">NSString</span> *hexString = [bytes my_hexString];</div><div class="line"></div><div class="line">        <span class="keyword">return</span> [<span class="keyword">self</span> mnemonicStringFromRandomHexString:hexString language:language];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        [<span class="built_in">NSException</span> raise:<span class="string">@"Unable to get random data!"</span> format:<span class="string">@"Unable to get random data!"</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="生成助记词"><a href="#生成助记词" class="headerlink" title="生成助记词"></a>生成助记词</h3><p>生成好随机的熵之后，我们就可以通过随机熵的内容根据256哈希计算需要使用的单词列，然后在单词表中查找出需要的单词来。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSString</span> *)mnemonicStringFromRandomHexString:(<span class="built_in">NSString</span> *)seed language:(<span class="built_in">NSString</span> *)language</div><div class="line">&#123;</div><div class="line">    <span class="comment">//将16进制转换为NSData</span></div><div class="line">    <span class="built_in">NSData</span> *seedData = [seed my_dataFromHexString];</div><div class="line"></div><div class="line">    <span class="comment">//计算 sha256 哈希</span></div><div class="line">    <span class="built_in">NSMutableData</span> *hash = [<span class="built_in">NSMutableData</span> dataWithLength:CC_SHA256_DIGEST_LENGTH];</div><div class="line">    CC_SHA256(seedData.bytes, (<span class="keyword">int</span>)seedData.length, hash.mutableBytes);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="built_in">NSMutableArray</span> *checkSumBits = [<span class="built_in">NSMutableArray</span> arrayWithArray:[[<span class="built_in">NSData</span> dataWithData:hash] my_hexToBitArray]];</div><div class="line"></div><div class="line">    <span class="built_in">NSMutableArray</span> *seedBits = [<span class="built_in">NSMutableArray</span> arrayWithArray:[seedData my_hexToBitArray]];</div><div class="line"></div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; (<span class="keyword">int</span>)seedBits.count / <span class="number">32</span> ; i++)</div><div class="line">    &#123;</div><div class="line">        [seedBits addObject:checkSumBits[i]];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">NSString</span> *path = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@/%@.txt"</span>,[[<span class="built_in">NSBundle</span> mainBundle] bundlePath], language];</div><div class="line">    <span class="built_in">NSString</span> *fileText = [<span class="built_in">NSString</span> stringWithContentsOfFile:path encoding:<span class="built_in">NSUTF8StringEncoding</span> error:<span class="literal">NULL</span>];</div><div class="line">    <span class="built_in">NSArray</span> *lines = [fileText componentsSeparatedByCharactersInSet:[<span class="built_in">NSCharacterSet</span> newlineCharacterSet]];</div><div class="line">    </div><div class="line"></div><div class="line">    <span class="built_in">NSMutableArray</span> *words = [<span class="built_in">NSMutableArray</span> arrayWithCapacity:(<span class="keyword">int</span>)seedBits.count / <span class="number">11</span>];</div><div class="line">    </div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; (<span class="keyword">int</span>)seedBits.count / <span class="number">11</span> ; i++)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">NSUInteger</span> wordNumber = strtol([[[seedBits subarrayWithRange:<span class="built_in">NSMakeRange</span>(i * <span class="number">11</span>, <span class="number">11</span>)] componentsJoinedByString:<span class="string">@""</span>] UTF8String], <span class="literal">NULL</span>, <span class="number">2</span>);</div><div class="line"></div><div class="line">        [words addObject:lines[wordNumber]];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> [words componentsJoinedByString:<span class="string">@" "</span>];</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="需要的支持"><a href="#需要的支持" class="headerlink" title="需要的支持"></a>需要的支持</h3><p>其中我们需要几个辅助性操作：</p>
+<h4 id="字符串转换为16进制"><a href="#字符串转换为16进制" class="headerlink" title="字符串转换为16进制"></a>字符串转换为16进制</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//将字符串转换为16进制</span></div><div class="line">- (<span class="built_in">NSString</span> *)my_hexString</div><div class="line">&#123;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *dataBuffer = (<span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *)[<span class="keyword">self</span> bytes];</div><div class="line">    </div><div class="line">    <span class="comment">//如果buffer不存在</span></div><div class="line">    <span class="keyword">if</span>(!dataBuffer)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> [<span class="built_in">NSString</span> string];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">NSUInteger</span> dataLength = [<span class="keyword">self</span> length];</div><div class="line">    <span class="built_in">NSMutableString</span> *hexString = [<span class="built_in">NSMutableString</span> stringWithCapacity:(dataLength * <span class="number">2</span>)];</div><div class="line">    </div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; dataLength ; ++i)</div><div class="line">    &#123;</div><div class="line">        [hexString appendString:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%02lx"</span>,(<span class="keyword">unsigned</span> <span class="keyword">long</span>)dataBuffer[i]]];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> [<span class="built_in">NSString</span> stringWithString:hexString];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="16进制转换为比特数组"><a href="#16进制转换为比特数组" class="headerlink" title="16进制转换为比特数组"></a>16进制转换为比特数组</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSArray</span> *)my_hexToBitArray</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSMutableArray</span> *bitArray = [<span class="built_in">NSMutableArray</span> arrayWithCapacity:(<span class="keyword">int</span>)<span class="keyword">self</span>.length * <span class="number">8</span>];</div><div class="line">    <span class="built_in">NSString</span> *hexStr = [<span class="keyword">self</span> my_hexString];</div><div class="line">    </div><div class="line">    <span class="keyword">for</span>(<span class="built_in">NSUInteger</span> i = <span class="number">0</span> ; i &lt; [hexStr length] ; i++)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">NSString</span> *bin = [<span class="keyword">self</span> my_hexToBinary:[hexStr characterAtIndex:i]];</div><div class="line">        </div><div class="line">        <span class="keyword">for</span>(<span class="built_in">NSUInteger</span> j = <span class="number">0</span> ; j &lt; bin.length ; j++)</div><div class="line">        &#123;</div><div class="line">            [bitArray addObject:@([[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%C"</span>,[bin characterAtIndex:j]] intValue])];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> [<span class="built_in">NSArray</span> arrayWithArray:bitArray];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">NSString</span> *)my_hexToBinary:(<span class="keyword">unichar</span>)value</div><div class="line">&#123;</div><div class="line">    <span class="keyword">switch</span> (value)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">case</span> <span class="string">'0'</span>: <span class="keyword">return</span> <span class="string">@"0000"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'1'</span>: <span class="keyword">return</span> <span class="string">@"0001"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'2'</span>: <span class="keyword">return</span> <span class="string">@"0010"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'3'</span>: <span class="keyword">return</span> <span class="string">@"0011"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'4'</span>: <span class="keyword">return</span> <span class="string">@"0100"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'5'</span>: <span class="keyword">return</span> <span class="string">@"0101"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'6'</span>: <span class="keyword">return</span> <span class="string">@"0110"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'7'</span>: <span class="keyword">return</span> <span class="string">@"0111"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'8'</span>: <span class="keyword">return</span> <span class="string">@"1000"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'9'</span>: <span class="keyword">return</span> <span class="string">@"1001"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'a'</span>:</div><div class="line">        <span class="keyword">case</span> <span class="string">'A'</span>:</div><div class="line">            <span class="keyword">return</span> <span class="string">@"1010"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'b'</span>:</div><div class="line">        <span class="keyword">case</span> <span class="string">'B'</span>:</div><div class="line">            <span class="keyword">return</span> <span class="string">@"1011"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'c'</span>:</div><div class="line">        <span class="keyword">case</span> <span class="string">'C'</span>:</div><div class="line">            <span class="keyword">return</span> <span class="string">@"1100"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'d'</span>:</div><div class="line">        <span class="keyword">case</span> <span class="string">'D'</span>:</div><div class="line">            <span class="keyword">return</span> <span class="string">@"1101"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'e'</span>:</div><div class="line">        <span class="keyword">case</span> <span class="string">'E'</span>:</div><div class="line">            <span class="keyword">return</span> <span class="string">@"1110"</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">'f'</span>:</div><div class="line">        <span class="keyword">case</span> <span class="string">'F'</span>:</div><div class="line">            <span class="keyword">return</span> <span class="string">@"1111"</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="string">@"-1"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="16进制字符串转换为NSData"><a href="#16进制字符串转换为NSData" class="headerlink" title="16进制字符串转换为NSData"></a>16进制字符串转换为NSData</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//将16进制字符串转换为NSData</span></div><div class="line">- (<span class="built_in">NSData</span> *)my_dataFromHexString</div><div class="line">&#123;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *chars = [<span class="keyword">self</span> UTF8String];</div><div class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, len = (<span class="keyword">int</span>)<span class="keyword">self</span>.length;</div><div class="line">    </div><div class="line">    <span class="built_in">NSMutableData</span> *data = [<span class="built_in">NSMutableData</span> dataWithCapacity:len/<span class="number">2.0</span>];</div><div class="line">    <span class="keyword">char</span> byteChars[<span class="number">3</span>] = &#123;<span class="string">'\0'</span>,<span class="string">'\0'</span>,<span class="string">'\0'</span>&#125;;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> wholeByte;</div><div class="line">    </div><div class="line">    <span class="keyword">while</span> (i &lt; len)</div><div class="line">    &#123;</div><div class="line">        byteChars[<span class="number">0</span>] = chars[i++];</div><div class="line">        byteChars[<span class="number">1</span>] = chars[i++];</div><div class="line">        wholeByte = strtoul(byteChars, <span class="literal">NULL</span>, <span class="number">16</span>);</div><div class="line">        [data appendBytes:&amp;wholeByte length:<span class="number">1</span>];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> data;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h3><p>OK，这些关键的内容都写好之后，只需要调用最开始的生成随机字符的函数，指定好长度和助记词语言就可以根据BIP-39生成助记词了。</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NSString *mnemonicString = [<span class="keyword">self</span> <span class="symbol">generateMnemonicString:</span><span class="variable">@128</span> <span class="symbol">language:</span>@<span class="string">"english"</span>];</div></pre></td></tr></table></figure>
+<h2 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h2><p>Demo地址在<a href="https://github.com/rshinich/BIP39Demo" target="_blank" rel="external">这里</a></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki" target="_blank" rel="external">bip-0044.mediawiki</a></p>
+<p><a href="https://www.xingcheng.me/2018/04/12/BIP32-BIP39-BIP44/" target="_blank" rel="external">BIP32, BIP39, BIP44</a></p>
+<p><a href="https://iancoleman.io/bip39/" target="_blank" rel="external">Mnemonic Code Converter</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/17/iOS开发-反调试的简单使用/" rel="next" title="iOS开发-反调试的简单使用">
+                <i class="fa fa-chevron-left"></i> iOS开发-反调试的简单使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">65</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BIP-39-介绍"><span class="nav-number">1.</span> <span class="nav-text">BIP-39 介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIP-39-词典"><span class="nav-number">2.</span> <span class="nav-text">BIP-39 词典</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIP-39-生成助记词流程"><span class="nav-number">3.</span> <span class="nav-text">BIP-39 生成助记词流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用iOS代码生成BIP-39-助记词"><span class="nav-number">4.</span> <span class="nav-text">使用iOS代码生成BIP-39 助记词</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引入库"><span class="nav-number">4.1.</span> <span class="nav-text">引入库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成随机熵"><span class="nav-number">4.2.</span> <span class="nav-text">生成随机熵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成助记词"><span class="nav-number">4.3.</span> <span class="nav-text">生成助记词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需要的支持"><span class="nav-number">4.4.</span> <span class="nav-text">需要的支持</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#字符串转换为16进制"><span class="nav-number">4.4.1.</span> <span class="nav-text">字符串转换为16进制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16进制转换为比特数组"><span class="nav-number">4.4.2.</span> <span class="nav-text">16进制转换为比特数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16进制字符串转换为NSData"><span class="nav-number">4.4.3.</span> <span class="nav-text">16进制字符串转换为NSData</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调用"><span class="nav-number">4.5.</span> <span class="nav-text">调用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo"><span class="nav-number">5.</span> <span class="nav-text">Demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
