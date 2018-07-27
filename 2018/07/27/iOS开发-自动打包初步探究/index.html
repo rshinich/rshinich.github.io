@@ -1,0 +1,903 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近项目进入版本开发末期，每天都有至少两到三次给测试打包的要求，由于项目用的又是用React Native写的，所以每次打包就非常麻烦，需要先将React Native的代码打包拖入iOS的文件夹中，然后再使用Xcode打包，打包好之后还要将打好的包导出，最后再把ipa包上传到蒲公英上供测试下载。这一系列操作都中每一个耗时都不少，而且还需要人一直在关注着走到哪一步，然后继续往下操作，不仅耽误时间，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-自动打包初步探究">
+<meta property="og:url" content="http://yoursite.com/2018/07/27/iOS开发-自动打包初步探究/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="最近项目进入版本开发末期，每天都有至少两到三次给测试打包的要求，由于项目用的又是用React Native写的，所以每次打包就非常麻烦，需要先将React Native的代码打包拖入iOS的文件夹中，然后再使用Xcode打包，打包好之后还要将打好的包导出，最后再把ipa包上传到蒲公英上供测试下载。这一系列操作都中每一个耗时都不少，而且还需要人一直在关注着走到哪一步，然后继续往下操作，不仅耽误时间，">
+<meta property="og:image" content="http://yoursite.com/2018/07/27/iOS开发-自动打包初步探究/xcodebuild.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/27/iOS开发-自动打包初步探究/xcode.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/27/iOS开发-自动打包初步探究/xcodebuild-list.png">
+<meta property="og:updated_time" content="2018-07-27T14:37:04.156Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-自动打包初步探究">
+<meta name="twitter:description" content="最近项目进入版本开发末期，每天都有至少两到三次给测试打包的要求，由于项目用的又是用React Native写的，所以每次打包就非常麻烦，需要先将React Native的代码打包拖入iOS的文件夹中，然后再使用Xcode打包，打包好之后还要将打好的包导出，最后再把ipa包上传到蒲公英上供测试下载。这一系列操作都中每一个耗时都不少，而且还需要人一直在关注着走到哪一步，然后继续往下操作，不仅耽误时间，">
+<meta name="twitter:image" content="http://yoursite.com/2018/07/27/iOS开发-自动打包初步探究/xcodebuild.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/27/iOS开发-自动打包初步探究/"/>
+
+
+
+
+
+  <title> iOS开发-自动打包初步探究 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/27/iOS开发-自动打包初步探究/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-自动打包初步探究
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-27T20:33:51+08:00">
+                2018-07-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近项目进入版本开发末期，每天都有至少两到三次给测试打包的要求，由于项目用的又是用React Native写的，所以每次打包就非常麻烦，需要先将React Native的代码打包拖入iOS的文件夹中，然后再使用Xcode打包，打包好之后还要将打好的包导出，最后再把ipa包上传到蒲公英上供测试下载。这一系列操作都中每一个耗时都不少，而且还需要人一直在关注着走到哪一步，然后继续往下操作，不仅耽误时间，而且麻烦的要死，所以一个自动打包的脚本就显得非常有必要了。</p>
+<h2 id="xcodebuild"><a href="#xcodebuild" class="headerlink" title="xcodebuild"></a>xcodebuild</h2><p>说到自动打包，最重要的一点就是需要依赖于xcodebuild了。xcodebuild是苹果发布的自动构建工具，可以通过在terminal中输入命令来达到我们在Xcode中点击运行等很多操作。</p>
+<p>OK废话不多说，xcodebuild要怎么使用呢？</p>
+<p>其实很简单，在terminal中输入 <code>man xcodebuild</code> 或者 <code>xcodebuild --help</code>就可以看到xcodebuild支持的命令了。</p>
+<center><img src="/2018/07/27/iOS开发-自动打包初步探究/xcodebuild.png" alt="logo"></center>
+
+<p>这里边基本上每个命令都会用相应的解释，这里我们就列出几个比较常用的命令参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-project</td>
+<td>name.xcodeproj</td>
+<td>在当前目录下有多个项目是需要指定改参数</td>
+</tr>
+<tr>
+<td>-target</td>
+<td>targetname</td>
+<td>如果不指定的话默认会构建第一个target</td>
+</tr>
+<tr>
+<td>-alltargets</td>
+<td>无</td>
+<td>表示同时构建所有的target</td>
+</tr>
+<tr>
+<td>-workspace</td>
+<td>name.xcwordspace</td>
+<td>构建workspace，需要指定scheme</td>
+</tr>
+<tr>
+<td>-scheme</td>
+<td>schemename</td>
+<td>指定对应的scheme，构建workspace时必选</td>
+</tr>
+<tr>
+<td>-destination</td>
+<td>destinationspecifier</td>
+<td>通过描述使用对应的设备，默认使用当前scheme所匹配的设备</td>
+</tr>
+<tr>
+<td>-destination-timeout</td>
+<td>timeout</td>
+<td>搜索对应设备时需要的时间，可以设置搜索超时时间，默认为30s</td>
+</tr>
+<tr>
+<td>-configuration</td>
+<td>configurationname</td>
+<td>使用对应的配置进行构建，configurationname一般为Debug或Release</td>
+</tr>
+<tr>
+<td>-arch</td>
+<td>architecture</td>
+<td>指定构建的包所支持的指令集 arm64、armv7、armv7s</td>
+</tr>
+<tr>
+<td>-sdk</td>
+<td>sdkfullpath sdkname</td>
+<td>针对指定的SDK选择合适的构建工具构建，如-sdk iphoneos</td>
+</tr>
+<tr>
+<td>-showsdks</td>
+<td>无</td>
+<td>列出所有的SDK，一般列出的后面会跟上版本号，-sdk不写版本号默认为所有版本</td>
+</tr>
+<tr>
+<td>-list</td>
+<td>无</td>
+<td>列出当前项目所有的 Targets、Build、Configurations、Schemes</td>
+</tr>
+<tr>
+<td>-derivedDataPath</td>
+<td>path</td>
+<td>构建成功时相关的缓存文件默认路径</td>
+</tr>
+<tr>
+<td>-archivePath</td>
+<td>xcarchivepath</td>
+<td>设置导出的.xcarchive文件的路径</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>build</td>
+<td>构建target，当没有其他action指定时，这是xcodebuild默认的一个action</td>
+</tr>
+<tr>
+<td>build-for-testing</td>
+<td>构建target和对应的相关单元测试，需要指定scheme</td>
+</tr>
+<tr>
+<td>analyze</td>
+<td>构建和分期target或scheme，需要指定scheme</td>
+</tr>
+<tr>
+<td>archive</td>
+<td>存档对应的构建scheme，需要指定scheme</td>
+</tr>
+<tr>
+<td>test</td>
+<td>从SYMROOT目录测试scheme，需要指定scheme和可选的destination</td>
+</tr>
+<tr>
+<td>install</td>
+<td>构建target然后安装到target的安装目录和发布目录（DSTROOT）</td>
+</tr>
+<tr>
+<td>clean</td>
+<td>从构建目录（SYMROOT）删除构建时的products和一些中间文件</td>
+</tr>
+</tbody>
+</table>
+<p>有了xcodebuild的解释，再加上上边这些解释，应该已经清楚要怎么来通过terminal来编译、打包、导出我们的项目了吧？还不懂？没关系，我写几个常用的给你看。</p>
+<p>对了对了，补上一个Xcode的project的架构图应该能看的更清楚一些：</p>
+<center><img src="/2018/07/27/iOS开发-自动打包初步探究/xcode.png" alt="logo"> </center>
+
+
+<h3 id="打包命令"><a href="#打包命令" class="headerlink" title="打包命令"></a>打包命令</h3><p>xcodebuild archive -workspace wallet.xcworkspace -scheme wallet -archivePath wallet.xcarchive              </p>
+<p>打包可以使用<code>xcodebuild archive</code>。</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">xcodebuild archive -workspace(或-project) 工作空间名.xcworkspace</div><div class="line">                   -<span class="ruby">scheme 项目名称</span></div><div class="line">                   -<span class="ruby">configuration 构建配置</span></div><div class="line">                   -<span class="ruby">archivePath 导出archive包存储路径</span></div><div class="line">                   CODE_SIGN_IDENTITY=证书</div><div class="line">                   PROVISIONING_PROFILE=描述文件UUID</div></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>1.workspace/project： 就是项目的名称，如果使用cocospod的一般为workspace，加上后缀就可以使用了。</li>
+<li>2.scheme：一般情况下也是项目名称，可以通过<code>xcodebuild -list</code>获取。</li>
+<li>3.configuration：可以选择Debug或Release模式，一般打包给测试的话使用Release比较好。</li>
+<li>4.archivePath：导出archive所存储的路径，这个不用多说。</li>
+<li>5.CODE_SIGN_IDENTITY：证书的Identity，稍等我们来讲一下如何获取这个。</li>
+<li>6.PROVISIONING_PROFILE：描述文件的UUID，稍等我们来将一下如何获取。</li>
+</ul>
+<p>其中如果使用workspace时，scheme是必须填写的，而project则不需要，configuration默认为Release也可以省略，CODE_SIGN_IDENTITY和PROVISIONING_PROFILE也可以使用默认的配置不指定。其他都为必填项。</p>
+<h4 id="获取scheme"><a href="#获取scheme" class="headerlink" title="获取scheme"></a>获取scheme</h4><p>cd到项目目录下，通过<code>xcodebuild -list</code>就可以获取当前项目的scheme。</p>
+<center><img src="/2018/07/27/iOS开发-自动打包初步探究/xcodebuild-list.png" alt="logo"></center>
+
+
+<h4 id="获取-CODE-SIGN-IDENTITY"><a href="#获取-CODE-SIGN-IDENTITY" class="headerlink" title="获取 CODE_SIGN_IDENTITY"></a>获取 CODE_SIGN_IDENTITY</h4><p>打开钥匙串-&gt;选中你的证书-&gt;右键-&gt;显示简介，你的证书的标题就是CODE_SIGN_IDENTITY了。</p>
+<h4 id="获取-PROVISIONING-PROFILE"><a href="#获取-PROVISIONING-PROFILE" class="headerlink" title="获取 PROVISIONING_PROFILE"></a>获取 PROVISIONING_PROFILE</h4><p>使用</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcodebuild -target <span class="tag">&lt;<span class="name">target</span>&gt;</span> -configuration <span class="tag">&lt;<span class="name">configuration</span>&gt;</span> -showBuildSettings</div></pre></td></tr></table></figure>
+<p>命令就可以看到当前项目的 PROVISIONING_PROFILE 了。</p>
+<h3 id="导出打包后的ipa"><a href="#导出打包后的ipa" class="headerlink" title="导出打包后的ipa"></a>导出打包后的ipa</h3><p>上边的打包操作看懂后，xcodebuild的操作你应该就完全懂了吧？还不懂？？？</p>
+<p>再来一个</p>
+<p>导出打包后的ipa文件。</p>
+<p>可以使用<code>xcodebuild -exportArchive</code></p>
+<p>xcodebuild -exportArchive -archivePath wallet.xcarchive -exportPath . -exportOptionsPlist “$workspace”/build.plist</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">xcodebuild -exportArchive -archivePath archive文件的地址.xcarchive </div><div class="line">                          -<span class="ruby">exportPath 导出的文件夹地址 </span></div><div class="line">                          -<span class="ruby">exportOptionsPlist exprotOptionsPlist.plist </span></div><div class="line">                          CODE_SIGN_IDENTITY=证书 </div><div class="line">                          PROVISIONING_PROFILE=描述文件UUID</div></pre></td></tr></table></figure>
+<p>其中-archivePath和exportPath以及-exportOptionsPlist是必须要传入的，其他两个和之前一样，可以不必穿进去。前两个参数都是路径，就不多说了，接下来着重介绍一下这个plist文件。</p>
+<h4 id="exprotOptionsPlist-plist"><a href="#exprotOptionsPlist-plist" class="headerlink" title="exprotOptionsPlist.plist"></a>exprotOptionsPlist.plist</h4><p>这个plist文件标注了导出包时的一些设定，其实就是在我们使用Xcode导出包时需要选择的一些东西。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span><span class="meta">?&gt;</span></span></div><div class="line">    <span class="meta">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">"1.0"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>teamID<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">string</span>&gt;</span>UA11AAJJKK8<span class="tag">&lt;/<span class="name">string</span>&gt;</span> //TeamID</div><div class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>method<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">string</span>&gt;</span>ad-hoc<span class="tag">&lt;/<span class="name">string</span>&gt;</span> //ad-hoc打包</div><div class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span> compileBitcode<span class="tag">&lt;/<span class="name">key</span>&gt;</span> //是否编译bitcode</div><div class="line">        <span class="tag">&lt;<span class="name">false</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">plist</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>在文档中还有一些其他的key和解释，这里就直接贴出来不做多解释了。</p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">Available keys <span class="keyword">for</span> -exportOptionsPlist:</div><div class="line"></div><div class="line">    compileBitcode : Bool</div><div class="line"></div><div class="line">        <span class="keyword">For</span> non-App Store exports, should Xcode re-compile the app from bitcode? Defaults <span class="keyword">to</span> YES.</div><div class="line"></div><div class="line">    embedOnDemandResourcesAssetPacksInBundle : Bool</div><div class="line"></div><div class="line">        <span class="keyword">For</span> non-App Store exports, <span class="keyword">if</span> the app uses <span class="keyword">On</span> Demand Resources <span class="keyword">and</span> this <span class="keyword">is</span> YES, asset packs are embedded <span class="keyword">in</span> the app bundle so that the app can be tested without a server <span class="keyword">to</span> host asset packs. Defaults <span class="keyword">to</span> YES unless onDemandResourcesAssetPacksBaseURL <span class="keyword">is</span> specified.</div><div class="line"></div><div class="line">    iCloudContainerEnvironment</div><div class="line"></div><div class="line">        <span class="keyword">For</span> non-App Store exports, <span class="keyword">if</span> the app <span class="keyword">is</span> using CloudKit, this configures the <span class="string">"com.apple.developer.icloud-container-environment"</span> entitlement. Available options: Development <span class="keyword">and</span> Production. Defaults <span class="keyword">to</span> Development.</div><div class="line"></div><div class="line">    manifest : Dictionary</div><div class="line"></div><div class="line">        <span class="keyword">For</span> non-App Store exports, users can download your app over the web by opening your distribution manifest <span class="keyword">file</span> <span class="keyword">in</span> a web browser. <span class="keyword">To</span> <span class="keyword">generate</span> a distribution manifest, the value <span class="keyword">of</span> this key should be a dictionary <span class="keyword">with</span> three sub-keys: appURL, displayImageURL, fullSizeImageURL. The additional sub-key assetPackManifestURL <span class="keyword">is</span> required <span class="keyword">when</span> using <span class="keyword">on</span> demand resources.</div><div class="line"></div><div class="line">    method : <span class="built_in">String</span></div><div class="line"></div><div class="line">        Describes how Xcode should export the archive. Available options: app-store, ad-hoc, <span class="keyword">package</span>, enterprise, development, <span class="keyword">and</span> developer-id. The list <span class="keyword">of</span> options varies based <span class="keyword">on</span> the <span class="keyword">type</span> <span class="keyword">of</span> archive. Defaults <span class="keyword">to</span> development.</div><div class="line"></div><div class="line">    onDemandResourcesAssetPacksBaseURL : <span class="built_in">String</span></div><div class="line"></div><div class="line">        <span class="keyword">For</span> non-App Store exports, <span class="keyword">if</span> the app uses <span class="keyword">On</span> Demand Resources <span class="keyword">and</span> embedOnDemandResourcesAssetPacksInBundle isn<span class="symbol">'t</span> YES, this should be a base URL specifying where asset packs are going <span class="keyword">to</span> be hosted. This configures the app <span class="keyword">to</span> download asset packs from the specified URL.</div><div class="line"></div><div class="line">    teamID : <span class="built_in">String</span></div><div class="line"></div><div class="line">        The Developer Portal team <span class="keyword">to</span> <span class="keyword">use</span> <span class="keyword">for</span> this export. Defaults <span class="keyword">to</span> the team used <span class="keyword">to</span> build the archive.</div><div class="line"></div><div class="line">    thinning : <span class="built_in">String</span></div><div class="line"></div><div class="line">        <span class="keyword">For</span> non-App Store exports, should Xcode thin the <span class="keyword">package</span> <span class="keyword">for</span> one <span class="keyword">or</span> more device variants? Available options: &lt;none&gt; (Xcode produces a non-thinned universal app), &lt;thin-<span class="keyword">for</span>-<span class="keyword">all</span>-variants&gt; (Xcode produces a universal app <span class="keyword">and</span> <span class="keyword">all</span> available thinned variants), <span class="keyword">or</span> a model identifier <span class="keyword">for</span> a specific device (e.g. <span class="string">"iPhone7,1"</span>). Defaults <span class="keyword">to</span> &lt;none&gt;.</div><div class="line"></div><div class="line">    uploadBitcode : Bool</div><div class="line"></div><div class="line">        <span class="keyword">For</span> App Store exports, should the <span class="keyword">package</span> include bitcode? Defaults <span class="keyword">to</span> YES.</div><div class="line"></div><div class="line">    uploadSymbols : Bool</div><div class="line"></div><div class="line">        <span class="keyword">For</span> App Store exports, should the <span class="keyword">package</span> include symbols? Defaults <span class="keyword">to</span> YES.</div></pre></td></tr></table></figure>
+<h2 id="写一个打包的脚本"><a href="#写一个打包的脚本" class="headerlink" title="写一个打包的脚本"></a>写一个打包的脚本</h2><p>因为我这边的情况是需要打包RN，然后打包项目最后传到蒲公英上，所以我就先就针对这个流程写一个脚本，如果你的需求跟我不一样，这个脚本可能还需要你自己来修改一下。</p>
+<h3 id="打包ReactNative代码"><a href="#打包ReactNative代码" class="headerlink" title="打包ReactNative代码"></a>打包ReactNative代码</h3><p>打包RN的代码主要会生成一个<code>.jsbundle</code>文件和图片<code>asset</code>文件夹。</p>
+<figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">react</span><span class="literal">-</span><span class="comment">native</span> <span class="comment">bundle</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">entry</span><span class="literal">-</span><span class="comment">file</span> <span class="comment">index</span><span class="string">.</span><span class="comment">js</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">platform</span> <span class="comment">ios</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">dev</span> <span class="comment">false</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">bundle</span><span class="literal">-</span><span class="comment">output</span> <span class="comment">ios/main</span><span class="string">.</span><span class="comment">jsbundle</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">assets</span><span class="literal">-</span><span class="comment">dest</span> <span class="comment">ios/</span></div></pre></td></tr></table></figure>
+<h3 id="打包iOS项目并导出ipa包"><a href="#打包iOS项目并导出ipa包" class="headerlink" title="打包iOS项目并导出ipa包"></a>打包iOS项目并导出ipa包</h3><p>这里有了前边的铺垫应该不需要再赘述太多了，直接上命令了,其中‘[]’中的内容需要替换成你自己的项目名称。</p>
+<figure class="highlight django"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="xml">cd ios</span></div><div class="line">xcodebuild archive -workspace [workspace name].xcworkspace -scheme [scheme name] -archivePath [xcarchive name].xcarchive              </div><div class="line"></div><div class="line"></div><div class="line"># ad-hoc、enterprise、development、app store</div><div class="line">cat <span class="tag">&lt;&lt; <span class="attr">EOF</span> &gt;</span> ../build.plist</div><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span><span class="meta">?&gt;</span></span></div><div class="line"><span class="meta">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">"1.0"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">key</span>&gt;</span>method<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">string</span>&gt;</span>$1<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">key</span>&gt;</span>compileBitcode<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">false</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">plist</span>&gt;</span></div><div class="line">EOF</div><div class="line"></div><div class="line">xcodebuild -exportArchive -archivePath [xcarchive name].xcarchive -exportPath . -exportOptionsPlist "$workspace"/build.plist</div></pre></td></tr></table></figure>
+<h3 id="上传到蒲公英"><a href="#上传到蒲公英" class="headerlink" title="上传到蒲公英"></a>上传到蒲公英</h3><p>蒲公英有提供专门的API接口，可以直接通过这个接口传入相应的参数，就可以将ipa包直接传到蒲公英上了。</p>
+<p>上传接口的接口文档在<a href="https://www.pgyer.com/doc/view/api#uploadApp" target="_blank" rel="external">这里</a>。</p>
+<p>脚本如下，同样<code>[]</code>中的内容需要你自己替换。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -<span class="literal">F</span> <span class="string">'file=@wallet.ipa'</span> -<span class="literal">F</span> <span class="string">'_api_key=[your apiKey]'</span> -<span class="literal">F</span> <span class="string">'appKey=[your appKey]'</span> https://www.pgyer.com/apiv2/app/upload</div></pre></td></tr></table></figure>
+<h3 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h3><p>将上述的主要内容加上一些辅助的代码，写成一个shell脚本就为：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line"><span class="bash"><span class="meta">#!/bin/sh </span></span></div><div class="line"></div><div class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$1</span>"</span> ] </div><div class="line"><span class="keyword">then</span> </div><div class="line">    <span class="built_in">echo</span> <span class="string">"输入参数：ad-hoc、enterprise、development、app store"</span></div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line">workspace=`<span class="built_in">pwd</span>`</div><div class="line"></div><div class="line"></div><div class="line"><span class="built_in">cd</span> <span class="string">"<span class="variable">$workspace</span>"</span></div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">"开始编译RN"</span></div><div class="line"></div><div class="line">react-native bundle --entry-file index.js --platform ios --dev <span class="literal">false</span> --bundle-output ios/main.jsbundle --assets-dest ios/</div><div class="line"></div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">"开始打包iOS"</span></div><div class="line"></div><div class="line"><span class="built_in">cd</span> ios</div><div class="line">xcodebuild archive -workspace [workspace name].xcworkspace -scheme [scheme name] -archivePath [xcarchive name].xcarchive              </div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># ad-hoc、enterprise、development、app store</span></div><div class="line">cat &lt;&lt; EOF &gt; ../build.plist</div><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span>?&gt;</div><div class="line">&lt;!DOCTYPE plist PUBLIC <span class="string">"-//Apple//DTD PLIST 1.0//EN"</span> <span class="string">"http://www.apple.com/DTDs/PropertyList-1.0.dtd"</span>&gt;</div><div class="line">&lt;plist version=<span class="string">"1.0"</span>&gt;</div><div class="line">&lt;dict&gt;</div><div class="line">  &lt;key&gt;method&lt;/key&gt;</div><div class="line">  &lt;string&gt;<span class="variable">$1</span>&lt;/string&gt;</div><div class="line">  &lt;key&gt;compileBitcode&lt;/key&gt;</div><div class="line">  &lt;<span class="literal">false</span>/&gt;</div><div class="line">&lt;/dict&gt;</div><div class="line">&lt;/plist&gt;</div><div class="line">EOF</div><div class="line"></div><div class="line">xcodebuild -exportArchive -archivePath [xcarchive name].xcarchive -exportPath . -exportOptionsPlist <span class="string">"<span class="variable">$workspace</span>"</span>/build.plist</div><div class="line"></div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">"上传到蒲公英"</span></div><div class="line"></div><div class="line">curl -F <span class="string">'file=@wallet.ipa'</span> -F <span class="string">'_api_key=[your apiKey]'</span> -F <span class="string">'appKey=[your appKey]'</span> https://www.pgyer.com/apiv2/app/upload</div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">"成功！"</span></div></pre></td></tr></table></figure>
+<p>这时候调用<strong>sh package.sh + [method]</strong> 传入打包的参数就可以了，如果一般传入到蒲公英或者fir需要打development的包就直接传入development即可。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>这里只是对iOS自动打包一个初步的使用，还可以使用Jenkins等工具进行更高自动化的CI持续集成，本篇文章也仅限个人学习使用，如果有什么不正确的地方也请各位大神多多指教。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://www.jianshu.com/p/a38f297e1158" target="_blank" rel="external">关于xcodebuild</a><br><a href="https://pewpewthespells.com/blog/buildsettings.html#dstroot" target="_blank" rel="external">Xcode Build Settings Reference</a><br><a href="https://juejin.im/post/5a56427ef265da3e4b76ac7c" target="_blank" rel="external">关于iOS自动化打包的一些分享</a><br><a href="https://www.liaoxuefeng.com/article/001463233913442cdb2d1bd1b1b42e3b0b29eb1ba736c5e000" target="_blank" rel="external">使用Jenkins进行持续集成</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/17/iOS开发-BIP39的实现/" rel="next" title="iOS开发-BIP39的实现">
+                <i class="fa fa-chevron-left"></i> iOS开发-BIP39的实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">66</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#xcodebuild"><span class="nav-number">1.</span> <span class="nav-text">xcodebuild</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#打包命令"><span class="nav-number">1.1.</span> <span class="nav-text">打包命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#获取scheme"><span class="nav-number">1.1.1.</span> <span class="nav-text">获取scheme</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取-CODE-SIGN-IDENTITY"><span class="nav-number">1.1.2.</span> <span class="nav-text">获取 CODE_SIGN_IDENTITY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取-PROVISIONING-PROFILE"><span class="nav-number">1.1.3.</span> <span class="nav-text">获取 PROVISIONING_PROFILE</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导出打包后的ipa"><span class="nav-number">1.2.</span> <span class="nav-text">导出打包后的ipa</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#exprotOptionsPlist-plist"><span class="nav-number">1.2.1.</span> <span class="nav-text">exprotOptionsPlist.plist</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写一个打包的脚本"><span class="nav-number">2.</span> <span class="nav-text">写一个打包的脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#打包ReactNative代码"><span class="nav-number">2.1.</span> <span class="nav-text">打包ReactNative代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打包iOS项目并导出ipa包"><span class="nav-number">2.2.</span> <span class="nav-text">打包iOS项目并导出ipa包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传到蒲公英"><span class="nav-number">2.3.</span> <span class="nav-text">上传到蒲公英</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#脚本"><span class="nav-number">2.4.</span> <span class="nav-text">脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">3.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
