@@ -95,11 +95,16 @@
 <meta property="og:site_name" content="zhangzr's blog">
 <meta property="og:description" content="昨天遇到了一个让人绝望的问题。。。事情是这样的。。
 昨天高高兴兴的完成了新的版本的开发，老大说有了新的Apple账号，需要用新的账号提交App Store，于是登上了新的AppleID，然后创建证书，创建ID，Apple Connect上创建应用，一气呵成，把证书下载下来配置一下，cmd+R，应用顺利的跑起来了，然后打包，上传TestFlight，也是非常顺利，也成功的发布到了TestFlight">
-<meta property="og:updated_time" content="2018-12-17T03:37:33.247Z">
+<meta property="og:image" content="http://yoursite.com/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/error.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/1.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/2.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/final.png">
+<meta property="og:updated_time" content="2018-12-17T04:08:33.153Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发-真机调试遇到“The executable was signed with invalid entitlements.”">
 <meta name="twitter:description" content="昨天遇到了一个让人绝望的问题。。。事情是这样的。。
 昨天高高兴兴的完成了新的版本的开发，老大说有了新的Apple账号，需要用新的账号提交App Store，于是登上了新的AppleID，然后创建证书，创建ID，Apple Connect上创建应用，一气呵成，把证书下载下来配置一下，cmd+R，应用顺利的跑起来了，然后打包，上传TestFlight，也是非常顺利，也成功的发布到了TestFlight">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/error.png">
 
 
 
@@ -376,7 +381,7 @@
       
         <p>昨天遇到了一个让人绝望的问题。。。事情是这样的。。</p>
 <p>昨天高高兴兴的完成了新的版本的开发，老大说有了新的Apple账号，需要用新的账号提交App Store，于是登上了新的AppleID，然后创建证书，创建ID，Apple Connect上创建应用，一气呵成，把证书下载下来配置一下，cmd+R，应用顺利的跑起来了，然后打包，上传TestFlight，也是非常顺利，也成功的发布到了TestFlight，然后测试那边报了一个bug给我，一看不是什么大问题么，改好之后用模拟器测试，OK没问题，想想再用真机调试一下吧，于是接上了测试机，cmd+R，然后去接杯水，等着回来看看真机上有没有什么问题，结果接完水回来。。。并不是期待的需要解锁的alert，而是。。。</p>
-<center><a href="iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/error.png">!logo</a></center>
+<center><img src="/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/error.png" alt="logo"></center>
 
 <figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">The executable was signed <span class="keyword">with</span> invalid entitlements.</div><div class="line"></div><div class="line">Profile The entitlements specified <span class="keyword">in</span> your <span class="built_in">application</span>’s Code Signing Entitlements <span class="built_in">file</span> are invalid, <span class="keyword">not</span> permitted, <span class="keyword">or</span> do <span class="keyword">not</span> match those specified <span class="keyword">in</span> your provisioning profile. (<span class="number">0xE8008016</span>).</div></pre></td></tr></table></figure>
 <p>看来来好像是Provisioning Profile(pp)的问题，仔细检查了一下，好像没有什么问题么？？不过这个问题看着好像不是什么大问题，结果耗费了我一天多的时间。。。所以准备写下来记录一下。</p>
@@ -395,7 +400,7 @@
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/usr/</span>bin<span class="regexp">/security cms -D -i profile_path/</span>profileName.mobileprovision<span class="string">"</span></div></pre></td></tr></table></figure>
 <h3 id="置空Code-Signing-Entitlements"><a href="#置空Code-Signing-Entitlements" class="headerlink" title="置空Code Signing Entitlements"></a>置空Code Signing Entitlements</h3><p>这个是google和stackoverflow上能搜到比较多的答案，具体的操作为将如下步骤下打开的选项设置为空：</p>
 <p><strong> Project -&gt; Target -&gt; 项目名称 -&gt; Build Settings -&gt; Code Signing Entitlements </strong></p>
-<center><a href="iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/1.png">!logo</a></center>
+<center><img src="/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/1.png" alt="logo"></center>
 
 <p>然而这个方法并没有对我有什么帮助。</p>
 <h3 id="清空xxx-entitlements文件"><a href="#清空xxx-entitlements文件" class="headerlink" title="清空xxx.entitlements文件"></a>清空xxx.entitlements文件</h3><p>这个方法实际上和上一个方法的操作差不多，具体步骤为：</p>
@@ -407,7 +412,7 @@
 <h3 id="重新配置Apple-Developler中的PP文件并下载"><a href="#重新配置Apple-Developler中的PP文件并下载" class="headerlink" title="重新配置Apple Developler中的PP文件并下载"></a>重新配置Apple Developler中的PP文件并下载</h3><p>这时候我有点崩溃了。。。我以为是之前创建开发证书的时候出了什么问题，因为可以正常上传到Apple Connect，所以发布证书应该没有什么问题，但是索性我还是把所有的证书和PP文件都revoke掉，然后重新生成了一遍，并且检查了App ID的配置，查看有没有和本地的Capabilities不匹配的字段。</p>
 <p>当然，结果还是没有什么用处。</p>
 <h3 id="Debug和Release选择错误"><a href="#Debug和Release选择错误" class="headerlink" title="Debug和Release选择错误"></a>Debug和Release选择错误</h3><p>google到有大佬说<strong>cmd+shift+&lt;</strong>打开配置查看一下选中的Debug和Release是否正确，我不知道这个会不会照成影响，但是我觉得这个可能不会有什么用处，正常的配置应该就是如图：</p>
-<center><a href="iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/2.png">!logo</a></center>
+<center><img src="/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/2.png" alt="logo"></center>
 
 <p>然而没有什么办法，只能改改看了，最后发现还是不对。</p>
 <h3 id="info-plist中的id和target中不一致"><a href="#info-plist中的id和target中不一致" class="headerlink" title="info.plist中的id和target中不一致"></a>info.plist中的id和target中不一致</h3><p>这个问题是项目的info.plist文件中的<strong>Bundle identifier</strong>字段和<br><strong> Project -&gt; Target -&gt; 项目名称 -&gt; Build Setting -&gt; Packaging -&gt; Product Bundle Identifier </strong> 中的ID字段不匹配照成的。</p>
@@ -420,7 +425,7 @@
 <li>XXX-tvOSTests<br>.<br>.<br>.</li>
 </ul>
 <p>如果你还有其他Target请都检查一遍！发现其他的证书都是用的另外一个账号的证书。改了一下。。顿时预感要成功，cmd+R了一下，果然出现了久违的画面：</p>
-<center><a href="iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/final.png">!logo</a></center>
+<center><img src="/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/final.png" alt="logo"></center>
 
 <h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>这篇文章仅供个人学习使用，如果有什么不对的地方还请大佬们多多指教，另外如果你也遇到了这个问题，有这边没有提到的解决办法，请留言告诉我。谢谢。</p>
 <h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://stackoverflow.com/questions/22625785/entitlements-file-do-not-match-those-specified-in-your-provisioning-profile-0xe" target="_blank" rel="external">Entitlements file do not match those specified in your provisioning profile.(0xE8008016)</a><br><a href="https://juejin.im/post/5a39e03451882512ae12cb36" target="_blank" rel="external">iOS开发 The executable was signed with invalid entitlements.</a><br><a href="https://www.cnblogs.com/abinzhang/p/5662061.html" target="_blank" rel="external">Xcode entitlement 问题定位和解决指南</a><br><a href="https://developer.apple.com/library/archive/technotes/tn2415/_index.html" target="_blank" rel="external">Entitlements Troubleshooting</a><br><a href="https://www.jianshu.com/p/907691c45436" target="_blank" rel="external">The entitlements specified in your application’s Code Signing Entitlements file are invalid, not permitted, or do not match those specified in your provisioning profile. (0xE8008016).</a><br><a href="https://www.jianshu.com/p/27e449e9f01b" target="_blank" rel="external">The entitlements specified in your application’s Code Signing Entitlements file do not match those specified in your provisioning profile. (0xE8008016).</a><br><a href="https://www.jianshu.com/p/907691c45436" target="_blank" rel="external">The entitlements specified in your application’s Code Signing Entitlements file are invalid, not permitted, or do not match those specified in your provisioning profile. (0xE8008016).</a></p>
