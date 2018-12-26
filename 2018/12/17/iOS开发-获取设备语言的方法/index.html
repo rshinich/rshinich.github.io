@@ -87,40 +87,19 @@
 
 
 
-<meta name="description" content="先上一些资料，具体的东西再学习学习再写。
-使用 iCloud API 的正确姿势
-使用 UIDocument 管理 APP 的文档存取 | 咖啡时间
-iOS8使用icloud 
-iOS项目iCloud及CloudKit Dashboard运用
-iOS学习笔记32-iCloud入门
-iCloud Storage 详细的官方文档
-iCloud 和 Core Data
-IOS开发之iCloud开发(数据">
+<meta name="description" content="今天遇到一个问题，就是开发时需要获取iOS设备机器设定的语言，找了一下找到了一共下面4个方法用来获取设备本地的语言：
+1234NSString *udfLanguageCode = [[NSUserDefaults standardUserDefaults] objectForKey:@&quot;AppleLanguages&quot;][0];NSString *pfLanguageCode = [NSLocal">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS开发-iCloud的简单使用">
-<meta property="og:url" content="http://yoursite.com/2018/01/15/iOS开发-iCloud的简单使用/index.html">
+<meta property="og:title" content="iOS开发-获取设备语言的方法">
+<meta property="og:url" content="http://yoursite.com/2018/12/17/iOS开发-获取设备语言的方法/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
-<meta property="og:description" content="先上一些资料，具体的东西再学习学习再写。
-使用 iCloud API 的正确姿势
-使用 UIDocument 管理 APP 的文档存取 | 咖啡时间
-iOS8使用icloud 
-iOS项目iCloud及CloudKit Dashboard运用
-iOS学习笔记32-iCloud入门
-iCloud Storage 详细的官方文档
-iCloud 和 Core Data
-IOS开发之iCloud开发(数据">
-<meta property="og:updated_time" content="2018-01-20T09:05:45.000Z">
+<meta property="og:description" content="今天遇到一个问题，就是开发时需要获取iOS设备机器设定的语言，找了一下找到了一共下面4个方法用来获取设备本地的语言：
+1234NSString *udfLanguageCode = [[NSUserDefaults standardUserDefaults] objectForKey:@&quot;AppleLanguages&quot;][0];NSString *pfLanguageCode = [NSLocal">
+<meta property="og:updated_time" content="2018-12-17T06:27:53.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS开发-iCloud的简单使用">
-<meta name="twitter:description" content="先上一些资料，具体的东西再学习学习再写。
-使用 iCloud API 的正确姿势
-使用 UIDocument 管理 APP 的文档存取 | 咖啡时间
-iOS8使用icloud 
-iOS项目iCloud及CloudKit Dashboard运用
-iOS学习笔记32-iCloud入门
-iCloud Storage 详细的官方文档
-iCloud 和 Core Data
-IOS开发之iCloud开发(数据">
+<meta name="twitter:title" content="iOS开发-获取设备语言的方法">
+<meta name="twitter:description" content="今天遇到一个问题，就是开发时需要获取iOS设备机器设定的语言，找了一下找到了一共下面4个方法用来获取设备本地的语言：
+1234NSString *udfLanguageCode = [[NSUserDefaults standardUserDefaults] objectForKey:@&quot;AppleLanguages&quot;][0];NSString *pfLanguageCode = [NSLocal">
 
 
 
@@ -148,13 +127,13 @@ IOS开发之iCloud开发(数据">
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/15/iOS开发-iCloud的简单使用/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/12/17/iOS开发-获取设备语言的方法/"/>
 
 
 
 
 
-  <title> iOS开发-iCloud的简单使用 | zhangzr's blog </title>
+  <title> iOS开发-获取设备语言的方法 | zhangzr's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -323,7 +302,7 @@ IOS开发之iCloud开发(数据">
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/15/iOS开发-iCloud的简单使用/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/17/iOS开发-获取设备语言的方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhangzr">
@@ -344,7 +323,7 @@ IOS开发之iCloud开发(数据">
             
             
               
-                iOS开发-iCloud的简单使用
+                iOS开发-获取设备语言的方法
               
             
           </h1>
@@ -359,8 +338,8 @@ IOS开发之iCloud开发(数据">
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T16:52:06+08:00">
-                2018-01-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-17T14:16:18+08:00">
+                2018-12-17
               </time>
             
 
@@ -395,17 +374,9 @@ IOS开发之iCloud开发(数据">
       
 
       
-        <p>先上一些资料，具体的东西再学习学习再写。</p>
-<p><a href="http://swiftcafe.io/2016/08/16/icloud/" target="_blank" rel="external">使用 iCloud API 的正确姿势</a></p>
-<p><a href="http://swiftcafe.io/2015/11/14/uidocument/" target="_blank" rel="external">使用 UIDocument 管理 APP 的文档存取 | 咖啡时间</a></p>
-<p><a href="http://www.devtf.cn/?p=574" target="_blank" rel="external">iOS8使用icloud</a> </p>
-<p><a href="http://www.cnblogs.com/wujy/archive/2016/10/17/5971273.html" target="_blank" rel="external">iOS项目iCloud及CloudKit Dashboard运用</a></p>
-<p><a href="https://www.jianshu.com/p/bf0e15d1829e" target="_blank" rel="external">iOS学习笔记32-iCloud入门</a></p>
-<p><a href="http://www.cnblogs.com/zhw511006/archive/2012/01/09/2317090.html" target="_blank" rel="external">iCloud Storage 详细的官方文档</a></p>
-<p><a href="https://objccn.io/issue-10-2/" target="_blank" rel="external">iCloud 和 Core Data</a></p>
-<p><a href="http://www.hudongdong.com/ios/385.html" target="_blank" rel="external">IOS开发之iCloud开发(数据与文档的读写删除)</a></p>
-<p><a href="https://www.jianshu.com/p/fadd5516fdab" target="_blank" rel="external">iCloudCloudKit简单使用</a></p>
-<p><a href="https://www.raywenderlich.com/134694/cloudkit-tutorial-getting-started" target="_blank" rel="external">CloudKit Tutorial: Getting Started</a></p>
+        <p>今天遇到一个问题，就是开发时需要获取iOS设备机器设定的语言，找了一下找到了一共下面4个方法用来获取设备本地的语言：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSString *udfLanguageCode = [<span class="string">[NSUserDefaults standardUserDefaults</span>] objectForKey:@"AppleLanguages"][0];</div><div class="line">NSString *pfLanguageCode = [<span class="string">NSLocale preferredLanguages</span>][<span class="symbol">0</span>];</div><div class="line">NSString *localeLanguageCode = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];</div><div class="line">NSString *language =  [<span class="string">[NSBundle mainBundle</span>] preferredLocalizations][0];</div></pre></td></tr></table></figure>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="http://www.hudongdong.com/ios/556.html" target="_blank" rel="external">iOS获取当前系统语言</a></p>
 
       
     </div>
@@ -442,8 +413,8 @@ IOS开发之iCloud开发(数据">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/04/iOS中震动反馈Haptic-Feedback使用/" rel="next" title="iOS中震动反馈Haptic Feedback使用">
-                <i class="fa fa-chevron-left"></i> iOS中震动反馈Haptic Feedback使用
+              <a href="/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/" rel="next" title="iOS开发-真机调试遇到“The executable was signed with invalid entitlements.”">
+                <i class="fa fa-chevron-left"></i> iOS开发-真机调试遇到“The executable was signed with invalid entitlements.”
               </a>
             
           </div>
@@ -451,10 +422,6 @@ IOS开发之iCloud开发(数据">
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/01/15/iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value-storage的使用/" rel="prev" title="iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value storage的使用">
-                iOS开发-iCloud的简单使用（1）-配置iCloud环境以及key-value storage的使用 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -501,8 +468,17 @@ IOS开发之iCloud开发(数据">
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -555,6 +531,22 @@ IOS开发之iCloud开发(数据">
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">1.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
