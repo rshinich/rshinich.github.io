@@ -1,0 +1,756 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="好像好久没有写blog了，前几天服务端同学说，传入emoji给他们可能会造成一些麻烦。所以准备把emoji过滤掉。
+emoji大家应该都知道emoji是啥吧？？
+知道的同学可以直接跳过这段废话了。介绍emoji之前先介绍一下emoji到底是什么组成的。
+字符集和字符集编码因为计算机中所有的信息最终都是以二进制的形式存储，我们所有的自然语言输入到计算机中之后都会被转换为计算机能够识别的二进制数据，当">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-判断Emoji">
+<meta property="og:url" content="http://yoursite.com/2019/03/07/iOS开发-判断Emoji/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="好像好久没有写blog了，前几天服务端同学说，传入emoji给他们可能会造成一些麻烦。所以准备把emoji过滤掉。
+emoji大家应该都知道emoji是啥吧？？
+知道的同学可以直接跳过这段废话了。介绍emoji之前先介绍一下emoji到底是什么组成的。
+字符集和字符集编码因为计算机中所有的信息最终都是以二进制的形式存储，我们所有的自然语言输入到计算机中之后都会被转换为计算机能够识别的二进制数据，当">
+<meta property="og:updated_time" content="2019-03-07T09:16:14.173Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-判断Emoji">
+<meta name="twitter:description" content="好像好久没有写blog了，前几天服务端同学说，传入emoji给他们可能会造成一些麻烦。所以准备把emoji过滤掉。
+emoji大家应该都知道emoji是啥吧？？
+知道的同学可以直接跳过这段废话了。介绍emoji之前先介绍一下emoji到底是什么组成的。
+字符集和字符集编码因为计算机中所有的信息最终都是以二进制的形式存储，我们所有的自然语言输入到计算机中之后都会被转换为计算机能够识别的二进制数据，当">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/07/iOS开发-判断Emoji/"/>
+
+
+
+
+
+  <title> iOS开发-判断Emoji | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/iOS开发-判断Emoji/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-判断Emoji
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-07T17:15:19+08:00">
+                2019-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>好像好久没有写blog了，前几天服务端同学说，传入emoji给他们可能会造成一些麻烦。所以准备把emoji过滤掉。</p>
+<h2 id="emoji"><a href="#emoji" class="headerlink" title="emoji"></a>emoji</h2><p>大家应该都知道emoji是啥吧？？</p>
+<p>知道的同学可以直接跳过这段废话了。<br>介绍emoji之前先介绍一下emoji到底是什么组成的。</p>
+<h3 id="字符集和字符集编码"><a href="#字符集和字符集编码" class="headerlink" title="字符集和字符集编码"></a>字符集和字符集编码</h3><p>因为计算机中所有的信息最终都是以二进制的形式存储，我们所有的自然语言输入到计算机中之后都会被转换为计算机能够识别的二进制数据，当计算机需要显示自然语言的时候也都是把二进制数据转换为我们能够看懂的自然语言。</p>
+<p>那么自然语言中的每个字或者每个标点就可以称为是一个字符。这些字符的集合就是<strong>字符集</strong>。</p>
+<p>字符集包含了各种各样不同的字符，但是计算机想要识别字符就需要根据一套规则进行转换，这个规则就是字符集编码。规定字符编码必须遵循两个规则：</p>
+<ul>
+<li>规定一个字符集中的字符由多少个字节表示</li>
+<li>制定该字符集的字符编码表，也就是该字符集中每个字符对应的二进制值</li>
+</ul>
+<h3 id="ASCII码"><a href="#ASCII码" class="headerlink" title="ASCII码"></a>ASCII码</h3><p>ASCII(American Standard Code for Information Interchange)，是一种字符编码标准，它的字符集为英文字符集，它规定了字符集中的每一个字节表示，指定了字符表编码表，成为ASCII码表。已经被国际化组织定义为国际标准，成为ISO646标准。</p>
+<p>ASCII码一共规定了128个字符的编码，比如空格”SPACE”是32（二进制00100000），大写字符A是65（二进制01000001）,这128个符号只占用了一个字节后面的7位，最前面第1位规定为0。</p>
+<p>但是由于标准ASCII字符集字符数目有限，在实际应用中往往无法满足要求，因此，国际标准化组织又制定了ISO 2022标准，它规定了在保持ISO646兼容的前提下将ASCII字符集扩充为8位的统一方法。</p>
+<h3 id="Unicode"><a href="#Unicode" class="headerlink" title="Unicode"></a>Unicode</h3><p>但是世界上的语言不只有英语这么少的字符，很多语言如中文，韩文，日文等都有很大量的字符需要被存储，显然简单的字符表已经不够用了。</p>
+<p>所以，人们意识到需要一种标准的规范来展示世界上的所有字符，于是Unicode就诞生了。Unicode最初是一个字符集，后面慢慢变化成了一个广义的标准，即UTF-8，UTF-16，UTF-32等等…</p>
+<h3 id="Emoji"><a href="#Emoji" class="headerlink" title="Emoji"></a>Emoji</h3><p>Emoji字符就是Unicode字符集中的一部分，特定形象的Emoji表情符号对应着特定的Unicode字节，常见的Emoji表情符号在字符集中的范围和映射关系可以通过这个来查看 <a href="https://apps.timwhitlock.info/emoji/tables/unicode#block-6c-other-additional-symbols" target="_blank" rel="external">Emoji unicode characters for use on the web</a></p>
+<h2 id="判断"><a href="#判断" class="headerlink" title="判断"></a>判断</h2><p>知道了Emoji的大概情况之后，我们可以看到在某一范围内的字符都是属于Emoji表情的。所以通常来说通过范围来判断就可以屏蔽掉一大部分的Emoji</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//判断是否存在emoji</span></div><div class="line">+(<span class="built_in">BOOL</span>)stringContainsEmoji:(<span class="built_in">NSString</span> *)string</div><div class="line">&#123;   </div><div class="line">    __block <span class="built_in">BOOL</span> returnValue = <span class="literal">NO</span>;</div><div class="line">    [string enumerateSubstringsInRange:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, [string length]) options:<span class="built_in">NSStringEnumerationByComposedCharacterSequences</span> usingBlock:</div><div class="line">     ^(<span class="built_in">NSString</span> *substring, <span class="built_in">NSRange</span> substringRange, <span class="built_in">NSRange</span> enclosingRange, <span class="built_in">BOOL</span> *stop) &#123;</div><div class="line"></div><div class="line">         <span class="keyword">const</span> <span class="keyword">unichar</span> hs = [substring characterAtIndex:<span class="number">0</span>];</div><div class="line">         <span class="comment">// surrogate pair</span></div><div class="line">         <span class="keyword">if</span> (<span class="number">0xd800</span> &lt;= hs &amp;&amp; hs &lt;= <span class="number">0xdbff</span>) &#123;</div><div class="line">             <span class="keyword">if</span> (substring.length &gt; <span class="number">1</span>) &#123;</div><div class="line">                 <span class="keyword">const</span> <span class="keyword">unichar</span> ls = [substring characterAtIndex:<span class="number">1</span>];</div><div class="line">                 <span class="keyword">const</span> <span class="keyword">int</span> uc = ((hs - <span class="number">0xd800</span>) * <span class="number">0x400</span>) + (ls - <span class="number">0xdc00</span>) + <span class="number">0x10000</span>;</div><div class="line">                 <span class="keyword">if</span> (<span class="number">0x1d000</span> &lt;= uc &amp;&amp; uc &lt;= <span class="number">0x1f77f</span>) &#123;</div><div class="line">                     returnValue = <span class="literal">YES</span>;</div><div class="line">                 &#125;</div><div class="line">             &#125;</div><div class="line">         &#125; <span class="keyword">else</span> <span class="keyword">if</span> (substring.length &gt; <span class="number">1</span>) &#123;</div><div class="line">             <span class="keyword">const</span> <span class="keyword">unichar</span> ls = [substring characterAtIndex:<span class="number">1</span>];</div><div class="line">             <span class="keyword">if</span> (ls == <span class="number">0x20e3</span>) &#123;</div><div class="line">                 returnValue = <span class="literal">YES</span>;</div><div class="line">             &#125;</div><div class="line"></div><div class="line">         &#125; <span class="keyword">else</span> &#123;</div><div class="line">             <span class="comment">// non surrogate</span></div><div class="line">             <span class="keyword">if</span> (<span class="number">0x2100</span> &lt;= hs &amp;&amp; hs &lt;= <span class="number">0x27ff</span>) &#123;</div><div class="line">                 returnValue = <span class="literal">YES</span>;</div><div class="line">             &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">0x2B05</span> &lt;= hs &amp;&amp; hs &lt;= <span class="number">0x2b07</span>) &#123;</div><div class="line">                 returnValue = <span class="literal">YES</span>;</div><div class="line">             &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">0x2934</span> &lt;= hs &amp;&amp; hs &lt;= <span class="number">0x2935</span>) &#123;</div><div class="line">                 returnValue = <span class="literal">YES</span>;</div><div class="line">             &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">0x3297</span> &lt;= hs &amp;&amp; hs &lt;= <span class="number">0x3299</span>) &#123;</div><div class="line">                 returnValue = <span class="literal">YES</span>;</div><div class="line">             &#125; <span class="keyword">else</span> <span class="keyword">if</span> (hs == <span class="number">0xa9</span> || hs == <span class="number">0xae</span> || hs == <span class="number">0x303d</span> || hs == <span class="number">0x3030</span> || hs == <span class="number">0x2b55</span> || hs == <span class="number">0x2b1c</span> || hs == <span class="number">0x2b1b</span> || hs == <span class="number">0x2b50</span>) &#123;</div><div class="line">                 returnValue = <span class="literal">YES</span>;</div><div class="line">             &#125;</div><div class="line">         &#125;</div><div class="line">     &#125;];</div><div class="line"></div><div class="line">    <span class="keyword">return</span> returnValue;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>但是跑起来之后可以看到，有些Emoji还是判断不出来，其实因为Emoji是一直在更新的，写死了范围在代码里，没当emoji更新了之后，新的emoji有可能不在范围内，就会导致无法判断出来。</p>
+<p>所以我们通过转换成UTF8的字节长度来判断，大于等于4的长度就默认为是Emoji。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">//判断是否存在emoji</span></div><div class="line">+(<span class="built_in">BOOL</span>)stringContainsEmoji:(<span class="built_in">NSString</span> *)string</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSUInteger</span> stringUtf8Length = [string lengthOfBytesUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    <span class="keyword">if</span>(stringUtf8Length &gt;= <span class="number">4</span> &amp;&amp; (stringUtf8Length / string.length != <span class="number">3</span>))</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样就会稍微好一点，但是不知道会不会造成一些其他问题，如果大神们有什么更好的解决办法欢迎留言告诉我。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://www.jianshu.com/p/8d675a5b9e5c" target="_blank" rel="external">深入理解Emoji(一) —— 字符集，字符集编码 - 简书</a></p>
+<p><a href="https://apps.timwhitlock.info/emoji/tables/unicode#block-6c-other-additional-symbols" target="_blank" rel="external">Emoji unicode characters for use on the web</a></p>
+<p><a href="https://juejin.im/post/5c00b31a5188251d9e0c4a59" target="_blank" rel="external">深入理解Emoji(三) —— Emoji详解 - 掘金</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/17/iOS开发-获取设备语言的方法/" rel="next" title="iOS开发-获取设备语言的方法">
+                <i class="fa fa-chevron-left"></i> iOS开发-获取设备语言的方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">72</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#emoji"><span class="nav-number">1.</span> <span class="nav-text">emoji</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符集和字符集编码"><span class="nav-number">1.1.</span> <span class="nav-text">字符集和字符集编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ASCII码"><span class="nav-number">1.2.</span> <span class="nav-text">ASCII码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unicode"><span class="nav-number">1.3.</span> <span class="nav-text">Unicode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Emoji"><span class="nav-number">1.4.</span> <span class="nav-text">Emoji</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#判断"><span class="nav-number">2.</span> <span class="nav-text">判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":100,"height":200},"mobile":{"show":true},"react":{"opacityDefault":1,"opacityOnHover":0.2}});</script></body>
+</html>
