@@ -87,28 +87,22 @@
 
 
 
-<meta name="description" content="##参考文档
-iOS反调试: 反调试与绕过的奇淫技巧
-关于反调试&amp;amp;反反调试那些事
-iOS Anti-Debug
-Ptrace在iOS上反调试的利用和破解">
+<meta name="description" content="今天对项目进行了一些优化，想要把数据处理全部放在一个异步并发的队列中处理，写完代码之后发现偶尔会出现崩溃，原因就是EXC_BAD_ACCESS错误。
+在网上也找到了类似的问题，有一个网易面试题：
+12345678@property (nonatomic, strong) NSString *target;//....dispatch_queue_t queue = dispatch_queue_c">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS开发-反调试的简单使用">
-<meta property="og:url" content="http://yoursite.com/2018/07/17/iOS开发-反调试的简单使用/index.html">
+<meta property="og:title" content="iOS开发-多线程安全问题">
+<meta property="og:url" content="http://yoursite.com/2019/03/14/iOS开发-多线程安全问题/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
-<meta property="og:description" content="##参考文档
-iOS反调试: 反调试与绕过的奇淫技巧
-关于反调试&amp;amp;反反调试那些事
-iOS Anti-Debug
-Ptrace在iOS上反调试的利用和破解">
-<meta property="og:updated_time" content="2018-07-17T02:07:20.000Z">
+<meta property="og:description" content="今天对项目进行了一些优化，想要把数据处理全部放在一个异步并发的队列中处理，写完代码之后发现偶尔会出现崩溃，原因就是EXC_BAD_ACCESS错误。
+在网上也找到了类似的问题，有一个网易面试题：
+12345678@property (nonatomic, strong) NSString *target;//....dispatch_queue_t queue = dispatch_queue_c">
+<meta property="og:updated_time" content="2019-03-14T03:24:25.330Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS开发-反调试的简单使用">
-<meta name="twitter:description" content="##参考文档
-iOS反调试: 反调试与绕过的奇淫技巧
-关于反调试&amp;amp;反反调试那些事
-iOS Anti-Debug
-Ptrace在iOS上反调试的利用和破解">
+<meta name="twitter:title" content="iOS开发-多线程安全问题">
+<meta name="twitter:description" content="今天对项目进行了一些优化，想要把数据处理全部放在一个异步并发的队列中处理，写完代码之后发现偶尔会出现崩溃，原因就是EXC_BAD_ACCESS错误。
+在网上也找到了类似的问题，有一个网易面试题：
+12345678@property (nonatomic, strong) NSString *target;//....dispatch_queue_t queue = dispatch_queue_c">
 
 
 
@@ -136,13 +130,13 @@ Ptrace在iOS上反调试的利用和破解">
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/07/17/iOS开发-反调试的简单使用/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/03/14/iOS开发-多线程安全问题/"/>
 
 
 
 
 
-  <title> iOS开发-反调试的简单使用 | zhangzr's blog </title>
+  <title> iOS开发-多线程安全问题 | zhangzr's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -311,7 +305,7 @@ Ptrace在iOS上反调试的利用和破解">
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/17/iOS开发-反调试的简单使用/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/14/iOS开发-多线程安全问题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhangzr">
@@ -332,7 +326,7 @@ Ptrace在iOS上反调试的利用和破解">
             
             
               
-                iOS开发-反调试的简单使用
+                iOS开发-多线程安全问题
               
             
           </h1>
@@ -347,8 +341,8 @@ Ptrace在iOS上反调试的利用和破解">
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-17T10:05:02+08:00">
-                2018-07-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-14T11:23:48+08:00">
+                2019-03-14
               </time>
             
 
@@ -383,11 +377,18 @@ Ptrace在iOS上反调试的利用和破解">
       
 
       
-        <p>##参考文档</p>
-<p><a href="https://blog.csdn.net/skylin19840101/article/details/79971372" target="_blank" rel="external">iOS反调试: 反调试与绕过的奇淫技巧</a></p>
-<p><a href="http://bbs.iosre.com/t/topic/8179" target="_blank" rel="external">关于反调试&amp;反反调试那些事</a></p>
-<p><a href="https://jaq.alibaba.com/blog.htm?id=53" target="_blank" rel="external">iOS Anti-Debug</a></p>
-<p><a href="https://www.jianshu.com/p/75776311ae36" target="_blank" rel="external">Ptrace在iOS上反调试的利用和破解</a></p>
+        <p>今天对项目进行了一些优化，想要把数据处理全部放在一个异步并发的队列中处理，写完代码之后发现偶尔会出现崩溃，原因就是<strong>EXC_BAD_ACCESS</strong>错误。</p>
+<p>在网上也找到了类似的问题，有一个网易面试题：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *target;</div><div class="line"><span class="comment">//....</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"parallel"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span> ; i++) </div><div class="line">&#123;</div><div class="line">		<span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">			<span class="keyword">self</span>.target = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"ksddkjalkjd%d"</span>,i];</div><div class="line">	&#125;);</div></pre></td></tr></table></figure>
+<p>这个其实就是我写的代码的一种直接表现的版本，其实就是::对已经释放的内存的对象再次发送消息出现的::。</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>问题的原因是因为我们现在使用ARC编码，但是如果对于这个对象来说，它的setter方法在MRC环境下就是</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">-(<span class="keyword">void</span>)setTarget:(<span class="built_in">NSString</span> *)target</div><div class="line">&#123;</div><div class="line">		[target <span class="keyword">retain</span>];<span class="comment">//先保留新值</span></div><div class="line">		[_target release];<span class="comment">//再释放旧值</span></div><div class="line">		_target = target;<span class="comment">//再进行赋值</span></div></pre></td></tr></table></figure>
+<p>而调用了问题的原因就是就是因为我们使用了异步+并发队列处理数据，也就是加入队列A执行到第二行代码，还没有执行到第三行时，队列B也执行到第二行代码，这时候队列A执行第三行代码之后就会释放对象，然后队列B使用的时候也会释放，就会造成过度释放。</p>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>知道了造成问题的原因，那么解决的办法也就大概知道了。</p>
+<h3 id="改用串行队列"><a href="#改用串行队列" class="headerlink" title="改用串行队列"></a>改用串行队列</h3><p>过度释放release的问题就是并发队列多次同时访问了资源，那么使用串行队列就可以解决这个问题了。主要是在setter方法中改用串行队列。</p>
+<h3 id="使用atomic（加锁）"><a href="#使用atomic（加锁）" class="headerlink" title="使用atomic（加锁）"></a>使用atomic（加锁）</h3><p>我们正常初始化变量的时候一般都是使用nonatomic，也就是非原子性，而使用atomic为原子性就相当于给setter方法加锁。atomic也只是对于setter方法有用，而其他情况时需要使用其他加速方式。</p>
+<h3 id="使用weak"><a href="#使用weak" class="headerlink" title="使用weak"></a>使用weak</h3><p>Weak关键字的setter没有保留新的值或者保留旧值的操作。所以不会引起重复释放。但是并不是所有变量都适合使用weak。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="http://www.cocoachina.com/ios/20170825/20376.html" target="_blank" rel="external">苹果开发中文网站从一道网易面试题浅谈OC线程安全 - CocoaChina_让移动开发更简单</a><br><a href="http://mrpeak.cn/blog/ios-thread-safety/" target="_blank" rel="external">iOS多线程到底不安全在哪里？</a><br><a href="https://juejin.im/post/5b1cf4fa6fb9a01e4b062771" target="_blank" rel="external">我所理解的 iOS 并发编程 - 掘金</a><br><a href="https://www.jianshu.com/p/c4bd2960b3fa" target="_blank" rel="external">iOS多线程经典崩溃 - 简书</a></p>
 
       
     </div>
@@ -424,8 +425,8 @@ Ptrace在iOS上反调试的利用和破解">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/09/iOS开发-PBKDF算法/" rel="next" title="iOS开发-PBKDF算法">
-                <i class="fa fa-chevron-left"></i> iOS开发-PBKDF算法
+              <a href="/2019/03/07/iOS开发-判断Emoji/" rel="next" title="iOS开发-判断Emoji">
+                <i class="fa fa-chevron-left"></i> iOS开发-判断Emoji
               </a>
             
           </div>
@@ -433,10 +434,6 @@ Ptrace在iOS上反调试的利用和破解">
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/07/17/iOS开发-BIP39的实现/" rel="prev" title="iOS开发-BIP39的实现">
-                iOS开发-BIP39的实现 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -483,8 +480,17 @@ Ptrace在iOS上反调试的利用和破解">
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -537,6 +543,22 @@ Ptrace在iOS上反调试的利用和破解">
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原因"><span class="nav-number">1.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决"><span class="nav-number">2.</span> <span class="nav-text">解决</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#改用串行队列"><span class="nav-number">2.1.</span> <span class="nav-text">改用串行队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用atomic（加锁）"><span class="nav-number">2.2.</span> <span class="nav-text">使用atomic（加锁）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用weak"><span class="nav-number">2.3.</span> <span class="nav-text">使用weak</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
