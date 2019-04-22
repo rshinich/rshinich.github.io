@@ -1,0 +1,759 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近一直在整理代码，发现viewcontroller里边的代码放的还是有一些乱，主要是每次新建一个viewcontroller之后，随着开发需求会一直添加不同的方法，慢慢的不同功能的代码顺序就会变得乱七八糟，导致每一个viewcontroller代码顺序都会有一点点不一样。之前看过Casa大神写过的 https://casatwy.com/iosying-yong-jia-gou-tan-view">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-创建一个Xcode模板">
+<meta property="og:url" content="http://yoursite.com/2019/04/22/iOS开发-创建一个Xcode模板/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="最近一直在整理代码，发现viewcontroller里边的代码放的还是有一些乱，主要是每次新建一个viewcontroller之后，随着开发需求会一直添加不同的方法，慢慢的不同功能的代码顺序就会变得乱七八糟，导致每一个viewcontroller代码顺序都会有一点点不一样。之前看过Casa大神写过的 https://casatwy.com/iosying-yong-jia-gou-tan-view">
+<meta property="og:image" content="http://yoursite.com/2019/04/22/iOS开发-创建一个Xcode模板/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/22/iOS开发-创建一个Xcode模板/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/04/22/iOS开发-创建一个Xcode模板/3.png">
+<meta property="og:updated_time" content="2019-04-22T06:26:48.047Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-创建一个Xcode模板">
+<meta name="twitter:description" content="最近一直在整理代码，发现viewcontroller里边的代码放的还是有一些乱，主要是每次新建一个viewcontroller之后，随着开发需求会一直添加不同的方法，慢慢的不同功能的代码顺序就会变得乱七八糟，导致每一个viewcontroller代码顺序都会有一点点不一样。之前看过Casa大神写过的 https://casatwy.com/iosying-yong-jia-gou-tan-view">
+<meta name="twitter:image" content="http://yoursite.com/2019/04/22/iOS开发-创建一个Xcode模板/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/04/22/iOS开发-创建一个Xcode模板/"/>
+
+
+
+
+
+  <title> iOS开发-创建一个Xcode模板 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/22/iOS开发-创建一个Xcode模板/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-创建一个Xcode模板
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-22T14:23:52+08:00">
+                2019-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近一直在整理代码，发现viewcontroller里边的代码放的还是有一些乱，主要是每次新建一个viewcontroller之后，随着开发需求会一直添加不同的方法，慢慢的不同功能的代码顺序就会变得乱七八糟，导致每一个viewcontroller代码顺序都会有一点点不一样。<br>之前看过Casa大神写过的 <a href="https://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html" target="_blank" rel="external">https://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html</a> 架构方案中写了一个代码的结构，所以准备写一个Xcode中的模板。</p>
+<h2 id="模板位置"><a href="#模板位置" class="headerlink" title="模板位置"></a>模板位置</h2><p>首先先确定几个位置：</p>
+<ul>
+<li><p>Xcode中的模板存在的位置</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/Applications/</span>Xcode.app<span class="regexp">/Contents/</span>Developer<span class="regexp">/Platforms/i</span>PhoneOS.platform<span class="regexp">/Developer/</span>Library<span class="regexp">/Xcode/</span>Templates</div></pre></td></tr></table></figure>
+</li>
+<li><p>我们自己创建的模板位置</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">~<span class="regexp">/Library/</span>Developer<span class="regexp">/Xcode/</span>Templates<span class="regexp">/Custom</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>Cd到Xcode中的模板之后就会看到这样子的文件：</p>
+<center><img src="/2019/04/22/iOS开发-创建一个Xcode模板/1.png" alt="logo"> </center>
+
+<p>这里边其实就是Xcode新建文件的时候的模板，在Xcode里新建文件的时候就能看到这些模板。</p>
+<center><img src="/2019/04/22/iOS开发-创建一个Xcode模板/2.png" alt="logo"> </center>
+
+
+<h2 id="创建自己的模板"><a href="#创建自己的模板" class="headerlink" title="创建自己的模板"></a>创建自己的模板</h2><p>创建自己的模板其实很简单，就是在上边提到的文件夹中添加一个和Xcode默认存在的模板一样的文件，然后修改里边的文件就可以了。</p>
+<h3 id="复制文件到目标文件夹"><a href="#复制文件到目标文件夹" class="headerlink" title="复制文件到目标文件夹"></a>复制文件到目标文件夹</h3><p>首先先去创建一个模板文件夹：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ mkdir -p ~<span class="regexp">/Library/</span>Developer<span class="regexp">/Xcode/</span>Templates<span class="regexp">/Custom</span></div></pre></td></tr></table></figure>
+<p>然后复制一份已经存在的文件到这个新创建的文件夹</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ cp -R <span class="regexp">/Applications/</span>Xcode.app<span class="regexp">/Contents/</span>Developer<span class="regexp">/Library/</span>Xcode<span class="regexp">/Templates/</span><span class="keyword">File</span>\ Templates<span class="regexp">/Source/</span>Objective-C\ <span class="keyword">File</span>.xctemplate ~<span class="regexp">/Library/</span>Developer<span class="regexp">/Xcode/</span>Templates<span class="regexp">/Custom/</span></div></pre></td></tr></table></figure>
+<p>其实这两步操作之后就已经可以在Xcode中看到变化了，打开Xcode，然后新建文件夹之后拉倒最下边，就可以看到你刚刚创建的文件了。</p>
+<center><img src="/2019/04/22/iOS开发-创建一个Xcode模板/3.png" alt="logo"> </center>
+
+<p>::如果你没看到，试试重启Xcode应该就好了。::</p>
+<h3 id="修改文件夹中的内容"><a href="#修改文件夹中的内容" class="headerlink" title="修改文件夹中的内容"></a>修改文件夹中的内容</h3><p>这时候修改一下<code>UIViewControllerObjective-C</code>文件夹中<code>___FILEBASENAME___.m</code>文件的内容</p>
+<p>我填充的内容是这样的：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">*<span class="comment">//___FILEHEADER___*</span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"___FILEBASENAME___.h"</span></span></div><div class="line"></div><div class="line">**@interface** ___FILEBASENAMEASIDENTIFIER___ ()</div><div class="line"></div><div class="line">**@<span class="built_in">end</span>**</div><div class="line"></div><div class="line">**@implementation** ___FILEBASENAMEASIDENTIFIER___</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark -</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Life cycle</span></div><div class="line"></div><div class="line">- (**<span class="keyword">void</span>**)viewDidLoad</div><div class="line">&#123;</div><div class="line">    [**super** viewDidLoad];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark -</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Event</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark -</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Public Methods</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark -</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Private Methods</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark -</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - External Delegate</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark -</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Getter</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark -</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Setter</span></div><div class="line"></div><div class="line"></div><div class="line">**@<span class="built_in">end</span>**</div></pre></td></tr></table></figure>
+<p>你也可以根据自己的习惯或者团队的要求修改这部分内容，反正修改之后在创建文件的时候，选择这个部分就可以看到自己的模板内容了。</p>
+<p>这其中还有好多可以修改的模板，一看就很清楚了这里就不多做解释了。</p>
+<p>基本上创建Xcode模板就是这样了。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p> <a href="http://xiaovv.me/2018/03/16/Custom-xcode-templates/" target="_blank" rel="external">Xcode 自定义模板</a><br> <a href="https://blog.csdn.net/yaoliangjun306/article/details/80990149" target="_blank" rel="external">修改Xcode模板文件</a><br><a href="https://juejin.im/post/5c7c7e0cf265da2ddb298123#heading-20" target="_blank" rel="external">有了这些你们团队的代码肯定规范 - 掘金</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/14/iOS开发-多线程安全问题/" rel="next" title="iOS开发-多线程安全问题">
+                <i class="fa fa-chevron-left"></i> iOS开发-多线程安全问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#模板位置"><span class="nav-number">1.</span> <span class="nav-text">模板位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建自己的模板"><span class="nav-number">2.</span> <span class="nav-text">创建自己的模板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#复制文件到目标文件夹"><span class="nav-number">2.1.</span> <span class="nav-text">复制文件到目标文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改文件夹中的内容"><span class="nav-number">2.2.</span> <span class="nav-text">修改文件夹中的内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":100,"height":200},"mobile":{"show":true},"react":{"opacityDefault":1,"opacityOnHover":0.2}});</script></body>
+</html>
