@@ -1,0 +1,838 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="上一篇文章写得有点乱七八糟，这次专门针对组件化的实现中所需要的私有pod库创建写一篇文章。
+安装CocoaPods这个步骤就不多说了，自己去google一下。
+创建一个远程内部私有Spec Repo仓库其实之前应该也很清楚了，公开库里都会有一个公共的Repo仓库，地址就是https://github.com/CocoaPods/Specs.git，然后每一个公共库都会有一个算是索引的东西连接到这个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-CocoaPods创建私有仓库">
+<meta property="og:url" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="上一篇文章写得有点乱七八糟，这次专门针对组件化的实现中所需要的私有pod库创建写一篇文章。
+安装CocoaPods这个步骤就不多说了，自己去google一下。
+创建一个远程内部私有Spec Repo仓库其实之前应该也很清楚了，公开库里都会有一个公共的Repo仓库，地址就是https://github.com/CocoaPods/Specs.git，然后每一个公共库都会有一个算是索引的东西连接到这个">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/4.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/5.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/6.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/7.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/8.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/9.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/10.png">
+<meta property="og:updated_time" content="2019-05-08T06:41:06.558Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-CocoaPods创建私有仓库">
+<meta name="twitter:description" content="上一篇文章写得有点乱七八糟，这次专门针对组件化的实现中所需要的私有pod库创建写一篇文章。
+安装CocoaPods这个步骤就不多说了，自己去google一下。
+创建一个远程内部私有Spec Repo仓库其实之前应该也很清楚了，公开库里都会有一个公共的Repo仓库，地址就是https://github.com/CocoaPods/Specs.git，然后每一个公共库都会有一个算是索引的东西连接到这个">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/"/>
+
+
+
+
+
+  <title> iOS开发-CocoaPods创建私有仓库 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/08/iOS开发-CocoaPods创建私有仓库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-CocoaPods创建私有仓库
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-08T14:36:08+08:00">
+                2019-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一篇文章写得有点乱七八糟，这次专门针对组件化的实现中所需要的私有pod库创建写一篇文章。</p>
+<h2 id="安装CocoaPods"><a href="#安装CocoaPods" class="headerlink" title="安装CocoaPods"></a>安装CocoaPods</h2><p>这个步骤就不多说了，自己去google一下。</p>
+<h2 id="创建一个远程内部私有Spec-Repo仓库"><a href="#创建一个远程内部私有Spec-Repo仓库" class="headerlink" title="创建一个远程内部私有Spec Repo仓库"></a>创建一个远程内部私有Spec Repo仓库</h2><p>其实之前应该也很清楚了，公开库里都会有一个公共的Repo仓库，地址就是<strong><a href="https://github.com/CocoaPods/Specs.git" target="_blank" rel="external">https://github.com/CocoaPods/Specs.git</a></strong>，然后每一个公共库都会有一个算是索引的东西连接到这个库，其实就是一个文件夹，然后里边有这个公共库的各个版本，每个版本中有一个<code>***.podspec</code>的文件作为这个公共库的索引。</p>
+<center><img src="/2019/05/08/iOS开发-CocoaPods创建私有仓库/1.png" alt="logo"></center>
+
+<p>那么我们建立私有库是没有这个Repo的，所以我们需要自己创建一个Spec Repo。在一个代码托管仓库创建好Repo之后，将他clone到本地：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod repd add ShineEXRepo[这个是repo的名称] git@gitlab<span class="selector-class">.blockheaders</span><span class="selector-class">.com</span>:ShineEX-iOS/Repo<span class="selector-class">.git</span>[这个是repo的SSH地址，如果想用http也ok]</div></pre></td></tr></table></figure>
+<p>添加好之后，他就会在本地的repo目录中添加一个文件夹，目录地址是：</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>cd ~<span class="regexp">/.cocoapods/repos</span></div></pre></td></tr></table></figure>
+<center><img src="/2019/05/08/iOS开发-CocoaPods创建私有仓库/2.png" alt="logo"></center>
+
+
+<h2 id="创建Pod库"><a href="#创建Pod库" class="headerlink" title="创建Pod库"></a>创建Pod库</h2><h3 id="根据模板创建Pod库"><a href="#根据模板创建Pod库" class="headerlink" title="根据模板创建Pod库"></a>根据模板创建Pod库</h3><p>首先先cd到一个你想要放置代码的地方，然后执行：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod <span class="class"><span class="keyword">lib</span> <span class="title">create</span> <span class="title">SEXViewUtils</span>[这个是你的库的名字]</span></div></pre></td></tr></table></figure>
+<p>这时候就会开始根据模板创建Pod库：</p>
+<center><img src="/2019/05/08/iOS开发-CocoaPods创建私有仓库/3.png" alt="logo"></center>
+
+<p>然后你要回答一些问题：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 想要使用哪个平台</span></div><div class="line">What platform <span class="keyword">do</span> you want to use?? [ iOS / macOS ]</div><div class="line"></div><div class="line"><span class="comment"># 想要使用什么语言</span></div><div class="line">What language <span class="keyword">do</span> you want to use?? [ Swift / ObjC ]</div><div class="line"></div><div class="line"><span class="comment"># 是否包含一个demo工程</span></div><div class="line">Would you like to <span class="keyword">include</span> a demo application with your library? [ Yes / No ]</div><div class="line"></div><div class="line"><span class="comment"># 想要使用什么测试框架</span></div><div class="line">Which testing frameworks will you use? [ Specta / Kiwi / None ]</div><div class="line"></div><div class="line"><span class="comment"># 是否需要UI测试</span></div><div class="line">Would you like to <span class="keyword">do</span> view based testing? [ Yes / No ]</div><div class="line"></div><div class="line"><span class="comment"># 类名的前缀是什么</span></div><div class="line">What is your <span class="class"><span class="keyword">class</span> <span class="title">prefix?</span></span></div></pre></td></tr></table></figure>
+<p>接下来等待他下载安装一些东西就可以了。</p>
+<center><img src="/2019/05/08/iOS开发-CocoaPods创建私有仓库/4.png" alt="logo"></center>
+
+<p>这里有一个swift的报错，不过我们用的是ObjC所以暂时先不管他，另外看到对应文件夹里也有了文件：</p>
+<center><img src="/2019/05/08/iOS开发-CocoaPods创建私有仓库/5.png" alt="logo"></center>
+
+<h3 id="添加库中的文件"><a href="#添加库中的文件" class="headerlink" title="添加库中的文件"></a>添加库中的文件</h3><p>从上边的图中也能看到，在文件夹中的Classes下有一个<strong>ReplaceMe.m</strong>的文件，我们把我们需要添加到库中的文件替换到这个文件夹中就可以了。</p>
+<h3 id="编辑-podspec文件"><a href="#编辑-podspec文件" class="headerlink" title="编辑*.podspec文件"></a>编辑<em>*</em>.podspec文件</h3><p>另外可以看到项目中还有一个<em>*</em>.podspec文件，这里主要是用来配置pod库的基本内容，打开之后我们来修改一下这里的一些东西：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Be sure to run `pod lib lint SEXViewUtils.podspec' to ensure this is a</span></div><div class="line"><span class="comment"># valid spec before submitting.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Any lines starting with a # are optional, but their use is encouraged</span></div><div class="line"><span class="comment"># To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html</span></div><div class="line"><span class="comment">#</span></div><div class="line"></div><div class="line">Pod::Spec.new <span class="keyword">do</span> <span class="params">|s|</span></div><div class="line"></div><div class="line">	<span class="comment"># 库的名称</span></div><div class="line">  s.name             = <span class="string">'SEXViewUtils'</span></div><div class="line"></div><div class="line">	<span class="comment"># 库的版本号</span></div><div class="line">  s.version          = <span class="string">'0.1.0'</span></div><div class="line"></div><div class="line">  <span class="comment"># 库的简介</span></div><div class="line">  s.summary          = <span class="string">'A short description of SEXViewUtils.'</span></div><div class="line"></div><div class="line"><span class="comment"># This description is used to generate tags and improve search results.</span></div><div class="line"><span class="comment">#   * Think: What does it do? Why did you write it? What is the focus?</span></div><div class="line"><span class="comment">#   * Try to keep it short, snappy and to the point.</span></div><div class="line"><span class="comment">#   * Write the description between the DESC delimiters below.</span></div><div class="line"><span class="comment">#   * Finally, don't worry about the indent, CocoaPods strips it!</span></div><div class="line"></div><div class="line">	<span class="comment"># 库的详细介绍</span></div><div class="line">  s.description      = <span class="string">&lt;&lt;-DESC</span></div><div class="line">TODO: Add long description of the pod here.</div><div class="line">                       DESC</div><div class="line"></div><div class="line">	<span class="comment"># 库的主页</span></div><div class="line">  s.homepage         = <span class="string">'https://github.com/rshinich/SEXViewUtils'</span></div><div class="line">  <span class="comment"># s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'</span></div><div class="line"></div><div class="line">	<span class="comment"># 开源协议</span></div><div class="line">  s.license          = &#123; <span class="symbol">:type</span> =&gt; <span class="string">'MIT'</span>, <span class="symbol">:file</span> =&gt; <span class="string">'LICENSE'</span> &#125;</div><div class="line"></div><div class="line">	<span class="comment"># 作者</span></div><div class="line">  s.author           = &#123; <span class="string">'rshinich'</span> =&gt; <span class="string">'rshinich@gmail.com'</span> &#125;</div><div class="line"></div><div class="line">	<span class="comment"># 库的路径和tag，路径必须是SSH路径，tag就是对应着前边的tag变量</span></div><div class="line">  s.source           = &#123; <span class="symbol">:git</span> =&gt; <span class="string">'https://github.com/rshinich/SEXViewUtils.git'</span>, <span class="symbol">:tag</span> =&gt; s.version.to_s &#125;</div><div class="line"></div><div class="line">  <span class="comment"># 社交网址</span></div><div class="line">  <span class="comment"># s.social_media_url = 'https://twitter.com/&lt;TWITTER_USERNAME&gt;'</span></div><div class="line"></div><div class="line">	<span class="comment"># 最低支持版本</span></div><div class="line">  s.ios.deployment_target = <span class="string">'8.0'</span></div><div class="line"></div><div class="line">	<span class="comment"># 资源库文件</span></div><div class="line">  s.source_files = <span class="string">'SEXViewUtils/Classes/**/*'</span></div><div class="line">  </div><div class="line">  <span class="comment"># 添加资源文件</span></div><div class="line">  <span class="comment"># s.resource_bundles = &#123;</span></div><div class="line">  <span class="comment">#   'SEXViewUtils' =&gt; ['SEXViewUtils/Assets/*.png']</span></div><div class="line">  <span class="comment"># &#125;</span></div><div class="line"></div><div class="line">  <span class="comment"># s.public_header_files = 'Pod/Classes/**/*.h'</span></div><div class="line"></div><div class="line">  <span class="comment"># 依赖的系统库（记得如果要使用的话先把前边的注释去掉）</span></div><div class="line">  <span class="comment"># s.frameworks = 'UIKit', 'MapKit'</span></div><div class="line"></div><div class="line">  <span class="comment"># 依赖库（记得如果要使用的话先把前边的注释去掉）</span></div><div class="line">  <span class="comment"># s.dependency 'AFNetworking', '~&gt; 2.3'</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p>上边的东西都看你个人的方式修改，其中需要注意的就是有些选项默认是被注释掉了，如果想要使用记得先把注释去掉。<br>另外就是关于<strong>s.source_files</strong>的写法：</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//表示匹配SEXViewUtils/<span class="keyword">Classes</span>下所有文件(主目录和子目录，其中**相当于省略中间层级)</div><div class="line">SEXViewUtils/<span class="keyword">Classes</span>/**/* </div><div class="line"></div><div class="line">//表示匹配<span class="keyword">Classes</span>所有以.h和.m结尾的文件 </div><div class="line">SEXViewUtils/<span class="keyword">Classes</span>/*.&#123;h,m&#125;</div><div class="line"></div><div class="line">//表示匹配所有WBAvoidCrash目录下文件，不包含子目录</div><div class="line">SEXViewUtils/*</div></pre></td></tr></table></figure>
+<h3 id="验证本地是否通过"><a href="#验证本地是否通过" class="headerlink" title="验证本地是否通过"></a>验证本地是否通过</h3><p>配置好podspec之后，需要验证一下本地是否通过验证，输入如下命令</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod <span class="class"><span class="keyword">lib</span> <span class="title">lint</span></span></div></pre></td></tr></table></figure>
+<p>这时候可能存在ERROR和WARN的存在，ERROR是一定要解决的，理论上WARN最好也要解决，不过如果有些WARN不想解决也可以通过<code>--allow-warnings</code>绕过。即：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod <span class="class"><span class="keyword">lib</span> <span class="title">lint</span> --<span class="title">allow</span>-<span class="title">warnings</span></span></div></pre></td></tr></table></figure>
+<center><img src="/2019/05/08/iOS开发-CocoaPods创建私有仓库/6.png" alt="logo"></center>
+
+<p>最后出现<strong>SEXViewUtils passed validation.</strong>就表示通过了验证。</p>
+<p>另外，如果你的pod库中依赖第三方库，而第三方库包含静态库（如<em>*</em>.a），在验证的时候，不能通过验证，可以使用如下命令：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">pod <span class="class"><span class="keyword">lib</span> <span class="title">lint</span> --<span class="title">use</span>-<span class="title">libraries</span></span></div><div class="line"></div><div class="line">/<span class="regexp">/或者忽略警告的</span></div><div class="line">pod lib lint --use-libraries --allow-warnings</div></pre></td></tr></table></figure>
+<h3 id="推送代码到远程仓库并打上标签"><a href="#推送代码到远程仓库并打上标签" class="headerlink" title="推送代码到远程仓库并打上标签"></a>推送代码到远程仓库并打上标签</h3><p>这时候，本地的仓库就已经差不多好了，接下来需要的就是把本地的库推到远程仓库中，如果还没有创建远程仓库，需要先创建一个对应的远程仓库，然后提交代码：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//添加代码到缓存区</span></div><div class="line">git add .</div><div class="line"></div><div class="line"><span class="comment">//提交代码到本地仓库</span></div><div class="line">git commit -m <span class="string">"create SEXViewUtils"</span></div><div class="line"></div><div class="line"><span class="comment">//添加到远程仓库</span></div><div class="line">git remote add origin git@gitlab<span class="selector-class">.blockheaders</span><span class="selector-class">.com</span>:ShineEX-iOS/SEXViewUtils<span class="selector-class">.git</span>[你新建的仓库地址]</div><div class="line"></div><div class="line"><span class="comment">//推送上去</span></div><div class="line">git push origin master</div></pre></td></tr></table></figure>
+<p>提交了之后在本地打上标签，注意这里的标签需要和.podspec文件中的version相同：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//添加标签</span></div><div class="line">git tag -a <span class="number">0.1</span><span class="number">.0</span> -m <span class="string">"release version 0.1.0"</span></div><div class="line"></div><div class="line"><span class="comment">//推送到远程标签</span></div><div class="line">git push origin <span class="number">0.1</span><span class="number">.0</span></div></pre></td></tr></table></figure>
+<h3 id="推送-podspec到远程repo"><a href="#推送-podspec到远程repo" class="headerlink" title="推送*.podspec到远程repo"></a>推送<em>*</em>.podspec到远程repo</h3><p>这时候你的库代码已经推送到了你的远程仓库中，但是之前我们提到的repo还没有更新，所以这时候需要把更新的东西提交到repo中。所以先cd到你的本地库路径，然后执行：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">pod</span> <span class="selector-tag">repo</span> <span class="selector-tag">push</span> <span class="selector-tag">ShineEXRepo</span><span class="selector-attr">[你的repo名字]</span> <span class="selector-tag">SEXViewUtils</span><span class="selector-class">.podspec</span><span class="selector-attr">[你的库的podspec名字]</span></div></pre></td></tr></table></figure>
+<p>同样的，这边也有可能出现WARN的情况，你可以通过<code>--allow-warnings</code>来绕过。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">pod</span> <span class="selector-tag">repo</span> <span class="selector-tag">push</span> <span class="selector-tag">ShineEXRepo</span><span class="selector-attr">[你的repo名字]</span> <span class="selector-tag">SEXViewUtils</span><span class="selector-class">.podspec</span><span class="selector-attr">[你的库的podspec名字]</span> <span class="selector-tag">--allow-warnings</span></div></pre></td></tr></table></figure>
+<p>然后看到这个样子，就说明推送成功了。</p>
+<center><img src="/2019/05/08/iOS开发-CocoaPods创建私有仓库/7.png" alt="logo"></center>
+
+<h3 id="验证远程是否通过"><a href="#验证远程是否通过" class="headerlink" title="验证远程是否通过"></a>验证远程是否通过</h3><p>之前我们在本地验证过了一次是否通过，这次我们推送到远程之后需要在验证一次。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">pod</span> <span class="selector-tag">spec</span> <span class="selector-tag">lint</span> <span class="selector-tag">SEXViewUtils</span><span class="selector-class">.podspec</span><span class="selector-attr">[你的库的podspec名字]</span></div></pre></td></tr></table></figure>
+<p>同样的<code>--allow-warnings</code>我就不废话了。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">pod</span> <span class="selector-tag">spec</span> <span class="selector-tag">lint</span> <span class="selector-tag">SEXViewUtils</span><span class="selector-class">.podspec</span><span class="selector-attr">[你的库的podspec名字]</span> <span class="selector-tag">--allow-warnings</span></div></pre></td></tr></table></figure>
+<center><img src="/2019/05/08/iOS开发-CocoaPods创建私有仓库/8.png" alt="logo"></center>
+
+<p>这样就说明通过了。</p>
+<h3 id="搜索私有库"><a href="#搜索私有库" class="headerlink" title="搜索私有库"></a>搜索私有库</h3><p>你可以通过搜索查看私有库是否可用：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">pod search SEXViewUtils</span></div></pre></td></tr></table></figure>
+<p>如果看到报错</p>
+<center><img src="/2019/05/08/iOS开发-CocoaPods创建私有仓库/9.png" alt="logo"></center>
+
+<p>清理一下之前的缓存之后在试一下应该就可以了。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ rm ~<span class="regexp">/Library/</span>Caches<span class="regexp">/CocoaPods/</span>search_index.json</div></pre></td></tr></table></figure>
+<center><img src="/2019/05/08/iOS开发-CocoaPods创建私有仓库/10.png" alt="logo"></center>
+
+<h2 id="使用测试"><a href="#使用测试" class="headerlink" title="使用测试"></a>使用测试</h2><p>接下来我们创建一个项目，测试一下我们的私有库是否可用，这里需要注意的就是，我们之前只有公有库的Podfile文件中默认source就是CocoaPods的公有库，而当我们要使用私有库的时候，就需要指定私有库的source了。下边我们编辑一下Podfile的文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># CocoaPods官方spec仓库</span></div><div class="line"><span class="built_in">source</span> <span class="string">'https://github.com/CocoaPods/Specs.git'</span></div><div class="line"><span class="comment">#自己私有spec仓库</span></div><div class="line"><span class="built_in">source</span> <span class="string">'http://gitlab.blockheaders.com/ShineEX-iOS/Repo.git'</span></div><div class="line"></div><div class="line">platform :ios, <span class="string">'10.0'</span></div><div class="line"></div><div class="line">target <span class="string">'aaaaa'</span> <span class="keyword">do</span></div><div class="line"></div><div class="line">  <span class="comment"># 公共库</span></div><div class="line">  pod <span class="string">'Masonry'</span></div><div class="line">  </div><div class="line">  <span class="comment"># 私有库</span></div><div class="line">  pod <span class="string">'SEXUIBasic'</span> ,<span class="string">'~&gt; 1.0.2'</span></div><div class="line">  pod <span class="string">'SEXViewUtils'</span></div><div class="line">  </div><div class="line">end</div></pre></td></tr></table></figure>
+<p>然后执行</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">pod <span class="keyword">install</span></div><div class="line"></div><div class="line">//如果安装出错试试这个</div><div class="line">pod <span class="keyword">install</span> <span class="comment">--repo-update</span></div></pre></td></tr></table></figure>
+<p>安装好之后重新打开workspace就会发现私有库已经集成到了项目中了。</p>
+<h2 id="更新私有库"><a href="#更新私有库" class="headerlink" title="更新私有库"></a>更新私有库</h2><p>跟着项目不断开发，我们的私有库也肯定需要不断的优化。</p>
+<h3 id="修改文件"><a href="#修改文件" class="headerlink" title="修改文件"></a>修改文件</h3><p>修改文件这一步应该就不用多说了，在之前的文件夹中替换内容就OK了。<br>然后提交新的文件到远程仓库中。基本的命令也不多说了。</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git <span class="keyword">add</span><span class="bash"> .</span></div><div class="line">git commit -m <span class="string">"add new file"</span></div><div class="line">git push origin master</div></pre></td></tr></table></figure>
+<h3 id="新增tag"><a href="#新增tag" class="headerlink" title="新增tag"></a>新增tag</h3><p>修改好之后，再打上一个新增版本的tag：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">git</span> <span class="selector-tag">tag</span> 0<span class="selector-class">.1</span><span class="selector-class">.1</span></div><div class="line"><span class="selector-tag">git</span> <span class="selector-tag">push</span> <span class="selector-tag">origin</span> 0<span class="selector-class">.1</span><span class="selector-class">.1</span></div></pre></td></tr></table></figure>
+<h3 id="修改-podspec文件"><a href="#修改-podspec文件" class="headerlink" title="修改*.podspec文件"></a>修改<em>*</em>.podspec文件</h3><p>如果没有什么依赖库的新增，这边就直接修改<code>s.version</code>就可以了，如果要新增依赖库，可以参见之前的内容添加依赖。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Be sure to run `pod lib lint SEXViewUtils.podspec' to ensure this is a</span></div><div class="line"><span class="comment"># valid spec before submitting.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Any lines starting with a # are optional, but their use is encouraged</span></div><div class="line"><span class="comment"># To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html</span></div><div class="line"><span class="comment">#</span></div><div class="line"></div><div class="line">Pod::Spec.new <span class="keyword">do</span> <span class="params">|s|</span></div><div class="line">  s.name             = <span class="string">'SEXViewUtils'</span></div><div class="line">  s.version          = <span class="string">'0.1.1'</span></div><div class="line">  s.summary          = <span class="string">'A short description of SEXViewUtils.'</span></div><div class="line"></div><div class="line"><span class="comment"># This description is used to generate tags and improve search results.</span></div><div class="line"><span class="comment">#   * Think: What does it do? Why did you write it? What is the focus?</span></div><div class="line"><span class="comment">#   * Try to keep it short, snappy and to the point.</span></div><div class="line"><span class="comment">#   * Write the description between the DESC delimiters below.</span></div><div class="line"><span class="comment">#   * Finally, don't worry about the indent, CocoaPods strips it!</span></div><div class="line"></div><div class="line">  s.description      = <span class="string">&lt;&lt;-DESC</span></div><div class="line">TODO: Add long description of the pod here.</div><div class="line">                       DESC</div><div class="line"></div><div class="line">  s.homepage         = <span class="string">'https://gitlab.blockheaders.com/ShineEX-iOS/SEXViewUtils'</span></div><div class="line">  <span class="comment"># s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'</span></div><div class="line">  s.license          = &#123; <span class="symbol">:type</span> =&gt; <span class="string">'MIT'</span>, <span class="symbol">:file</span> =&gt; <span class="string">'LICENSE'</span> &#125;</div><div class="line">  s.author           = &#123; <span class="string">'rshinich'</span> =&gt; <span class="string">'rshinich@gmail.com'</span> &#125;</div><div class="line">  s.source           = &#123; <span class="symbol">:git</span> =&gt; <span class="string">'git@gitlab.blockheaders.com:ShineEX-iOS/SEXViewUtils.git'</span>, <span class="symbol">:tag</span> =&gt; s.version.to_s &#125;</div><div class="line">  <span class="comment"># s.social_media_url = 'https://twitter.com/&lt;TWITTER_USERNAME&gt;'</span></div><div class="line"></div><div class="line">  s.ios.deployment_target = <span class="string">'10.0'</span></div><div class="line"></div><div class="line">  s.source_files = <span class="string">'SEXViewUtils/Classes/**/*'</span></div><div class="line">  </div><div class="line">  <span class="comment"># s.resource_bundles = &#123;</span></div><div class="line">  <span class="comment">#   'SEXViewUtils' =&gt; ['SEXViewUtils/Assets/*.png']</span></div><div class="line">  <span class="comment"># &#125;</span></div><div class="line"></div><div class="line">  <span class="comment"># s.public_header_files = 'Pod/Classes/**/*.h'</span></div><div class="line">  <span class="comment"># s.frameworks = 'UIKit', 'MapKit'</span></div><div class="line">  <span class="comment"># s.dependency 'SEXUIBasic', '~&gt; 1.0,2'</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<h3 id="本地验证-提交podspec-远程验证"><a href="#本地验证-提交podspec-远程验证" class="headerlink" title="本地验证+提交podspec+远程验证"></a>本地验证+提交podspec+远程验证</h3><p>接下来的步骤和之前第一次提交没有太多的差别，执行验证通过之后上传到远程的pod中，然后再在远程验证一次就可以了。所以这里也就不赘述了。</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod <span class="class"><span class="keyword">lib</span> <span class="title">lint</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod repo push ShineEXRepo<span class="string">[你的repo名字]</span> SEXViewUtils.podspec<span class="string">[你的库的podspec名字]</span></div></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod spec lint SEXViewUtils<span class="selector-class">.podspec</span>[你的库的podspec名字]</div></pre></td></tr></table></figure>
+<h3 id="使用新版本"><a href="#使用新版本" class="headerlink" title="使用新版本"></a>使用新版本</h3><p>在使用的时候修改项目中的Podfile文件，指定个版本号</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>pod <span class="string">'SEXViewUtils'</span> ,<span class="string">'~&gt; 0.1.1'</span></div></pre></td></tr></table></figure>
+<p>这时候你有可能遇到问题：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[!] CocoaPods could <span class="keyword">not</span> find compatible versions <span class="keyword">for</span> pod <span class="string">"SEXViewUtils"</span>:</div><div class="line">  In Podfile:</div><div class="line">    SEXViewUtils (~&gt; <span class="number">0.1</span><span class="number">.1</span>)</div><div class="line"></div><div class="line">None <span class="keyword">of</span> your spec sources <span class="keyword">contain</span> a spec satisfying <span class="keyword">the</span> dependency: `SEXViewUtils (~&gt; <span class="number">0.1</span><span class="number">.1</span>)`.</div><div class="line"></div><div class="line">You have either:</div><div class="line"> * out-<span class="keyword">of</span>-<span class="built_in">date</span> source repos which you can update <span class="keyword">with</span> `pod repo update` <span class="keyword">or</span> <span class="keyword">with</span> `pod install <span class="comment">--repo-update`.</span></div><div class="line"> * mistyped <span class="keyword">the</span> <span class="built_in">name</span> <span class="keyword">or</span> <span class="built_in">version</span>.</div><div class="line"> * <span class="keyword">not</span> added <span class="keyword">the</span> source repo <span class="keyword">that</span> hosts <span class="keyword">the</span> Podspec <span class="keyword">to</span> your Podfile.</div><div class="line"></div><div class="line">Note: <span class="keyword">as</span> <span class="keyword">of</span> CocoaPods <span class="number">1.0</span>, `pod repo update` <span class="keyword">does</span> <span class="keyword">not</span> happen <span class="keyword">on</span> `pod install` <span class="keyword">by</span> default.</div></pre></td></tr></table></figure>
+<p>这个时候需要更新一下repo，使用</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ pod repo <span class="keyword">update</span></div><div class="line">$ pod <span class="keyword">install</span></div><div class="line">或</div><div class="line">$ pod <span class="keyword">install</span> <span class="comment">--repo-update</span></div></pre></td></tr></table></figure>
+<p>等待repo更新完之后就能顺利安装了。</p>
+<h2 id="删除Spec-Repo"><a href="#删除Spec-Repo" class="headerlink" title="删除Spec Repo"></a>删除Spec Repo</h2><p>删除一个repo只需要运行remove就可以了</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod repo <span class="built_in">remove</span> ShineEXRepo</div></pre></td></tr></table></figure>
+<p>当然，如果删除之后还想要拿回来，也很方便</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod repo add ShineEXRepo git@gitlab<span class="selector-class">.blockheaders</span><span class="selector-class">.com</span>:ShineEX-iOS/Repo.git</div></pre></td></tr></table></figure>
+<h2 id="踩到的坑"><a href="#踩到的坑" class="headerlink" title="踩到的坑"></a>踩到的坑</h2><h3 id="Could-not-find-remote-branch-1-0-1-to-clone"><a href="#Could-not-find-remote-branch-1-0-1-to-clone" class="headerlink" title="Could not find remote branch 1.0.1 to clone"></a>Could not find remote branch 1.0.1 to clone</h3><p>有可能是因为找不到对应的tag，检查一下podspec中的tag是否正确，还有就是tag有没有推送到远程仓库中</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git push <span class="comment">--tags</span></div><div class="line">s.<span class="built_in">version</span> = <span class="string">"0.1.1"</span></div></pre></td></tr></table></figure>
+<hr>
+<p>坑持续更新，欢迎留言一起讨论<br>…</p>
+<h2 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h2><p>这篇文章主要是这两天在给公司项目组件化的时候参考几位大佬文章之后实践的过程的记录，组件化工作才刚刚开始，估计后边还会遇到很多坑，如果文章中有什么不对的地方还请大佬们多多指点。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://juejin.im/post/5b82ca46518825430d26bc09" target="_blank" rel="external">CocoaPods进阶：详解私有库制作 - 掘金</a><br><a href="https://www.jianshu.com/p/cfebe2ca74fb" target="_blank" rel="external">创建私有仓库中踩过的坑 - 简书</a><br><a href="https://juejin.im/post/5b04e26bf265da0b83371a9c" target="_blank" rel="external">CocoaPods模块化应用-私有库更新 - 掘金</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/05/iOS开发-initialize和-load方法/" rel="next" title="iOS开发-+initialize和+load方法">
+                <i class="fa fa-chevron-left"></i> iOS开发-+initialize和+load方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">76</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装CocoaPods"><span class="nav-number">1.</span> <span class="nav-text">安装CocoaPods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建一个远程内部私有Spec-Repo仓库"><span class="nav-number">2.</span> <span class="nav-text">创建一个远程内部私有Spec Repo仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Pod库"><span class="nav-number">3.</span> <span class="nav-text">创建Pod库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#根据模板创建Pod库"><span class="nav-number">3.1.</span> <span class="nav-text">根据模板创建Pod库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加库中的文件"><span class="nav-number">3.2.</span> <span class="nav-text">添加库中的文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编辑-podspec文件"><span class="nav-number">3.3.</span> <span class="nav-text">编辑*.podspec文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证本地是否通过"><span class="nav-number">3.4.</span> <span class="nav-text">验证本地是否通过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推送代码到远程仓库并打上标签"><span class="nav-number">3.5.</span> <span class="nav-text">推送代码到远程仓库并打上标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推送-podspec到远程repo"><span class="nav-number">3.6.</span> <span class="nav-text">推送*.podspec到远程repo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证远程是否通过"><span class="nav-number">3.7.</span> <span class="nav-text">验证远程是否通过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搜索私有库"><span class="nav-number">3.8.</span> <span class="nav-text">搜索私有库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用测试"><span class="nav-number">4.</span> <span class="nav-text">使用测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新私有库"><span class="nav-number">5.</span> <span class="nav-text">更新私有库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#修改文件"><span class="nav-number">5.1.</span> <span class="nav-text">修改文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新增tag"><span class="nav-number">5.2.</span> <span class="nav-text">新增tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-podspec文件"><span class="nav-number">5.3.</span> <span class="nav-text">修改*.podspec文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本地验证-提交podspec-远程验证"><span class="nav-number">5.4.</span> <span class="nav-text">本地验证+提交podspec+远程验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用新版本"><span class="nav-number">5.5.</span> <span class="nav-text">使用新版本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除Spec-Repo"><span class="nav-number">6.</span> <span class="nav-text">删除Spec Repo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#踩到的坑"><span class="nav-number">7.</span> <span class="nav-text">踩到的坑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Could-not-find-remote-branch-1-0-1-to-clone"><span class="nav-number">7.1.</span> <span class="nav-text">Could not find remote branch 1.0.1 to clone</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结束"><span class="nav-number">8.</span> <span class="nav-text">结束</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">9.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":100,"height":200},"mobile":{"show":true},"react":{"opacityDefault":1,"opacityOnHover":0.2}});</script></body>
+</html>
