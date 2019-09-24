@@ -1,0 +1,786 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="又到了一年一度适配iOS新系统的时候了。这个时候适配好像有点晚，正式版都发布了，才来适配。。。beta发布的时候干嘛去了！！
++[_LSDefaults sharedInstance] 崩溃问题问题详情应用在iOS13中跑起来之后，大概过个10s-15s之后，就会崩溃，看显示的崩溃信息就是+[_LSDefaults sharedInstance]这个方法找不到。
+看了一下好像是友盟的锅。。然后去友">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-适配iOS13">
+<meta property="og:url" content="http://yoursite.com/2019/09/24/iOS开发-适配iOS13/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="又到了一年一度适配iOS新系统的时候了。这个时候适配好像有点晚，正式版都发布了，才来适配。。。beta发布的时候干嘛去了！！
++[_LSDefaults sharedInstance] 崩溃问题问题详情应用在iOS13中跑起来之后，大概过个10s-15s之后，就会崩溃，看显示的崩溃信息就是+[_LSDefaults sharedInstance]这个方法找不到。
+看了一下好像是友盟的锅。。然后去友">
+<meta property="og:image" content="http://yoursite.com/2019/09/24/iOS开发-适配iOS13/UIModalPresentationFullScreen.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/24/iOS开发-适配iOS13/UIModalPresentationPageSheet.png">
+<meta property="og:updated_time" content="2019-09-24T09:37:45.912Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-适配iOS13">
+<meta name="twitter:description" content="又到了一年一度适配iOS新系统的时候了。这个时候适配好像有点晚，正式版都发布了，才来适配。。。beta发布的时候干嘛去了！！
++[_LSDefaults sharedInstance] 崩溃问题问题详情应用在iOS13中跑起来之后，大概过个10s-15s之后，就会崩溃，看显示的崩溃信息就是+[_LSDefaults sharedInstance]这个方法找不到。
+看了一下好像是友盟的锅。。然后去友">
+<meta name="twitter:image" content="http://yoursite.com/2019/09/24/iOS开发-适配iOS13/UIModalPresentationFullScreen.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/09/24/iOS开发-适配iOS13/"/>
+
+
+
+
+
+  <title> iOS开发-适配iOS13 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/24/iOS开发-适配iOS13/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-适配iOS13
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-24T10:50:44+08:00">
+                2019-09-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>又到了一年一度适配iOS新系统的时候了。这个时候适配好像有点晚，正式版都发布了，才来适配。。。beta发布的时候干嘛去了！！</p>
+<h2 id="LSDefaults-sharedInstance-崩溃问题"><a href="#LSDefaults-sharedInstance-崩溃问题" class="headerlink" title="+[_LSDefaults sharedInstance] 崩溃问题"></a>+[_LSDefaults sharedInstance] 崩溃问题</h2><h4 id="问题详情"><a href="#问题详情" class="headerlink" title="问题详情"></a>问题详情</h4><p>应用在iOS13中跑起来之后，大概过个10s-15s之后，就会崩溃，看显示的崩溃信息就是<code>+[_LSDefaults sharedInstance]</code>这个方法找不到。</p>
+<p>看了一下好像是友盟的锅。。然后去友盟看了一下，好像7月4号就更新了一个版本-v6.0.5 应该是解决了这个问题。</p>
+<blockquote>
+<ul>
+<li>v6.0.5(更新日期：2019年7月4日)<ul>
+<li>修复非组件化版本升级导致小概率崩溃问题。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>实测升级一下sdk，这个问题就解决了。</p>
+<h2 id="私有KVC方法"><a href="#私有KVC方法" class="headerlink" title="私有KVC方法"></a>私有KVC方法</h2><h4 id="问题详情-1"><a href="#问题详情-1" class="headerlink" title="问题详情"></a>问题详情</h4><p>已知的问题是在UITextField和UISearchBar中使用私有的KVC方法时会发生问题。</p>
+<p>当你使用UITextField，通过KVC私有方法来修改他的placeholder颜色时，下边代码会出现崩溃的问题：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="keyword">self</span>.myTextField setValue:[<span class="built_in">UIColor</span> textColor] forKeyPath:<span class="string">@"_placeholderLabel.textColor"</span>];</div></pre></td></tr></table></figure>
+<p>会出现崩溃问题：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Trapped uncaught exception 'NSGenericException', reason: 'Access to UITextField's _placeholderLabel ivar is prohibited. This is an application bug'</div></pre></td></tr></table></figure>
+<p>同样的，在修改UISearchBar的<code>_searchField</code>时也会有这种问题崩溃。</p>
+<h4 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h4><p>这个问题一共有两种解决方案。<br>一个是简单粗暴，直接把下划线去掉。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="keyword">self</span>.myTextField setValue:[<span class="built_in">UIColor</span> textColor] forKeyPath:<span class="string">@"placeholderLabel.textColor"</span>];</div></pre></td></tr></table></figure>
+<p>还有一种是通过设置<code>attributedPlaceholder</code>来设置。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSDictionary</span> *attributedDic = @&#123;<span class="built_in">NSForegroundColorAttributeName</span>:[<span class="built_in">UIColor</span> textColor]&#125;;</div><div class="line">    <span class="built_in">NSMutableAttributedString</span> *placeholderAttributedString = [[<span class="built_in">NSMutableAttributedString</span> alloc] initWithString:placeholderString attributes:attributedDic];</div><div class="line">    <span class="keyword">self</span>.myTextField.attributedPlaceholder = placeholderAttributedString;</div></pre></td></tr></table></figure>
+<h2 id="Status-Bar-的样式更新"><a href="#Status-Bar-的样式更新" class="headerlink" title="Status Bar 的样式更新"></a>Status Bar 的样式更新</h2><p>原来的StatusBar的样式一共有两种</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIStatusBarStyleDefault</span>                                  = <span class="number">0</span>, <span class="comment">// Automatically chooses light or dark content based on the user interface style</span></div><div class="line"><span class="built_in">UIStatusBarStyleLightContent</span>     API_AVAILABLE(ios(<span class="number">7.0</span>)) = <span class="number">1</span>, <span class="comment">// Light content, for use on dark backgrounds</span></div></pre></td></tr></table></figure>
+<p>其中 </p>
+<ul>
+<li>UIStatusBarStyleDefault    黑色文字</li>
+<li>UIStatusBarStyleLightContent    白色文字</li>
+</ul>
+<p>在iOS13中，StatusBar新增了一种样式</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIStatusBarStyleDefault</span>                                  = <span class="number">0</span>, <span class="comment">// Automatically chooses light or dark content based on the user interface style</span></div><div class="line"><span class="built_in">UIStatusBarStyleLightContent</span>     API_AVAILABLE(ios(<span class="number">7.0</span>)) = <span class="number">1</span>, <span class="comment">// Light content, for use on dark backgrounds</span></div><div class="line"><span class="built_in">UIStatusBarStyleDarkContent</span>     API_AVAILABLE(ios(<span class="number">13.0</span>)) = <span class="number">3</span>, <span class="comment">// Dark content, for use on light backgrounds</span></div></pre></td></tr></table></figure>
+<p>其中</p>
+<ul>
+<li>UIStatusBarStyleDefault   系统会自动选择黑色或者白色</li>
+<li>UIStatusBarStyleDarkContent    黑色文字</li>
+<li>UIStatusBarStyleLightContent    白色文字</li>
+</ul>
+<h2 id="Modal新样式"><a href="#Modal新样式" class="headerlink" title="Modal新样式"></a>Modal新样式</h2><p>在iOS13中，所有的present效果都默认变成了小卡片的类型。苹果真是极大力的推广这个样式。<br>而且非常方便的一个地方是，可是直接下拉页面出发dismiss，对于用户体验提升非常大。<br>那看一下苹果为了这个新的Modal样式加了多少东西：</p>
+<h4 id="UIModalPresentationStyle"><a href="#UIModalPresentationStyle" class="headerlink" title="UIModalPresentationStyle"></a>UIModalPresentationStyle</h4><p>首先是对UIModalPresentationStyle新增了一个UIModalPresentationAutomatic属性。这个就是在iOS13情况下的默认属性。他会自动根据即将present的控制器来选择不同的style。比如我们自定义的控制器，那系统就会默认将他作为UIModalPresentationPageSheet来显示，而像系统的UIImagePickerController的话，就会使用UIModalPresentationFullScreen来显示。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"> Defines the presentation style that will be used for this view controller when it is presented modally. Set this property on the view controller to be presented, not the presenter.</div><div class="line"> If this property has been set to UIModalPresentationAutomatic, reading it will always return a concrete presentation style. By default UIViewController resolves UIModalPresentationAutomatic to UIModalPresentationPageSheet, but system-provided subclasses may resolve UIModalPresentationAutomatic to other concrete presentation styles. Participation in the resolution of UIModalPresentationAutomatic is reserved for system-provided view controllers.</div><div class="line"> Defaults to UIModalPresentationAutomatic on iOS starting in iOS 13.0, and UIModalPresentationFullScreen on previous versions. Defaults to UIModalPresentationFullScreen on all other platforms.</div><div class="line"> */</div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">assign</span>) <span class="built_in">UIModalPresentationStyle</span> modalPresentationStyle API_AVAILABLE(ios(<span class="number">3.2</span>));</div></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSInteger</span>, <span class="built_in">UIModalPresentationStyle</span>) &#123;</div><div class="line">    <span class="built_in">UIModalPresentationFullScreen</span> = <span class="number">0</span>,</div><div class="line">    <span class="built_in">UIModalPresentationPageSheet</span> API_AVAILABLE(ios(<span class="number">3.2</span>)) API_UNAVAILABLE(tvos),</div><div class="line">    <span class="built_in">UIModalPresentationFormSheet</span> API_AVAILABLE(ios(<span class="number">3.2</span>)) API_UNAVAILABLE(tvos),</div><div class="line">    <span class="built_in">UIModalPresentationCurrentContext</span> API_AVAILABLE(ios(<span class="number">3.2</span>)),</div><div class="line">    <span class="built_in">UIModalPresentationCustom</span> API_AVAILABLE(ios(<span class="number">7.0</span>)),</div><div class="line">    <span class="built_in">UIModalPresentationOverFullScreen</span> API_AVAILABLE(ios(<span class="number">8.0</span>)),</div><div class="line">    <span class="built_in">UIModalPresentationOverCurrentContext</span> API_AVAILABLE(ios(<span class="number">8.0</span>)),</div><div class="line">    <span class="built_in">UIModalPresentationPopover</span> API_AVAILABLE(ios(<span class="number">8.0</span>)) API_UNAVAILABLE(tvos),</div><div class="line">    <span class="built_in">UIModalPresentationBlurOverFullScreen</span> API_AVAILABLE(tvos(<span class="number">11.0</span>)) API_UNAVAILABLE(ios) API_UNAVAILABLE(watchos),</div><div class="line">    <span class="built_in">UIModalPresentationNone</span> API_AVAILABLE(ios(<span class="number">7.0</span>)) = <span class="number">-1</span>,</div><div class="line">    <span class="built_in">UIModalPresentationAutomatic</span> API_AVAILABLE(ios(<span class="number">13.0</span>)) = <span class="number">-2</span>,</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>那么这个新的属性会来带什么问题呢，最坑的就是对于控制器的生命周期来说有一个很大的影响。<br>先上两张图。</p>
+<p><centern><img src="/2019/09/24/iOS开发-适配iOS13/UIModalPresentationFullScreen.png" alt="logo"></centern></p>
+<p><centern><img src="/2019/09/24/iOS开发-适配iOS13/UIModalPresentationPageSheet.png" alt="logo"></centern></p>
+<p>这两张图就可以很明显的看出两种style的区别。</p>
+<p>举个🌰：<br>我在A控制器中present B控制器，这时候A的<code>viewWillDisappear</code>和<code>viewDidDisappear</code>都不会调用；<br>同样的，当B控制器dismiss的时候，A的<code>viewWillAppear</code>和<code>viewDidAppear</code>也都不会调用；</p>
+<p>这个就真的很坑了 <em> </em>。</p>
+<h4 id="modalInPresentation"><a href="#modalInPresentation" class="headerlink" title="modalInPresentation"></a>modalInPresentation</h4><p>另外针对于present上来的控制器，可以通过手势下拉dismiss的功能。iOS13中提供了一个新的属性来控制。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// modalInPresentation is set on the view controller when you wish to force the presentation hosting the view controller into modal behavior. When this is active, the presentation will prevent interactive dismiss and ignore events outside of the presented view controller's bounds until this is set to NO.</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">getter</span>=isModalInPresentation) <span class="built_in">BOOL</span> modalInPresentation API_AVAILABLE(ios(<span class="number">13.0</span>));</div></pre></td></tr></table></figure>
+<p>这个属性默认的状态时false，这个情况下，用户是可以通过下拉手势dismiss控制器的，那当你想要阻止用户做这个操作的时候，比如当前页面中有输入的内容，你并不想让用户这么轻易的返回导致输入的内容丢失，就可以将这个属性设置为true。官方也出了一个<a href="https://developer.apple.com/documentation/uikit/view_controllers/disabling_pulling_down_a_sheet" target="_blank" rel="external">Demo</a>来展示如何使用这个。</p>
+<p>通过Demo中的内容，我们可以看到<code>UIAdaptivePresentationControllerDelegate</code>代理中的<code>presentationControllerDidAttemptToDismiss</code>会在<code>isModalInPresentation</code>为true的情况下，并且用户准备下来返回时调用。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://juejin.im/post/5d00af64e51d455d88219ee2" target="_blank" rel="external">https://juejin.im/post/5d00af64e51d455d88219ee2</a></p>
+<p><a href="https://github.com/ChenYilong/iOS13AdaptationTips/issues?q=is%3Aissue+is%3Aopen+label%3Anote" target="_blank" rel="external">https://github.com/ChenYilong/iOS13AdaptationTips/issues?q=is%3Aissue+is%3Aopen+label%3Anote</a></p>
+<p><a href="https://blog.csdn.net/qq_42792413/article/details/97392996" target="_blank" rel="external">https://blog.csdn.net/qq_42792413/article/details/97392996</a></p>
+<p><a href="https://juejin.im/post/5cf946b3e51d45108b2cae3b" target="_blank" rel="external">https://juejin.im/post/5cf946b3e51d45108b2cae3b</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/08/iOS开发-CocoaPods创建私有仓库/" rel="next" title="iOS开发-CocoaPods创建私有仓库">
+                <i class="fa fa-chevron-left"></i> iOS开发-CocoaPods创建私有仓库
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LSDefaults-sharedInstance-崩溃问题"><span class="nav-number">1.</span> <span class="nav-text">+[_LSDefaults sharedInstance] 崩溃问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题详情"><span class="nav-number">1.0.1.</span> <span class="nav-text">问题详情</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案"><span class="nav-number">1.0.2.</span> <span class="nav-text">解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#私有KVC方法"><span class="nav-number">2.</span> <span class="nav-text">私有KVC方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题详情-1"><span class="nav-number">2.0.1.</span> <span class="nav-text">问题详情</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案-1"><span class="nav-number">2.0.2.</span> <span class="nav-text">解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Status-Bar-的样式更新"><span class="nav-number">3.</span> <span class="nav-text">Status Bar 的样式更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Modal新样式"><span class="nav-number">4.</span> <span class="nav-text">Modal新样式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UIModalPresentationStyle"><span class="nav-number">4.0.1.</span> <span class="nav-text">UIModalPresentationStyle</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#modalInPresentation"><span class="nav-number">4.0.2.</span> <span class="nav-text">modalInPresentation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":100,"height":200},"mobile":{"show":true},"react":{"opacityDefault":1,"opacityOnHover":0.2}});</script></body>
+</html>
