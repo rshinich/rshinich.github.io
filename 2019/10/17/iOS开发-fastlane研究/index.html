@@ -1,0 +1,821 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Fastlane是一个完全开源的项目GitHub - fastlane/fastlane: 🚀 The easiest way to automate building and releasing your iOS and Android apps，实际上是一个Ruby实现的工具集合，他可以完成iOS和Android工程的自动化操作，可以简化一些乏味、单调、重复的工作，比如截图、代码签名和发布A">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-fastlane研究">
+<meta property="og:url" content="http://yoursite.com/2019/10/17/iOS开发-fastlane研究/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="Fastlane是一个完全开源的项目GitHub - fastlane/fastlane: 🚀 The easiest way to automate building and releasing your iOS and Android apps，实际上是一个Ruby实现的工具集合，他可以完成iOS和Android工程的自动化操作，可以简化一些乏味、单调、重复的工作，比如截图、代码签名和发布A">
+<meta property="og:image" content="http://yoursite.com/2019/10/17/iOS开发-fastlane研究/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/17/iOS开发-fastlane研究/2.png">
+<meta property="og:updated_time" content="2019-10-17T05:56:45.216Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-fastlane研究">
+<meta name="twitter:description" content="Fastlane是一个完全开源的项目GitHub - fastlane/fastlane: 🚀 The easiest way to automate building and releasing your iOS and Android apps，实际上是一个Ruby实现的工具集合，他可以完成iOS和Android工程的自动化操作，可以简化一些乏味、单调、重复的工作，比如截图、代码签名和发布A">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/17/iOS开发-fastlane研究/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/17/iOS开发-fastlane研究/"/>
+
+
+
+
+
+  <title> iOS开发-fastlane研究 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/17/iOS开发-fastlane研究/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-fastlane研究
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-17T13:51:51+08:00">
+                2019-10-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Fastlane是一个完全开源的项目<a href="https://github.com/fastlane/fastlane" target="_blank" rel="external">GitHub - fastlane/fastlane: 🚀 The easiest way to automate building and releasing your iOS and Android apps</a>，实际上是一个Ruby实现的工具集合，他可以完成iOS和Android工程的自动化操作，可以简化一些乏味、单调、重复的工作，比如截图、代码签名和发布App。<br>只要一条命令就可以从Xcode项目到编译、打包、提交审核。</p>
+<center><img src="/2019/10/17/iOS开发-fastlane研究/1.png" alt="logo"></center>
+
+
+<h2 id="一-CI、CD"><a href="#一-CI、CD" class="headerlink" title="一. CI、CD"></a>一. CI、CD</h2><p>简单介绍一下CI和CD。</p>
+<h3 id="1-CI：持续集成"><a href="#1-CI：持续集成" class="headerlink" title="1.CI：持续集成"></a>1.CI：持续集成</h3><p>CI全称Continuous Integration，表示持续集成。</p>
+<p>在CI环境中，开发人员会频繁地向主干提交代码，这些新提交的代码会在最终合并到主干前，需要经过编译和自动化测试进行认证。</p>
+<blockquote>
+<p>持续集成过程中很重视自动化测试验证结果，以保障所有的提交在合并主线之后的质量问题，对可能出现的一些问题预警。</p>
+</blockquote>
+<p>CI要求开发人员为提交的代码创建自动化测试用例；<br>并且需要一个持续集成服务器，监控代码提交情况，并且对每次新提交的内容进行自动化测试；<br>研发团队也需要尽可能快的提交代码。</p>
+<h3 id="2-CD：持续部署"><a href="#2-CD：持续部署" class="headerlink" title="2.CD：持续部署"></a>2.CD：持续部署</h3><p>CD全称Continuous Deployment，表示持续部署。</p>
+<p>在CD环境中，通过自动化构建、测试和部署环来快速交付高质量的产品。某种程度上代表了一个开发团队工程化的程度，任何修改通过了所有已有的工作流就会直接和客户见面，只有当一个修改在工作流中构建失败才能阻止它部署到产品线。</p>
+<p>持续部署没有定义的发布日，开发人员修改工作后几分钟就可以上线了。</p>
+<blockquote>
+<p>基本上，当开发人员在主分支中合并一个提交时，这个分支被构建、测试，如果一切顺利，则部署到生产环境中。</p>
+</blockquote>
+<p>CD中研发团队测试理念比较完善。测试单元的健壮性决定你的交付质量；<br>文档和部署频率要保持一致；<br>特征标志成为发布重大变化过程的固有部分；</p>
+<h3 id="3-CD：持续交付"><a href="#3-CD：持续交付" class="headerlink" title="3.CD：持续交付"></a>3.CD：持续交付</h3><p>CD全称Continuous Delivery，是一种软件工程手法。</p>
+<p>在CD环境中，可以让软件产品的产出过程在一个短周期内完成，以保证软件可以稳定、持续的保持在随时可以发布的状态。他的目标在于让软件的构建和测试以及发布更加频繁。这种方式可以减少软件开发的成本与时间，减少风险。</p>
+<blockquote>
+<p>有时候，持续交付也与持续部署混淆。持续部署意味着所有的变更都会被自动部署到生产环境中。持续交付意味着所有的变更都可以被部署到生产环境中，但是出于业务考虑，可以选择不部署。如果要实施持续部署，必须先实施持续交付。</p>
+</blockquote>
+<p>CD中需要有强大的持续集成组件和足够多的测试项可以满足代码的需求；<br>并且部署需要自动化，触发是手动的，但部署一旦开始，就不能人为干预；<br>并且可能需要接受特性开关，没有完成的功能模块不会影响到线上产品。</p>
+<h2 id="二-搭建环境"><a href="#二-搭建环境" class="headerlink" title="二. 搭建环境"></a>二. 搭建环境</h2><h3 id="1-Ruby"><a href="#1-Ruby" class="headerlink" title="1.Ruby"></a>1.Ruby</h3><p>因为fastlane是一个ruby的脚本集合，所以必须要安装Ruby。要保证Ruby的版本要不低于2.0。可以通过命令行来确认Ruby的版本。</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>ruby -v</div></pre></td></tr></table></figure>
+<p>一般情况下OS X 10.9(Mavericks) 下默认安装的都是Ruby2.0版本，如果低于2.0可以自行google一下如何升级。</p>
+<h3 id="2-Xcode命令行工具"><a href="#2-Xcode命令行工具" class="headerlink" title="2.Xcode命令行工具"></a>2.Xcode命令行工具</h3><p>可以再命令行中输入命令判断是否安装了命令行工具。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ xcode-<span class="keyword">select</span> —<span class="keyword">install</span></div></pre></td></tr></table></figure>
+<p>如果发现如下提示</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">command line tools are already installed, <span class="keyword">use</span> “Software <span class="keyword">Update</span>” <span class="keyword">to</span> <span class="keyword">install</span> updates.</div></pre></td></tr></table></figure>
+<p>则说明已经安装过了，否则时候弹窗安装Xcode命令行工具。</p>
+<h3 id="3-fastlane"><a href="#3-fastlane" class="headerlink" title="3.fastlane"></a>3.fastlane</h3><p>终于到了安装fastlane的时候了。<br>直接执行</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo gem <span class="keyword">install</span> fastlane -NV</div></pre></td></tr></table></figure>
+<p>就可以了。期间有可能遇到报错，可能是因为源的问题，修改一下ruby的sources就可以了。</p>
+<p>接下来就可以使用了。</p>
+<h2 id="三-使用fastlane"><a href="#三-使用fastlane" class="headerlink" title="三. 使用fastlane"></a>三. 使用fastlane</h2><h3 id="1-fastlane-init"><a href="#1-fastlane-init" class="headerlink" title="1.fastlane init"></a>1.fastlane init</h3><p>Cd到你的项目所在目录，然后执行命令就可以了。</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>cd &lt;项目目录&gt;</div><div class="line"><span class="variable">$ </span>fastlane init</div></pre></td></tr></table></figure>
+<p>然后小火箭转完，就会有四个选择，让你选择使用它做什么。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">[✔] 🚀</div><div class="line">[✔] Looking for iOS and Android projects in current directory...</div><div class="line">[<span class="symbol">10:22:27</span>]: <span class="link">Created new folder './fastlane'.</span></div><div class="line">[<span class="symbol">10:22:27</span>]: <span class="link">Detected an iOS/macOS project in the current directory: 'LifeMap.xcworkspace'</span></div><div class="line">[<span class="symbol">10:22:27</span>]: <span class="link">-----------------------------</span></div><div class="line">[<span class="symbol">10:22:27</span>]: <span class="link">--- Welcome to fastlane 🚀 ---</span></div><div class="line">[<span class="symbol">10:22:27</span>]: <span class="link">-----------------------------</span></div><div class="line">[<span class="symbol">10:22:27</span>]: <span class="link">fastlane can help you with all kinds of automation for your mobile app</span></div><div class="line">[<span class="symbol">10:22:27</span>]: <span class="link">We recommend automating one task first, and then gradually automating more over time</span></div><div class="line">[<span class="symbol">10:22:27</span>]: <span class="link">What would you like to use fastlane for?</span></div><div class="line"><span class="bullet">1. </span>📸  Automate screenshots</div><div class="line"><span class="bullet">2. </span>👩‍✈️  Automate beta distribution to TestFlight</div><div class="line"><span class="bullet">3. </span>🚀  Automate App Store distribution</div><div class="line"><span class="bullet">4. </span>🛠  Manual setup - manually setup your project to automate your tasks</div><div class="line">?</div></pre></td></tr></table></figure>
+<ol>
+<li>📸  Automate screenshots (自动截取屏幕截图)</li>
+<li>👩‍✈️  Automate beta distribution to TestFlight (自动发布TestFlight版本)</li>
+<li>🚀  Automate App Store distribution (自动发布App Store版本)</li>
+<li>🛠  Manual setup - manually setup your project to automate your tasks (手动配置内容)</li>
+</ol>
+<p><em>tips：可以把每一种都试一下，反正把fastlane文件夹删除了之后重新init就可以了</em></p>
+<h3 id="2-TestFlight"><a href="#2-TestFlight" class="headerlink" title="2.TestFlight"></a>2.TestFlight</h3><p>第一个屏幕截图先跳过，我们直接使用2.TestFlight。</p>
+<p>输入2之后敲回车，接着他会让你输入Apple ID username</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">[<span class="symbol">10:30:17</span>]: <span class="link">-----------------------------------------------------------</span></div><div class="line">[<span class="symbol">10:30:17</span>]: <span class="link">--- Setting up fastlane for iOS TestFlight distribution ---</span></div><div class="line">[<span class="symbol">10:30:17</span>]: <span class="link">-----------------------------------------------------------</span></div><div class="line">[<span class="symbol">10:30:17</span>]: <span class="link">Parsing your local Xcode project to find the available schemes and the app identifier</span></div><div class="line">[<span class="symbol">10:30:17</span>]: <span class="link">$ xcodebuild -showBuildSettings -workspace LifeMap.xcworkspace -scheme LifeMap</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">$ cd /Users/LifeMap &amp;&amp; agvtool what-version -terse</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">--------------------------------</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">--- Login with your Apple ID ---</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">--------------------------------</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">To use App Store Connect and Apple Developer Portal features as part of fastlane,</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">we will ask you for your Apple ID username and password</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">This is necessary for certain fastlane features, for example:</span></div><div class="line">[<span class="symbol">10:30:19</span>]:</div><div class="line"><span class="link">[10:30:19]: - Create and manage your provisioning profiles on the Developer Portal</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">- Upload and manage TestFlight and App Store builds on App Store Connect</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">- Manage your App Store Connect app metadata and screenshots</span></div><div class="line">[<span class="symbol">10:30:19</span>]:</div><div class="line"><span class="link">[10:30:19]: Your Apple ID credentials will only be stored in your Keychain, on your local machine</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">For more information, check out</span></div><div class="line">[<span class="symbol">10:30:19</span>]: 	<span class="link">https://github.com/fastlane/fastlane/tree/master/credentials_manager</span></div><div class="line">[<span class="symbol">10:30:19</span>]:</div><div class="line"><span class="link">[10:30:19]: Please enter your Apple ID developer credentials</span></div><div class="line">[<span class="symbol">10:30:19</span>]: <span class="link">Apple ID Username:</span></div></pre></td></tr></table></figure>
+<p>输入AppleID之后，会让你输入密码，如果有开启2FA（现在应该都强制开启了），就会让你以你的2FA方式输入内容。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Two-factor Authentication (6 digits code) is enabled for account 'xxx@gmail.com'</div><div class="line">More information about Two-factor Authentication: https://support.apple.com/en-us/HT204915</div><div class="line"></div><div class="line">If you're running this in a non-interactive session (e.g. server or CI)</div><div class="line"><span class="keyword">check</span> <span class="keyword">out</span> https://github.com/fastlane/fastlane/tree/<span class="keyword">master</span>/spaceship#<span class="number">2</span>-step-verification</div><div class="line"></div><div class="line">(<span class="keyword">Input</span> <span class="string">`sms`</span> <span class="keyword">to</span> escape this <span class="keyword">prompt</span> <span class="keyword">and</span> <span class="keyword">select</span> a trusted phone <span class="built_in">number</span> <span class="keyword">to</span> send the code <span class="keyword">as</span> a <span class="built_in">text</span> message)</div><div class="line"></div><div class="line">(You can also <span class="keyword">set</span> the environment <span class="keyword">variable</span> <span class="string">`SPACESHIP_2FA_SMS_DEFAULT_PHONE_NUMBER`</span> <span class="keyword">to</span> automate this)</div><div class="line">(<span class="keyword">Read</span> more <span class="keyword">at</span>: https://github.com/fastlane/fastlane/<span class="built_in">blob</span>/<span class="keyword">master</span>/spaceship/docs/Authentication.md#<span class="keyword">auto</span>-<span class="keyword">select</span>-sms-via-spaceship<span class="number">-2</span>fa-sms-<span class="keyword">default</span>-phone-<span class="built_in">number</span>)</div><div class="line"></div><div class="line">Please enter the <span class="number">6</span> digit code:</div></pre></td></tr></table></figure>
+<p>之后就会看到登录成功了，然后创建成功了，会提示敲回车继续，接下来就是一路回车，会提示你各种使用方式，下边这段可以省略。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">[<span class="symbol">10:34:07</span>]: <span class="link">✅  Logging in with your Apple ID was successful</span></div><div class="line">[<span class="symbol">10:34:07</span>]: <span class="link">Checking if the app 'com.张忠瑞.LifeMap' exists in your Apple Developer Portal...</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">✅  Your app 'com.张忠瑞.LifeMap' is available in your Apple Developer Portal</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">Checking if the app 'com.张忠瑞.LifeMap' exists on App Store Connect...</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">✅  Your app 'com.张忠瑞.LifeMap' is available on App Store Connect</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">It looks like your project isn't set up to do automatic version incrementing</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">To enable fastlane to handle automatic version incrementing for you, please follow this guide:</span></div><div class="line">[<span class="symbol">10:34:08</span>]: 	<span class="link">https://developer.apple.com/library/content/qa/qa1827/_index.html</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">Afterwards check out the fastlane docs on how to set up automatic build increments</span></div><div class="line">[<span class="symbol">10:34:08</span>]: 	<span class="link">https://docs.fastlane.tools/getting-started/ios/beta-deployment/#best-practices</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">Installing dependencies for you...</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">--------------------------------------------------------</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">--- ✅  Successfully generated fastlane configuration ---</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">--------------------------------------------------------</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">Generated Fastfile at path `./fastlane/Fastfile`</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">Generated Appfile at path `./fastlane/Appfile`</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">Gemfile and Gemfile.lock at path `Gemfile`</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">Please check the newly generated configuration files into git along with your project</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">This way everyone in your team can benefit from your fastlane setup</span></div><div class="line">[<span class="symbol">10:34:08</span>]: <span class="link">Continue by pressing Enter ⏎</span></div></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[<span class="symbol">10:35:28</span>]: <span class="link">fastlane will collect the number of errors for each action to detect integration issues</span></div><div class="line">[<span class="symbol">10:35:28</span>]: <span class="link">No sensitive/private information will be uploaded, more information: https://docs.fastlane.tools/#metrics</span></div><div class="line">[<span class="symbol">10:35:28</span>]: <span class="link">----------------------</span></div><div class="line">[<span class="symbol">10:35:28</span>]: <span class="link">--- fastlane lanes ---</span></div><div class="line">[<span class="symbol">10:35:28</span>]: <span class="link">----------------------</span></div><div class="line">[<span class="symbol">10:35:28</span>]: <span class="link">fastlane uses a `Fastfile` to store the automation configuration</span></div><div class="line">[<span class="symbol">10:35:28</span>]: <span class="link">Within that, you'll see different lanes.</span></div><div class="line">[<span class="symbol">10:35:28</span>]: <span class="link">Each is there to automate a different task, like screenshots, code signing, or pushing new releases</span></div><div class="line">[<span class="symbol">10:35:28</span>]: <span class="link">Continue by pressing Enter ⏎</span></div></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[<span class="symbol">10:35:42</span>]: <span class="link">--------------------------------------</span></div><div class="line">[<span class="symbol">10:35:42</span>]: <span class="link">--- How to customize your Fastfile ---</span></div><div class="line">[<span class="symbol">10:35:42</span>]: <span class="link">--------------------------------------</span></div><div class="line">[<span class="symbol">10:35:42</span>]: <span class="link">Use a text editor of your choice to open the newly created Fastfile and take a look</span></div><div class="line">[<span class="symbol">10:35:42</span>]: <span class="link">You can now edit the available lanes and actions to customize the setup to fit your needs</span></div><div class="line">[<span class="symbol">10:35:42</span>]: <span class="link">To get a list of all the available actions, open https://docs.fastlane.tools/actions</span></div><div class="line">[<span class="symbol">10:35:42</span>]: <span class="link">Continue by pressing Enter ⏎</span></div></pre></td></tr></table></figure>
+<p>最后看到如下代码就说明已经创建成功了。通过<code>fastlane beta</code>就可以执行了。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[<span class="symbol">10:35:53</span>]: <span class="link">------------------------------</span></div><div class="line">[<span class="symbol">10:35:53</span>]: <span class="link">--- Where to go from here? ---</span></div><div class="line">[<span class="symbol">10:35:53</span>]: <span class="link">------------------------------</span></div><div class="line">[<span class="symbol">10:35:53</span>]: <span class="link">📸  Learn more about how to automatically generate localized App Store screenshots:</span></div><div class="line">[<span class="symbol">10:35:53</span>]: 		<span class="link">https://docs.fastlane.tools/getting-started/ios/screenshots/</span></div><div class="line">[<span class="symbol">10:35:53</span>]: <span class="link">👩‍✈️  Learn more about distribution to beta testing services:</span></div><div class="line">[<span class="symbol">10:35:53</span>]: 		<span class="link">https://docs.fastlane.tools/getting-started/ios/beta-deployment/</span></div><div class="line">[<span class="symbol">10:35:53</span>]: <span class="link">🚀  Learn more about how to automate the App Store release process:</span></div><div class="line">[<span class="symbol">10:35:53</span>]: 		<span class="link">https://docs.fastlane.tools/getting-started/ios/appstore-deployment/</span></div><div class="line">[<span class="symbol">10:35:53</span>]: <span class="link">👩‍⚕️  Learn more about how to setup code signing with fastlane</span></div><div class="line">[<span class="symbol">10:35:53</span>]: 		<span class="link">https://docs.fastlane.tools/codesigning/getting-started/</span></div><div class="line">[<span class="symbol">10:35:53</span>]:</div><div class="line"><span class="link">[10:35:53]: To try your new fastlane setup, just enter and run</span></div><div class="line">[<span class="symbol">10:35:53</span>]: <span class="link">$ fastlane beta</span></div></pre></td></tr></table></figure>
+<h3 id="3-AppStore"><a href="#3-AppStore" class="headerlink" title="3.AppStore"></a>3.AppStore</h3><p>回到之前init的地方，这次我们选择3.AppStore。同样还是输入AppleID，只不过title变了而已。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">[<span class="symbol">10:49:28</span>]: <span class="link">----------------------------------------------------------</span></div><div class="line">[<span class="symbol">10:49:28</span>]: <span class="link">--- Setting up fastlane for iOS App Store distribution ---</span></div><div class="line">[<span class="symbol">10:49:28</span>]: <span class="link">----------------------------------------------------------</span></div><div class="line">[<span class="symbol">10:49:28</span>]: <span class="link">Parsing your local Xcode project to find the available schemes and the app identifier</span></div><div class="line">[<span class="symbol">10:49:28</span>]: <span class="link">$ xcodebuild -showBuildSettings -workspace LifeMap.xcworkspace -scheme LifeMap</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">$ cd /Users//LifeMap &amp;&amp; agvtool what-version -terse</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">--------------------------------</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">--- Login with your Apple ID ---</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">--------------------------------</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">To use App Store Connect and Apple Developer Portal features as part of fastlane,</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">we will ask you for your Apple ID username and password</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">This is necessary for certain fastlane features, for example:</span></div><div class="line">[<span class="symbol">10:49:30</span>]:</div><div class="line"><span class="link">[10:49:30]: - Create and manage your provisioning profiles on the Developer Portal</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">- Upload and manage TestFlight and App Store builds on App Store Connect</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">- Manage your App Store Connect app metadata and screenshots</span></div><div class="line">[<span class="symbol">10:49:30</span>]:</div><div class="line"><span class="link">[10:49:30]: Your Apple ID credentials will only be stored in your Keychain, on your local machine</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">For more information, check out</span></div><div class="line">[<span class="symbol">10:49:30</span>]: 	<span class="link">https://github.com/fastlane/fastlane/tree/master/credentials_manager</span></div><div class="line">[<span class="symbol">10:49:30</span>]:</div><div class="line"><span class="link">[10:49:30]: Please enter your Apple ID developer credentials</span></div><div class="line">[<span class="symbol">10:49:30</span>]: <span class="link">Apple ID Username:</span></div></pre></td></tr></table></figure>
+<p>因为之前登陆过了，所以这次不用输入密码和2FA验证码了。</p>
+<p>接下来会问，是否允许fastlane帮你管理metadat。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">[<span class="symbol">10:50:32</span>]: <span class="link">Logging in...</span></div><div class="line">[<span class="symbol">10:50:37</span>]: <span class="link">✅  Logging in with your Apple ID was successful</span></div><div class="line">[<span class="symbol">10:50:37</span>]: <span class="link">Checking if the app 'com.张忠瑞.LifeMap' exists in your Apple Developer Portal...</span></div><div class="line">[<span class="symbol">10:50:38</span>]: <span class="link">✅  Your app 'com.张忠瑞.LifeMap' is available in your Apple Developer Portal</span></div><div class="line">[<span class="symbol">10:50:38</span>]: <span class="link">Checking if the app 'com.张忠瑞.LifeMap' exists on App Store Connect...</span></div><div class="line">[<span class="symbol">10:50:39</span>]: <span class="link">✅  Your app 'com.张忠瑞.LifeMap' is available on App Store Connect</span></div><div class="line">[<span class="symbol">10:50:39</span>]: <span class="link">----------------------------</span></div><div class="line">[<span class="symbol">10:50:39</span>]: <span class="link">--- Manage app metadata? ---</span></div><div class="line">[<span class="symbol">10:50:39</span>]: <span class="link">----------------------------</span></div><div class="line">[<span class="symbol">10:50:39</span>]: <span class="link">Would you like to have fastlane manage your app's metadata?</span></div><div class="line">[<span class="symbol">10:50:39</span>]: <span class="link">If you enable this feature, fastlane will download your existing metadata and screenshots.</span></div><div class="line">[<span class="symbol">10:50:39</span>]: <span class="link">This way, you'll be able to edit your app's metadata in local `.txt` files.</span></div><div class="line">[<span class="symbol">10:50:39</span>]: <span class="link">After editing the local `.txt` files, just run fastlane and all changes will be pushed up.</span></div><div class="line">[<span class="symbol">10:50:39</span>]: <span class="link">If you don't want to use this feature, you can still use fastlane to upload and distribute new builds to the App Store</span></div><div class="line">[<span class="symbol">10:50:39</span>]: <span class="link">Would you like fastlane to manage your app's metadata? (y/n)</span></div></pre></td></tr></table></figure>
+<p>接下来也是一顿回车，然后就会发现创建成功了，可以通过<code>fastlane release</code>来调用打包上传App Store。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">--------------------------------------------------------</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">--- ✅  Successfully generated fastlane configuration ---</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">--------------------------------------------------------</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">Generated Fastfile at path `./fastlane/Fastfile`</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">Generated Appfile at path `./fastlane/Appfile`</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">Gemfile and Gemfile.lock at path `Gemfile`</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">Please check the newly generated configuration files into git along with your project</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">This way everyone in your team can benefit from your fastlane setup</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">Continue by pressing Enter ⏎</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">fastlane will collect the number of errors for each action to detect integration issues</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">No sensitive/private information will be uploaded, more information: https://docs.fastlane.tools/#metrics</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">----------------------</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">--- fastlane lanes ---</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">----------------------</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">fastlane uses a `Fastfile` to store the automation configuration</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">Within that, you'll see different lanes.</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">Each is there to automate a different task, like screenshots, code signing, or pushing new releases</span></div><div class="line">[<span class="symbol">10:52:25</span>]: <span class="link">Continue by pressing Enter ⏎</span></div><div class="line"></div><div class="line">[<span class="symbol">10:52:31</span>]: <span class="link">--------------------------------------</span></div><div class="line">[<span class="symbol">10:52:31</span>]: <span class="link">--- How to customize your Fastfile ---</span></div><div class="line">[<span class="symbol">10:52:31</span>]: <span class="link">--------------------------------------</span></div><div class="line">[<span class="symbol">10:52:31</span>]: <span class="link">Use a text editor of your choice to open the newly created Fastfile and take a look</span></div><div class="line">[<span class="symbol">10:52:31</span>]: <span class="link">You can now edit the available lanes and actions to customize the setup to fit your needs</span></div><div class="line">[<span class="symbol">10:52:31</span>]: <span class="link">To get a list of all the available actions, open https://docs.fastlane.tools/actions</span></div><div class="line">[<span class="symbol">10:52:31</span>]: <span class="link">Continue by pressing Enter ⏎</span></div><div class="line"></div><div class="line">[<span class="symbol">10:52:32</span>]: <span class="link">------------------------------</span></div><div class="line">[<span class="symbol">10:52:32</span>]: <span class="link">--- Where to go from here? ---</span></div><div class="line">[<span class="symbol">10:52:32</span>]: <span class="link">------------------------------</span></div><div class="line">[<span class="symbol">10:52:32</span>]: <span class="link">📸  Learn more about how to automatically generate localized App Store screenshots:</span></div><div class="line">[<span class="symbol">10:52:32</span>]: 		<span class="link">https://docs.fastlane.tools/getting-started/ios/screenshots/</span></div><div class="line">[<span class="symbol">10:52:32</span>]: <span class="link">👩‍✈️  Learn more about distribution to beta testing services:</span></div><div class="line">[<span class="symbol">10:52:32</span>]: 		<span class="link">https://docs.fastlane.tools/getting-started/ios/beta-deployment/</span></div><div class="line">[<span class="symbol">10:52:32</span>]: <span class="link">🚀  Learn more about how to automate the App Store release process:</span></div><div class="line">[<span class="symbol">10:52:32</span>]: 		<span class="link">https://docs.fastlane.tools/getting-started/ios/appstore-deployment/</span></div><div class="line">[<span class="symbol">10:52:32</span>]: <span class="link">👩‍⚕️  Learn more about how to setup code signing with fastlane</span></div><div class="line">[<span class="symbol">10:52:32</span>]: 		<span class="link">https://docs.fastlane.tools/codesigning/getting-started/</span></div><div class="line">[<span class="symbol">10:52:32</span>]:</div><div class="line"><span class="link">[10:52:32]: To try your new fastlane setup, just enter and run</span></div><div class="line">[<span class="symbol">10:52:32</span>]: <span class="link">$ fastlane release</span></div></pre></td></tr></table></figure>
+<p>之后运行<code>fastlane release</code>，应用成功之后就会跳出一个h5页面，给你审查App的一些信息。</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[<span class="number">11</span>:<span class="number">11</span>:<span class="number">00</span>]: Verifying <span class="keyword">the</span> upload via <span class="keyword">the</span> HTML <span class="built_in">file</span> can be disabled <span class="keyword">by</span> either adding</div><div class="line">[<span class="number">11</span>:<span class="number">11</span>:<span class="number">00</span>]: `force <span class="literal">true</span>` <span class="keyword">to</span> your Deliverfile <span class="keyword">or</span> using `fastlane deliver <span class="comment">--force`</span></div><div class="line">[<span class="number">11</span>:<span class="number">11</span>:<span class="number">00</span>]: Does <span class="keyword">the</span> Preview <span class="keyword">on</span> path './fastlane/Preview.html' look okay <span class="keyword">for</span> you? (y/n)</div></pre></td></tr></table></figure>
+<p>如果确认没有问题，就可以输入y啦。</p>
+<p>之后，还会需要你输入一个 application specific password 。</p>
+<p>生成application specific password 可以在 appleid.apple.com/account/manage 中的<strong>安全</strong>部分下的<strong>App专用密码</strong>中生成一个给Fastlane的专用密码。</p>
+<p>如果想要查看已经生成过的专用密码，则可以在安全中点击编辑，然后再App专用密码中点击查看记录。</p>
+<p>最后你会看到这个，就表示已经上传成功啦。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[<span class="symbol">11:18:11</span>]: <span class="link">This might take a few minutes. Please don't interrupt the script.</span></div><div class="line">[<span class="symbol">11:19:09</span>]: <span class="link">iTunes Transporter successfully finished its job</span></div><div class="line">[<span class="symbol">11:19:09</span>]: <span class="link">------------------------------------------------------------------------------------------------------------------</span></div><div class="line">[<span class="symbol">11:19:09</span>]: <span class="link">--- Successfully uploaded package to App Store Connect. It might take a few minutes until it's visible online. ---</span></div><div class="line">[<span class="symbol">11:19:09</span>]: <span class="link">------------------------------------------------------------------------------------------------------------------</span></div><div class="line">[<span class="symbol">11:19:09</span>]: <span class="link">Finished the upload to App Store Connect</span></div><div class="line">[<span class="symbol">11:19:09</span>]: <span class="link">Running precheck before submitting to review, if you'd like to disable this check you can set run_precheck_before_submit to false</span></div><div class="line">[<span class="symbol">11:19:09</span>]: <span class="link">Running precheck 👮‍♀️ 👮</span></div></pre></td></tr></table></figure>
+<center><img src="/2019/10/17/iOS开发-fastlane研究/2.png" alt="logo"></center>
+
+
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><h3 id="Fastfile"><a href="#Fastfile" class="headerlink" title="Fastfile"></a>Fastfile</h3><p>这个文件算是最重要的文件了，这里是配置管理lane的，可以在里边编写一些函数，然后调用。<br>其实这个就是一个ruby脚本，所以不一定非要在这写一些官方的action，也可以写一些其他的ruby命令。</p>
+<h3 id="Appfile"><a href="#Appfile" class="headerlink" title="Appfile"></a>Appfile</h3><p>用来存储App公共信息，存放app_identifier、apple_id和team_id。</p>
+<h3 id="Deiverfile"><a href="#Deiverfile" class="headerlink" title="Deiverfile"></a>Deiverfile</h3><p>这里主要是用来写AppleStoreConnect中的配置，包括是否有广告标识以及             更新文案之类的内容。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="string">app_identifier</span> <span class="string">“com.张忠瑞.lifemap”</span> <span class="comment"># The bundle identifier of your app</span></div><div class="line"><span class="comment"># 2 用户名,Apple ID电子邮件地址</span></div><div class="line"><span class="string">username</span> <span class="string">“rshinich@gmail.com”</span> <span class="comment"># your Apple ID user</span></div><div class="line"><span class="comment"># 3 提交审核信息</span></div><div class="line"><span class="string">submission_information(&#123;</span>    </div><div class="line"><span class="attr">  export_compliance_encryption_updated:</span> <span class="literal">false</span><span class="string">,</span></div><div class="line"><span class="attr">  export_compliance_uses_encryption:</span> <span class="literal">false</span><span class="string">,</span></div><div class="line"><span class="attr">  content_rights_contains_third_party_content:</span> <span class="literal">false</span><span class="string">,</span></div><div class="line"><span class="attr">  add_id_info_uses_idfa:</span> <span class="literal">true</span><span class="string">,</span></div><div class="line"><span class="attr">  add_id_info_serves_ads:</span> <span class="literal">true</span><span class="string">,</span></div><div class="line"><span class="attr">  add_id_info_limits_tracking:</span> <span class="literal">true</span></div><div class="line"><span class="string">&#125;)</span></div><div class="line"><span class="comment">#4 更新说明</span></div><div class="line"><span class="string">release_notes(&#123;</span></div><div class="line">  <span class="string">‘Zh-Hans’</span> <span class="string">=&gt;</span> <span class="string">“1.部分页面优化；</span></div><div class="line">  <span class="number">2.</span><span class="string">修复已知bug;”</span></div><div class="line"><span class="string">&#125;)</span></div></pre></td></tr></table></figure>
+<h3 id="metadata"><a href="#metadata" class="headerlink" title="metadata"></a>metadata</h3><p>这里是个文件夹，也是在AppleStoreConnect中相对应的东西。</p>
+<h3 id="screenshots"><a href="#screenshots" class="headerlink" title="screenshots"></a>screenshots</h3><p>这里就是App Store的截图数据。</p>
+<hr>
+<p>未完待续。。。</p>
+<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><h3 id="Build"><a href="#Build" class="headerlink" title="Build"></a>Build</h3><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">build_app(<span class="symbol">scheme:</span> “MyApp<span class="string">")</span></div></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">build_app(<span class="symbol">scheme:</span> <span class="string">"MyApp”,</span></div><div class="line">          workspace: "Example.xcworkspace<span class="string">",</span></div><div class="line">          include_bitcode: true)</div></pre></td></tr></table></figure>
+<h3 id="增加build版本号"><a href="#增加build版本号" class="headerlink" title="增加build版本号"></a>增加build版本号</h3><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">increment_build_number(<span class="symbol">xcodeproj:</span>””ShineEX.xcworkspace)</div></pre></td></tr></table></figure>
+<h2 id="TestFlight"><a href="#TestFlight" class="headerlink" title="TestFlight"></a>TestFlight</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># This file contains the fastlane.tools configuration</span></div><div class="line"><span class="comment"># You can find the documentation at https://docs.fastlane.tools</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># For a list of all available actions, check out</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#     https://docs.fastlane.tools/actions</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># For a list of all available plugins, check out</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#     https://docs.fastlane.tools/plugins/available-plugins</span></div><div class="line"><span class="comment">#</span></div><div class="line">&gt; </div><div class="line"><span class="comment"># Uncomment the line if you want fastlane to automatically update itself</span></div><div class="line"><span class="comment"># update_fastlane</span></div><div class="line"></div><div class="line">default_platform(<span class="symbol">:ios</span>)</div><div class="line"></div><div class="line">platform <span class="symbol">:ios</span> <span class="keyword">do</span></div><div class="line">  desc <span class="string">"Push a new beta build to TestFlight"</span></div><div class="line">  lane <span class="symbol">:beta</span> <span class="keyword">do</span></div><div class="line">    increment_build_number(<span class="symbol">xcodeproj:</span> <span class="string">"ShineEX.xcodeproj"</span>)</div><div class="line">    build_app(<span class="symbol">workspace:</span> <span class="string">"ShineEX.xcworkspace"</span>, <span class="symbol">scheme:</span> <span class="string">"ShineEX"</span>)</div><div class="line">    upload_to_testflight</div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://docs.fastlane.tools/" target="_blank" rel="external">fastlane docs</a></p>
+<p><a href="https://blog.csdn.net/sinat_35930259/article/details/79429743" target="_blank" rel="external">详解CI、CD相关概念</a></p>
+<p><a href="https://www.raywenderlich.com/778-fastlane-tutorial-getting-started" target="_blank" rel="external">fastlane Tutorial: Getting Started | raywenderlich.com</a></p>
+<p><a href="https://blog.csdn.net/kmyhy/article/details/52441681?spm=a2c4e.10696291.0.0.32a919a42zOxTn" target="_blank" rel="external">fastlane 教程: 入门</a></p>
+<p><a href="https://www.jianshu.com/p/c09097211cd4" target="_blank" rel="external">fastlane一步一步实现从安装到自动打包（最新） - 简书</a></p>
+<p><a href="https://segmentfault.com/a/1190000011717578" target="_blank" rel="external">fastlane与持续集成 -  - SegmentFault 思否</a></p>
+<p><a href="https://yq.aliyun.com/articles/516983" target="_blank" rel="external">Fastlane-iOS(调研篇)-云栖社区-阿里云</a></p>
+<p><a href="https://blog.csdn.net/qq_34047841/article/details/54943753?spm=a2c4e.10696291.0.0.35a019a4OhB2hp" target="_blank" rel="external">https://blog.csdn.net/qq_34047841/article/details/54943753?spm=a2c4e.10696291.0.0.35a019a4OhB2hp</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/24/iOS开发-适配iOS13/" rel="next" title="iOS开发-适配iOS13">
+                <i class="fa fa-chevron-left"></i> iOS开发-适配iOS13
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">78</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-CI、CD"><span class="nav-number">1.</span> <span class="nav-text">一. CI、CD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-CI：持续集成"><span class="nav-number">1.1.</span> <span class="nav-text">1.CI：持续集成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-CD：持续部署"><span class="nav-number">1.2.</span> <span class="nav-text">2.CD：持续部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-CD：持续交付"><span class="nav-number">1.3.</span> <span class="nav-text">3.CD：持续交付</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-搭建环境"><span class="nav-number">2.</span> <span class="nav-text">二. 搭建环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Ruby"><span class="nav-number">2.1.</span> <span class="nav-text">1.Ruby</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Xcode命令行工具"><span class="nav-number">2.2.</span> <span class="nav-text">2.Xcode命令行工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-fastlane"><span class="nav-number">2.3.</span> <span class="nav-text">3.fastlane</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-使用fastlane"><span class="nav-number">3.</span> <span class="nav-text">三. 使用fastlane</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-fastlane-init"><span class="nav-number">3.1.</span> <span class="nav-text">1.fastlane init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-TestFlight"><span class="nav-number">3.2.</span> <span class="nav-text">2.TestFlight</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-AppStore"><span class="nav-number">3.3.</span> <span class="nav-text">3.AppStore</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置文件"><span class="nav-number">4.</span> <span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fastfile"><span class="nav-number">4.1.</span> <span class="nav-text">Fastfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Appfile"><span class="nav-number">4.2.</span> <span class="nav-text">Appfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deiverfile"><span class="nav-number">4.3.</span> <span class="nav-text">Deiverfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#metadata"><span class="nav-number">4.4.</span> <span class="nav-text">metadata</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#screenshots"><span class="nav-number">4.5.</span> <span class="nav-text">screenshots</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本命令"><span class="nav-number">5.</span> <span class="nav-text">基本命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Build"><span class="nav-number">5.1.</span> <span class="nav-text">Build</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增加build版本号"><span class="nav-number">5.2.</span> <span class="nav-text">增加build版本号</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TestFlight"><span class="nav-number">6.</span> <span class="nav-text">TestFlight</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">7.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":100,"height":200},"mobile":{"show":true},"react":{"opacityDefault":1,"opacityOnHover":0.2}});</script></body>
+</html>
