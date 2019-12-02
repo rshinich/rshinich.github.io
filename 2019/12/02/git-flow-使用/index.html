@@ -1,0 +1,848 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="git就不用多说了，对于版本控制有着很多优点，但是在多人开发的环境中，git flow制定了一个比较规范的分支管理和版本发布方案。
+
+
+工作流程git flow 是基于git的标准命令，将git中的一些命令通过脚本组合了起来，实现了一个工作流程，其实如果你按照git flow的工作流程，不需要通过其他工具，也可以实现git flow的实现。但是使用了git flow脚本，会让这些操作来的更方便一些">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git flow 使用">
+<meta property="og:url" content="http://yoursite.com/2019/12/02/git-flow-使用/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="git就不用多说了，对于版本控制有着很多优点，但是在多人开发的环境中，git flow制定了一个比较规范的分支管理和版本发布方案。
+
+
+工作流程git flow 是基于git的标准命令，将git中的一些命令通过脚本组合了起来，实现了一个工作流程，其实如果你按照git flow的工作流程，不需要通过其他工具，也可以实现git flow的实现。但是使用了git flow脚本，会让这些操作来的更方便一些">
+<meta property="og:image" content="http://yoursite.com/2019/12/02/git-flow-使用/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/02/git-flow-使用/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/02/git-flow-使用/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/02/git-flow-使用/4.png">
+<meta property="og:updated_time" content="2019-12-02T12:43:41.828Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git flow 使用">
+<meta name="twitter:description" content="git就不用多说了，对于版本控制有着很多优点，但是在多人开发的环境中，git flow制定了一个比较规范的分支管理和版本发布方案。
+
+
+工作流程git flow 是基于git的标准命令，将git中的一些命令通过脚本组合了起来，实现了一个工作流程，其实如果你按照git flow的工作流程，不需要通过其他工具，也可以实现git flow的实现。但是使用了git flow脚本，会让这些操作来的更方便一些">
+<meta name="twitter:image" content="http://yoursite.com/2019/12/02/git-flow-使用/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/02/git-flow-使用/"/>
+
+
+
+
+
+  <title> git flow 使用 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/02/git-flow-使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                git flow 使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-02T20:41:19+08:00">
+                2019-12-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>git就不用多说了，对于版本控制有着很多优点，但是在多人开发的环境中，git flow制定了一个比较规范的分支管理和版本发布方案。</p>
+<center><img src="/2019/12/02/git-flow-使用/1.png" alt="logo"></center>
+
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>git flow 是基于git的标准命令，将git中的一些命令通过脚本组合了起来，实现了一个工作流程，其实如果你按照git flow的工作流程，不需要通过其他工具，也可以实现git flow的实现。但是使用了git flow脚本，会让这些操作来的更方便一些。</p>
+<p>Git flow的工作分支主要为以下几种：</p>
+<ul>
+<li>master：用于存放正式发布的版本；</li>
+<li>develop：开发的主分支，一般由其他分支合并进来；</li>
+<li>feature/*：新功能分支，一般情况下基于develop创建，开发完成后合并到develop分支；</li>
+<li>release/*：发布分支，基于develop最新版本创建的分支，用来测试，测试的bug会在这个分支上进行修改。</li>
+<li>hotfix/*：线上版本修复bug的分支，基于master创建。</li>
+</ul>
+<p>接下来会一个一个介绍这些分支。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="git-flow-avh"><a href="#git-flow-avh" class="headerlink" title="git flow avh"></a>git flow avh</h3><p>正常通过homebrew就可以安装git flow了。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">brew </span><span class="keyword">install </span>git-flow-avh</div></pre></td></tr></table></figure>
+<p>当然还有其他的安装方式，可以点击<a href="https://github.com/petervanderdoes/gitflow-avh/wiki/Installing-on-Mac-OS-X" target="_blank" rel="external">这里</a> 查看（MacOS），如果其他系统也可以在git flow avh的gitHub上查看。</p>
+<h3 id="SourceTree"><a href="#SourceTree" class="headerlink" title="SourceTree"></a>SourceTree</h3><p>另外如果使用了SourceTree，也可以直接通过SourceTree来进行git flow的管理。</p>
+<p>右键点击SourceTree顶部工具栏，点击自定义工具栏。</p>
+<center><img src="/2019/12/02/git-flow-使用/2.png" alt="logo"></center>
+
+<p>直接将Git 工作流拖入到工具栏中就可以直接使用了。</p>
+<center><img src="/2019/12/02/git-flow-使用/3.png" alt="logo"></center>
+
+
+<h2 id="在项目中添加git-flow"><a href="#在项目中添加git-flow" class="headerlink" title="在项目中添加git flow"></a>在项目中添加git flow</h2><p>在终端中，cd到项目目录下初始化就可以了。这个初始化和git本身的初始化关联不大。</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">git flow init</span></div></pre></td></tr></table></figure>
+<p>跑了之后，会跟你确认一些名称，这里建议都使用默认的名称，一般情况下直接回车就可以了。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">➜  GitFlowDemo git:(master) git flow init</div><div class="line"></div><div class="line"><span class="symbol">Which</span> <span class="keyword">branch </span>should <span class="keyword">be </span>used for <span class="keyword">bringing </span>forth production releases?</div><div class="line">   - master</div><div class="line"><span class="keyword">Branch </span>name for production releases: [master]</div><div class="line"><span class="keyword">Branch </span>name for <span class="string">"next release"</span> development: [develop]</div><div class="line"></div><div class="line"><span class="symbol">How</span> to name your supporting <span class="keyword">branch </span>prefixes?</div><div class="line"><span class="symbol">Feature</span> <span class="keyword">branches? </span>[feature/]</div><div class="line"><span class="keyword">Bugfix </span><span class="keyword">branches? </span>[<span class="keyword">bugfix/]</span></div><div class="line"><span class="symbol">Release</span> <span class="keyword">branches? </span>[release/]</div><div class="line"><span class="symbol">Hotfix</span> <span class="keyword">branches? </span>[hotfix/]</div><div class="line"><span class="symbol">Support</span> <span class="keyword">branches? </span>[support/]</div><div class="line"><span class="symbol">Version</span> tag prefix? []</div><div class="line"><span class="symbol">Hooks</span> <span class="keyword">and </span>filters directory? [/Users/zhongrui/Desktop/GitFlowDemo/.git/hooks]</div><div class="line">➜  GitFlowDemo git:(develop)</div></pre></td></tr></table></figure>
+<p>或者在SourceTree中点击Git工作流，第一次点击的时候会出现一些git flow初始化的内容，同样也是确认一些名称，只不过是用GUI表示出来了。</p>
+<center><img src="/2019/12/02/git-flow-使用/4.png" alt="logo"></center>
+
+<p>操作成功之后，git flow的安装就完成了，接下来可以愉快的使用它了。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>在SourceTree中的使用比较简单，直接通过需求点击就可以了，这里就不多做介绍。主要说一下在Treminal中的使用。</p>
+<h3 id="添加新需求"><a href="#添加新需求" class="headerlink" title="添加新需求"></a>添加新需求</h3><p>添加新需求分别分为：</p>
+<ul>
+<li>创建新需求</li>
+<li>提交</li>
+<li>发布新需求</li>
+<li>完成新需求</li>
+</ul>
+<p>接下来可以一个一个来看。</p>
+<p>创建新需求通过输入命令</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git flow feature <span class="literal">start</span> test_feature</div></pre></td></tr></table></figure>
+<p>其中<em>test_feature</em>为新需求的分支名称，回车之后，git flow 会自动帮我们生成一个新的分支，并且切换到他下边。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">➜  GitFlowDemo git:(develop) git flow feature <span class="keyword">start</span> test_feature</div><div class="line">Switched <span class="keyword">to</span> a <span class="keyword">new</span> branch <span class="string">'feature/test_feature'</span></div><div class="line"></div><div class="line">Summary <span class="keyword">of</span> actions:</div><div class="line">- A <span class="keyword">new</span> branch <span class="string">'feature/test_feature'</span> was created, based <span class="keyword">on</span> <span class="string">'develop'</span></div><div class="line">- You <span class="keyword">are</span> <span class="keyword">now</span> <span class="keyword">on</span> branch <span class="string">'feature/test_feature'</span></div><div class="line"></div><div class="line"><span class="keyword">Now</span>, <span class="keyword">start</span> committing <span class="keyword">on</span> your feature. <span class="keyword">When</span> done, <span class="keyword">use</span>:</div><div class="line"></div><div class="line">     git flow feature <span class="keyword">finish</span> test_feature</div><div class="line"></div><div class="line">➜  GitFlowDemo git:(feature/test_feature)</div></pre></td></tr></table></figure>
+<p>接下来我们就可以在这个分支下干活了</p>
+<p>🧱🧱🧱<br>🧱🧱🧱<br>🧱🧱🧱</p>
+<p>干完活之后，和平常一样提交，add、commit。</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">➜  GitFlowDemo gi<span class="variable">t:</span>(feature/test_feature) ✗ git <span class="built_in">add</span> .</div><div class="line">➜  GitFlowDemo gi<span class="variable">t:</span>(feature/test_feature) ✗ git commit -<span class="keyword">m</span> <span class="string">"test"</span></div><div class="line">[feature/test_feature fb484b7] test</div><div class="line"> <span class="number">1</span> <span class="keyword">file</span> changed, <span class="number">4</span> insertions(+), <span class="number">1</span> deletion(-)</div><div class="line">➜  GitFlowDemo gi<span class="variable">t:</span>(feature/test_feature)</div></pre></td></tr></table></figure>
+<p>接下来如果需要push到远程，可以使用git的push，也可以使用</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git flow <span class="built_in">feature</span> publish test_feature</div></pre></td></tr></table></figure>
+<p>来发布这一个版本的新需求。</p>
+<p>最后，当我们这个需求开发完毕了。使用</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git flow <span class="built_in">feature</span> finish test_feature</div></pre></td></tr></table></figure>
+<p>Git flow 就会自动帮我们删除这个分支，然后切换到develop分支去。</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">➜  GitFlowDemo gi<span class="variable">t:</span>(feature/test_feature) git flow feature <span class="keyword">finish</span> test_feature</div><div class="line"></div><div class="line">Switched <span class="keyword">to</span> branch <span class="string">'develop'</span></div><div class="line">Updating <span class="number">45</span>b8dcf..fb484b7</div><div class="line">Fast-forward</div><div class="line"> GitFlowDemo/ViewController.<span class="keyword">m</span> | <span class="number">5</span> ++++-</div><div class="line"> <span class="number">1</span> <span class="keyword">file</span> changed, <span class="number">4</span> insertions(+), <span class="number">1</span> deletion(-)</div><div class="line">Deleted branch feature/test_feature (was fb484b7).</div><div class="line"></div><div class="line">Summary of action<span class="variable">s:</span></div><div class="line">- The feature branch <span class="string">'feature/test_feature'</span> was merged into <span class="string">'develop'</span></div><div class="line">- Feature branch <span class="string">'feature/test_feature'</span> <span class="built_in">has</span> been locally deleted</div><div class="line">- You are now <span class="keyword">on</span> branch <span class="string">'develop'</span></div><div class="line"></div><div class="line">➜  GitFlowDemo gi<span class="variable">t:</span>(develop)</div></pre></td></tr></table></figure>
+<h3 id="发布新版本"><a href="#发布新版本" class="headerlink" title="发布新版本"></a>发布新版本</h3><p>当我们的develop分支的代码已经是一个成熟的代码了，意味着可以将它发布了，这时候就可以走发布新版本的流程。</p>
+<p>同样的，新版本发布也是走之前的流程。</p>
+<ul>
+<li>创建发布版本</li>
+<li>提交</li>
+<li>同步到远程</li>
+<li>完成新版本发布</li>
+</ul>
+<p>可以使用发布命令</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">git</span> <span class="selector-tag">flow</span> <span class="selector-tag">release</span> <span class="selector-tag">start</span> 1<span class="selector-class">.0</span><span class="selector-class">.0</span></div></pre></td></tr></table></figure>
+<p>其中<em>1.0.0</em>是我们这个版本的版本号。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">➜  GitFlowDemo git:(develop) git flow <span class="keyword">release</span> <span class="keyword">start</span> <span class="number">1.0</span><span class="number">.0</span></div><div class="line">Switched <span class="keyword">to</span> a <span class="keyword">new</span> branch <span class="string">'release/1.0.0'</span></div><div class="line"></div><div class="line">Summary <span class="keyword">of</span> actions:</div><div class="line">- A <span class="keyword">new</span> branch <span class="string">'release/1.0.0'</span> was created, based <span class="keyword">on</span> <span class="string">'develop'</span></div><div class="line">- You <span class="keyword">are</span> <span class="keyword">now</span> <span class="keyword">on</span> branch <span class="string">'release/1.0.0'</span></div><div class="line"></div><div class="line">Follow-up actions:</div><div class="line">- Bump the <span class="keyword">version</span> <span class="built_in">number</span> <span class="keyword">now</span>!</div><div class="line">- <span class="keyword">Start</span> committing <span class="keyword">last</span>-<span class="keyword">minute</span> fixes <span class="keyword">in</span> preparing your <span class="keyword">release</span></div><div class="line">- <span class="keyword">When</span> done, run:</div><div class="line"></div><div class="line">     git flow <span class="keyword">release</span> <span class="keyword">finish</span> <span class="string">'1.0.0'</span></div><div class="line"></div><div class="line">➜  GitFlowDemo git:(<span class="keyword">release</span>/<span class="number">1.0</span><span class="number">.0</span>)</div></pre></td></tr></table></figure>
+<p>这时候git flow 会帮我们创建一个release分支。这时候如果有一些版本号之类的信息需要修改，在这个分支上修改之后，就可以准备提交了。</p>
+<p>同样release也有publish版本，这些提交和发布与之前的feature基本一样，都是将修改的代码提交到远程，这里就不在赘述了。</p>
+<p>直接进到完成发布流程，完成发布需要使用</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">git</span> <span class="selector-tag">flow</span> <span class="selector-tag">release</span> <span class="selector-tag">finish</span> 1<span class="selector-class">.0</span><span class="selector-class">.0</span></div></pre></td></tr></table></figure>
+<p>运行之后，首先git flow 会拉取远程仓库，确保当前的版本是最新版本。<br>接下来release的内容会被合并到master和develop两个分支中去，以保证新的功能部分也是最新的代码。<br>并且release的代码会被标记上release，也就是tag。<br>接下来会删除当前的分支，并回到master。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">➜  GitFlowDemo git:(<span class="keyword">release</span>/<span class="number">1.0</span><span class="number">.0</span>) git flow <span class="keyword">release</span> <span class="keyword">finish</span> <span class="number">1.0</span><span class="number">.0</span></div><div class="line">Switched <span class="keyword">to</span> branch <span class="string">'master'</span></div><div class="line"><span class="keyword">Merge</span> made <span class="keyword">by</span> the <span class="string">'recursive'</span> strategy.</div><div class="line"> GitFlowDemo/ViewController.m | <span class="number">5</span> ++++-</div><div class="line"> <span class="number">1</span> <span class="keyword">file</span> <span class="keyword">changed</span>, <span class="number">4</span> insertions(+), <span class="number">1</span> deletion(-)</div><div class="line">Already <span class="keyword">on</span> <span class="string">'master'</span></div><div class="line">fatal: <span class="keyword">no</span> tag message?</div><div class="line">Fatal: Tagging failed. Please run <span class="keyword">finish</span> again <span class="keyword">to</span> retry.</div><div class="line">➜  GitFlowDemo git:(<span class="keyword">master</span>)</div></pre></td></tr></table></figure>
+<h3 id="修复bug（hotfix）"><a href="#修复bug（hotfix）" class="headerlink" title="修复bug（hotfix）"></a>修复bug（hotfix）</h3><p>尽管在发布之前，我们已经充分的对代码进行了测试，但是谁也没有办法保证发布的新版本中一定没有bug。如果遇到了bug，这时候我们可以通过hotfix来进行修复。</p>
+<p>Hotfix我们仅仅通过创建和完成两个步骤就可以简单的走完流程。</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git flow hotfix <span class="literal">start</span> fix_bug</div></pre></td></tr></table></figure>
+<p>通过这个命令，与之前一样，会创建一个fix_bug分支，并且切换到这个分支上来，但是稍有不同的是，这个分支不是来自于develop，而是基于master分支的。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">➜  GitFlowDemo git:(master) git flow hotfix <span class="keyword">start</span> fix_bug</div><div class="line">Switched <span class="keyword">to</span> a <span class="keyword">new</span> branch <span class="string">'hotfix/fix_bug'</span></div><div class="line"></div><div class="line">Summary <span class="keyword">of</span> actions:</div><div class="line">- A <span class="keyword">new</span> branch <span class="string">'hotfix/fix_bug'</span> was created, based <span class="keyword">on</span> <span class="string">'master'</span></div><div class="line">- You <span class="keyword">are</span> <span class="keyword">now</span> <span class="keyword">on</span> branch <span class="string">'hotfix/fix_bug'</span></div><div class="line"></div><div class="line">Follow-up actions:</div><div class="line">- <span class="keyword">Start</span> committing your hot fixes</div><div class="line">- Bump the <span class="keyword">version</span> <span class="built_in">number</span> <span class="keyword">now</span>!</div><div class="line">- <span class="keyword">When</span> done, run:</div><div class="line"></div><div class="line">     git flow hotfix <span class="keyword">finish</span> <span class="string">'fix_bug'</span></div><div class="line">➜  GitFlowDemo git:(hotfix/fix_bug)</div></pre></td></tr></table></figure>
+<p>接下来你就可以紧急修复你的bug 了。</p>
+<p>🧱🧱🧱</p>
+<p>修复完了之后，完成了测试，就可以通过finish来完成这次bug修复。</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="keyword">flow</span> hotfix finish fix_bug</div></pre></td></tr></table></figure>
+<p>接下来的过程和release比较相似，改动的内容会被合道master中，而且也会被合道develop中。这样就能保证在接下来的版本中不会出现同样的错误。<br>然后这个版本也将会被标记下来。<br>之后就会删除这个分支。</p>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><ul>
+<li>git flow init：初始化一个现有的仓库，添加git flow</li>
+</ul>
+<h3 id="feature"><a href="#feature" class="headerlink" title="feature"></a>feature</h3><ul>
+<li>git flow feature start [featureBranchName]：创建一个新功能分支</li>
+<li>git flow feature publish [featureBranchName]：推送新版本到远程服务器，也可以使用git push</li>
+<li>git flow feature finish [featureBranchName]：完成新功能开发，会合并到develop分支，并删除原分支</li>
+<li>git flow feature pull origin [featureBranchName]：拉取目标分支的新功能，也可以使用git pull</li>
+<li>git flow feature track [featureBranchName]：跟踪origin上的feature分支</li>
+</ul>
+<h3 id="release"><a href="#release" class="headerlink" title="release"></a>release</h3><ul>
+<li>git flow release start [releaseBranchName]：创建一个准备发布的分支</li>
+<li>git flow release publish [releaseBranchName]：创建release分支之后立即发布允许其他用户向这个release分支提交内容</li>
+<li>git flow release track [releaseBranchName]：签出release版本的远程变更</li>
+<li>git flow release finish [releaseBranchName]：将release分支合并到master，打上tag，将release分支合并到develop，删除原分支</li>
+</ul>
+<h3 id="hotfix"><a href="#hotfix" class="headerlink" title="hotfix"></a>hotfix</h3><ul>
+<li>git flow hotfix start [hotfixBranchName]：开始紧急修复，从master分出一个分支</li>
+<li>git flow hotfix finish [hotfixBranchName]：结束紧急修复，代码归并到develop和master，并且打上Tag。</li>
+</ul>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>以上就是对git flow的简单使用，可以帮助我们做很多版本控制中很麻烦的问题，以上内容仅为个人学习记录，如果有什么不对的地方欢迎各位大佬评论指正。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://github.com/petervanderdoes/gitflow-avh" target="_blank" rel="external">GitHub - petervanderdoes/gitflow-avh: AVH Edition of the git extensions to provide high-level repository operations for Vincent Driessen’s branching model</a></p>
+<p><a href="https://www.jianshu.com/p/36292d36e41d" target="_blank" rel="external">git flow的使用 - 简书</a></p>
+<p><a href="https://www.git-tower.com/learn/git/ebook/cn/command-line/advanced-topics/git-flow" target="_blank" rel="external">git-flow 的工作流程</a></p>
+<p><a href="http://www.ruanyifeng.com/blog/2015/12/git-workflow.html" target="_blank" rel="external">Git 工作流程 - 阮一峰的网络日志</a></p>
+<p><a href="https://juejin.im/post/5d565f9c6fb9a06aca381990" target="_blank" rel="external">Gitflow 使用最强指北 - 掘金</a></p>
+<p><a href="https://gitbook.tw/chapters/gitflow/why-need-git-flow.html" target="_blank" rel="external">Git Flow 是什麼？為什麼需要這種東西？ - 為你自己學 Git | 高見龍</a></p>
+<p><a href="https://www.jianshu.com/p/34b95c5eedb6" target="_blank" rel="external">Git Flow工作流总结 - 简书</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/17/iOS开发-fastlane研究/" rel="next" title="iOS开发-fastlane研究">
+                <i class="fa fa-chevron-left"></i> iOS开发-fastlane研究
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#工作流程"><span class="nav-number">1.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#git-flow-avh"><span class="nav-number">2.1.</span> <span class="nav-text">git flow avh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SourceTree"><span class="nav-number">2.2.</span> <span class="nav-text">SourceTree</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在项目中添加git-flow"><span class="nav-number">3.</span> <span class="nav-text">在项目中添加git flow</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">4.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加新需求"><span class="nav-number">4.1.</span> <span class="nav-text">添加新需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发布新版本"><span class="nav-number">4.2.</span> <span class="nav-text">发布新版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修复bug（hotfix）"><span class="nav-number">4.3.</span> <span class="nav-text">修复bug（hotfix）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用命令"><span class="nav-number">5.</span> <span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化"><span class="nav-number">5.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#feature"><span class="nav-number">5.2.</span> <span class="nav-text">feature</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#release"><span class="nav-number">5.3.</span> <span class="nav-text">release</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hotfix"><span class="nav-number">5.4.</span> <span class="nav-text">hotfix</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">6.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">7.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":100,"height":200},"mobile":{"show":true},"react":{"opacityDefault":1,"opacityOnHover":0.2}});</script></body>
+</html>
