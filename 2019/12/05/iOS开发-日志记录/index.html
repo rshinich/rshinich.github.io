@@ -1,0 +1,793 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="产品上线之后，总会有各种各样的环境导致会出现一些无法复现的问题，对于开发人员来说，这个时候的日志就是一个很重要的找错手段，如果能像Xcode调试的时候一样获取到所有的日志，那么至少会对我们排查错误会有一些帮助。
+找到大概三种方式来记录日志：
+
+Apple System Log（ASL）
+日志重定向
+第三方框架（比较出名的 CocoaLumberjack ）
+
+Apple System Log那么如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-日志记录">
+<meta property="og:url" content="http://yoursite.com/2019/12/05/iOS开发-日志记录/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="产品上线之后，总会有各种各样的环境导致会出现一些无法复现的问题，对于开发人员来说，这个时候的日志就是一个很重要的找错手段，如果能像Xcode调试的时候一样获取到所有的日志，那么至少会对我们排查错误会有一些帮助。
+找到大概三种方式来记录日志：
+
+Apple System Log（ASL）
+日志重定向
+第三方框架（比较出名的 CocoaLumberjack ）
+
+Apple System Log那么如">
+<meta property="og:updated_time" content="2019-12-05T14:49:23.611Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-日志记录">
+<meta name="twitter:description" content="产品上线之后，总会有各种各样的环境导致会出现一些无法复现的问题，对于开发人员来说，这个时候的日志就是一个很重要的找错手段，如果能像Xcode调试的时候一样获取到所有的日志，那么至少会对我们排查错误会有一些帮助。
+找到大概三种方式来记录日志：
+
+Apple System Log（ASL）
+日志重定向
+第三方框架（比较出名的 CocoaLumberjack ）
+
+Apple System Log那么如">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/05/iOS开发-日志记录/"/>
+
+
+
+
+
+  <title> iOS开发-日志记录 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/05/iOS开发-日志记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-日志记录
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-05T22:48:48+08:00">
+                2019-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>产品上线之后，总会有各种各样的环境导致会出现一些无法复现的问题，对于开发人员来说，这个时候的日志就是一个很重要的找错手段，如果能像Xcode调试的时候一样获取到所有的日志，那么至少会对我们排查错误会有一些帮助。</p>
+<p>找到大概三种方式来记录日志：</p>
+<ul>
+<li>Apple System Log（ASL）</li>
+<li>日志重定向</li>
+<li>第三方框架（比较出名的 <a href="https://github.com/CocoaLumberjack/CocoaLumberjack" target="_blank" rel="external">CocoaLumberjack</a> ）</li>
+</ul>
+<h2 id="Apple-System-Log"><a href="#Apple-System-Log" class="headerlink" title="Apple System Log"></a>Apple System Log</h2><p>那么如何来记录日志呢，其实我们的日志主要是通过NSLog来输出到控制台的，所以从这里作为切入点找到记录日志的方法。</p>
+<p><a href="https://developer.apple.com/documentation/foundation/1395275-nslog?language=occ" target="_blank" rel="external">NSLog - Foundation | Apple Developer Documentation</a>官方文档对NSLog的说明是</p>
+<blockquote>
+<p>Logs an error message to the Apple System Log facility.</p>
+</blockquote>
+<p>也就是说他会被作为error信息输出到Apple System Log中去了。</p>
+<p>Apple System Log，以下简称ASL，是苹果自己实现的用于输出日志到系统日志库的一套API接口，在iOS真机设备上，ASL记录的log被缓存在本地沙盒中。</p>
+<p>但是ASL在iOS 10开始，被Apple限制，废弃了ASLlink，所以在iOS 10之后的版本中，ASL变得不是那么方便。</p>
+<h2 id="日志重定向"><a href="#日志重定向" class="headerlink" title="日志重定向"></a>日志重定向</h2><p>不过通过官方文档中可以看到其实NSLog是将内容输出到文件中，然后打印出来，那么IO流的东西就会有文件的句柄了。</p>
+<p>可以看到，在C语言中的三个默认句柄：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span>	stdin	__stdinp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span>	stdout	__stdoutp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span>	stderr	__stderrp</span></div></pre></td></tr></table></figure>
+<p>在OC当中也有对应的三个：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#define STDIN_FILENO 0 /* standard input file descriptor */</span></div><div class="line"><span class="meta">#define STDOUT_FILENO 1 /* standard output file descriptor */</span></div><div class="line"><span class="meta">#define STDERR_FILENO 2 /* standard error file descriptor */</span></div></pre></td></tr></table></figure>
+<p>接下来，除了NSLog，还有c的printf输出。<br>printf会向标准输出<code>stdout</code>打印；<br>NSLog会向标准错误<code>stderr</code>打印；</p>
+<p>既然是IO流的操作，我们就可以通过重定向将输出到控制台的内容保存到我们想要保存的路径中去。</p>
+<h3 id="freopen"><a href="#freopen" class="headerlink" title="freopen()"></a>freopen()</h3><p>通过freopen()函数，我们可以将控制台打印的内容重定向到我们指定的文件中，但是重定向的一个问题就是会导致控制台中无法打印出任何内容，因为所有的输出都输出到了我们制定的内容中去了。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">+ (<span class="keyword">void</span>)redirectNSLogToDocumentFile</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span>([RedirectLogManager isXcodeDebugging] ||</div><div class="line">       [RedirectLogManager isSimulator])</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">NSArray</span> *paths = <span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSDocumentDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>);</div><div class="line">    <span class="built_in">NSString</span> *logPath = [[paths firstObject] stringByAppendingString:[<span class="built_in">NSString</span> stringWithFormat:@“/%@“,FILE_NAME]];</div><div class="line">    </div><div class="line">    <span class="built_in">NSFileManager</span> *fileManager = [<span class="built_in">NSFileManager</span> defaultManager];</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>([fileManager fileExistsAtPath:logPath])</div><div class="line">    &#123;</div><div class="line">        [fileManager removeItemAtPath:logPath error:<span class="literal">nil</span>];</div><div class="line">    &#125;</div><div class="line">       </div><div class="line">    freopen([logPath cStringUsingEncoding:<span class="built_in">NSASCIIStringEncoding</span>], <span class="string">"a+"</span>, stdout);</div><div class="line">    freopen([logPath cStringUsingEncoding:<span class="built_in">NSASCIIStringEncoding</span>], <span class="string">"a+"</span>, stderr);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+ (<span class="built_in">BOOL</span>)isXcodeDebugging</div><div class="line">&#123;</div><div class="line">    <span class="comment">//判断是否是Xcode调试状态</span></div><div class="line">    <span class="keyword">return</span> isatty(STDOUT_FILENO);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">+ (<span class="built_in">BOOL</span>)isSimulator</div><div class="line">&#123;</div><div class="line">    <span class="comment">//判断是否是Simulator</span></div><div class="line">    <span class="built_in">UIDevice</span> *device = [<span class="built_in">UIDevice</span> currentDevice];</div><div class="line">    <span class="keyword">return</span> [[device model] hasSuffix:@“Simlator”];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里我们对stdout和stderr都进行了重定向，将他们输出到我们指定的Document目录下的xxx.log文件中（xxx是你自己定义的名字）。另外为了防止在调试过程中和在模拟器中看不到Xcode中的调试内容，在这里做了判断，在Xcode中和模拟器环境中不进行重定向。</p>
+<p>同样的，取出这部分内容也很容易，直接通过文件系统就可以取出来了。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">+ (<span class="built_in">NSString</span> *)getNSLogDocumentFileString</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSArray</span> *paths = <span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSDocumentDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>);</div><div class="line">    <span class="built_in">NSString</span> *logPath = [[paths firstObject] stringByAppendingString:[<span class="built_in">NSString</span> stringWithFormat:@“/%@“,FILE_NAME]];</div><div class="line">    </div><div class="line">    <span class="built_in">NSData</span> *fileData = [<span class="built_in">NSData</span> dataWithContentsOfFile:logPath];</div><div class="line">    <span class="built_in">NSString</span> *fileString = [[<span class="built_in">NSString</span> alloc] initWithData:fileData encoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> fileString;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接下来只需要在AppDelegate中当应用启动时调用就可以了。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)application didFinishLaunchingWithOptions:(<span class="built_in">NSDictionary</span> *)launchOptions &#123;</div><div class="line">…</div><div class="line">    [RedirectLogManager redirectNSLogToDocumentFile];</div><div class="line">…</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="dup2"><a href="#dup2" class="headerlink" title="dup2"></a>dup2</h3><p>（转摘自<a href="https://juejin.im/entry/576252855bbb500063e51c7d" target="_blank" rel="external">iOS 日志获取和实时浏览器显示日志 - iOS - 掘金</a>）</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)redirectSTD:(<span class="keyword">int</span> )fd&#123;</div><div class="line">    <span class="built_in">NSPipe</span> * pipe = [<span class="built_in">NSPipe</span> pipe] ;</div><div class="line">    <span class="built_in">NSFileHandle</span> *pipeReadHandle = [pipe fileHandleForReading] ;</div><div class="line">    <span class="keyword">int</span> pipeFileHandle = [[pipe fileHandleForWriting] fileDescriptor];</div><div class="line">    dup2(pipeFileHandle, fd) ;</div><div class="line"></div><div class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span></div><div class="line">                                             selector:<span class="keyword">@selector</span>(redirectNotificationHandle:)</div><div class="line">                                                 name:<span class="built_in">NSFileHandleReadCompletionNotification</span></div><div class="line">                                               object:pipeReadHandle] ;</div><div class="line">    [pipeReadHandle readInBackgroundAndNotify];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)redirectNotificationHandle:(<span class="built_in">NSNotification</span> *)nf&#123;</div><div class="line">    <span class="built_in">NSData</span> *data = [[nf userInfo] objectForKey:<span class="built_in">NSFileHandleNotificationDataItem</span>];</div><div class="line">    <span class="built_in">NSString</span> *str = [[<span class="built_in">NSString</span> alloc] initWithData:data encoding:<span class="built_in">NSUTF8StringEncoding</span>] ;</div><div class="line">    <span class="comment">//这里可以做我们需要的操作,例如将nslog显示到一个textview中,或者是存放到另一个文件中等等</span></div><div class="line">    <span class="comment">//self.logTextView.text = [NSString stringWithFormat:@"%@\n%@",self.logTextView.text, str];</span></div><div class="line">    <span class="built_in">NSRange</span> range;</div><div class="line">    <span class="comment">//range.location = [self.logTextView.text length] - 1;</span></div><div class="line">    range.length = <span class="number">0</span>;</div><div class="line">    <span class="comment">//[self.logTextView scrollRangeToVisible:range];</span></div><div class="line"></div><div class="line">    [[nf object] readInBackgroundAndNotify];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="keyword">self</span> redirectSTD:STDERR_FILENO];</div></pre></td></tr></table></figure>
+<h3 id="dispatch-source"><a href="#dispatch-source" class="headerlink" title="dispatch_source"></a>dispatch_source</h3><p>（转摘自<a href="https://juejin.im/entry/576252855bbb500063e51c7d" target="_blank" rel="external">iOS 日志获取和实时浏览器显示日志 - iOS - 掘金</a>）</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">- (dispatch_source_t)_startCapturingWritingToFD:(<span class="keyword">int</span>)fd  &#123;</div><div class="line"></div><div class="line">    <span class="keyword">int</span> fildes[<span class="number">2</span>];</div><div class="line">    pipe(fildes);  <span class="comment">// [0] is read end of pipe while [1] is write end</span></div><div class="line">    dup2(fildes[<span class="number">1</span>], fd);  <span class="comment">// Duplicate write end of pipe “onto” fd (this closes fd)</span></div><div class="line">    close(fildes[<span class="number">1</span>]);  <span class="comment">// Close original write end of pipe</span></div><div class="line">    fd = fildes[<span class="number">0</span>];  <span class="comment">// We can now monitor the read end of the pipe</span></div><div class="line"></div><div class="line">    <span class="keyword">char</span>* buffer = malloc(<span class="number">1024</span>);</div><div class="line">    <span class="built_in">NSMutableData</span>* data = [[<span class="built_in">NSMutableData</span> alloc] init];</div><div class="line">    fcntl(fd, F_SETFL, O_NONBLOCK);</div><div class="line">    dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, fd, <span class="number">0</span>, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span class="number">0</span>));</div><div class="line">    dispatch_source_set_cancel_handler(source, ^&#123;</div><div class="line">        free(buffer);</div><div class="line">    &#125;);</div><div class="line">    dispatch_source_set_event_handler(source, ^&#123;</div><div class="line">        <span class="keyword">@autoreleasepool</span> &#123;</div><div class="line"></div><div class="line">            <span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">                ssize_t size = read(fd, buffer, <span class="number">1024</span>);</div><div class="line">                <span class="keyword">if</span> (size &lt;= <span class="number">0</span>)=“” &#123;=“” <span class="keyword">break</span>;=“” &#125;=“” [data=“” appendbytes:buffer=“” length:size];=“” <span class="keyword">if</span>=“” (size=“” &lt;=“” <span class="number">1024</span>)=“” nsstring=“” *astring=“[[<span class="built_in">NSString</span>” alloc]=“” initwithdata:data=“” encoding:nsutf8stringencoding];=“” printf(“astring=“%s”,[aString” utf8string]);=“” nslog(@“astring=“%@“,aString);” 读到了日志,可以进行我们需要的各种操作了=“” &#125;);=“” dispatch_resume(source);=“” <span class="keyword">return</span>=“” source;=“” code=“”&gt;</div></pre></td></tr></table></figure>
+<p>使用时：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">_sourt_t = [<span class="keyword">self</span> _startCapturingWritingToFD:STDERR_FILENO];</div></pre></td></tr></table></figure>
+<h2 id="第三方库"><a href="#第三方库" class="headerlink" title="第三方库"></a>第三方库</h2><p>这里主要以<a href="https://github.com/CocoaLumberjack/CocoaLumberjack" target="_blank" rel="external">GitHub - CocoaLumberjack/CocoaLumberjack: A fast &amp; simple, yet powerful &amp; flexible logging framework for Mac and iOS</a>为代表的一些第三方库，具体的就不多介绍了。需要的可以直接去GitHub找找。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>以上就是对iOS中日志记录的一些简单的方法，主要是以freopen方法重定向为主，其他的主要是根据其他大佬的文章看了看。<br>本文章仅限个人学习使用，如果有什么问题还请大佬多多指教。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://developer.apple.com/documentation/os/logging?language=objc" target="_blank" rel="external">Logging | Apple Developer Documentation</a></p>
+<p><a href="https://developer.apple.com/documentation/os/activity_tracing?language=objc" target="_blank" rel="external">Activity Tracing | Apple Developer Documentation</a></p>
+<p><a href="https://xiaozhuanlan.com/topic/7641208539" target="_blank" rel="external">1.日志监控 － 小专栏</a></p>
+<p><a href="https://juejin.im/post/5cf0edd1f265da1b5d5791be" target="_blank" rel="external">iOS 日志保存 - 掘金</a></p>
+<p><a href="https://juejin.im/entry/576252855bbb500063e51c7d" target="_blank" rel="external">iOS 日志获取和实时浏览器显示日志 - iOS - 掘金</a></p>
+<p><a href="http://silentcat.top/2017/09/06/Apple%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97%E6%8D%95%E8%8E%B7%E6%96%B9%E6%A1%88/" target="_blank" rel="external">Apple系统日志捕获方案 - 开不了口的猫的技术博客</a></p>
+<p><a href="http://www.voidcn.com/article/p-pcfbifdj-bdc.html" target="_blank" rel="external">iOS – NSLog、UncaughtException日志保存到文件 - 程序园</a></p>
+<p><a href="https://stackoverflow.com/questions/15702134/how-can-i-capture-iphone-console-logs-programmatically" target="_blank" rel="external">iOS - How can I capture iPhone console logs programmatically? - Stack Overflow</a></p>
+<p><a href="https://stackoverflow.com/questions/40272910/read-logs-using-the-new-swift-os-log-api" target="_blank" rel="external">iOS - Read logs using the new swift os_log api - Stack Overflow</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/02/git-flow-使用/" rel="next" title="git flow 使用">
+                <i class="fa fa-chevron-left"></i> git flow 使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Apple-System-Log"><span class="nav-number">1.</span> <span class="nav-text">Apple System Log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志重定向"><span class="nav-number">2.</span> <span class="nav-text">日志重定向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#freopen"><span class="nav-number">2.1.</span> <span class="nav-text">freopen()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dup2"><span class="nav-number">2.2.</span> <span class="nav-text">dup2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-source"><span class="nav-number">2.3.</span> <span class="nav-text">dispatch_source</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三方库"><span class="nav-number">3.</span> <span class="nav-text">第三方库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">5.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":100,"height":200},"mobile":{"show":true},"react":{"opacityDefault":1,"opacityOnHover":0.2}});</script></body>
+</html>
