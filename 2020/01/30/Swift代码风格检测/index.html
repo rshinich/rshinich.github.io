@@ -1,0 +1,803 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Swift代码风格检测使用一个Swift代码风格检测工具对于一个Swift初学者来说，应该算是一个很快了解语言特性的机会。
+或者说任何一个语言的代码风格检测工具都会在某些层面上加强开发者对于这一门语言的理解。
+作为一个OCer，之前一直沉浸于OC的开发中，后边转战Swift之后，写代码的时候总是喜欢带上一些OC中的特性，使得代码和Swift风格总是有些偏差， 感觉是在用OC的思想来写Swift代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift代码风格检测">
+<meta property="og:url" content="http://yoursite.com/2020/01/30/Swift代码风格检测/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="Swift代码风格检测使用一个Swift代码风格检测工具对于一个Swift初学者来说，应该算是一个很快了解语言特性的机会。
+或者说任何一个语言的代码风格检测工具都会在某些层面上加强开发者对于这一门语言的理解。
+作为一个OCer，之前一直沉浸于OC的开发中，后边转战Swift之后，写代码的时候总是喜欢带上一些OC中的特性，使得代码和Swift风格总是有些偏差， 感觉是在用OC的思想来写Swift代码">
+<meta property="og:updated_time" content="2020-01-30T05:37:38.600Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift代码风格检测">
+<meta name="twitter:description" content="Swift代码风格检测使用一个Swift代码风格检测工具对于一个Swift初学者来说，应该算是一个很快了解语言特性的机会。
+或者说任何一个语言的代码风格检测工具都会在某些层面上加强开发者对于这一门语言的理解。
+作为一个OCer，之前一直沉浸于OC的开发中，后边转战Swift之后，写代码的时候总是喜欢带上一些OC中的特性，使得代码和Swift风格总是有些偏差， 感觉是在用OC的思想来写Swift代码">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/01/30/Swift代码风格检测/"/>
+
+
+
+
+
+  <title> Swift代码风格检测 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/30/Swift代码风格检测/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Swift代码风格检测
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-30T13:37:06+08:00">
+                2020-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Swift代码风格检测"><a href="#Swift代码风格检测" class="headerlink" title="Swift代码风格检测"></a>Swift代码风格检测</h1><p>使用一个Swift代码风格检测工具对于一个Swift初学者来说，应该算是一个很快了解语言特性的机会。</p>
+<p>或者说任何一个语言的代码风格检测工具都会在某些层面上加强开发者对于这一门语言的理解。</p>
+<p>作为一个OCer，之前一直沉浸于OC的开发中，后边转战Swift之后，写代码的时候总是喜欢带上一些OC中的特性，使得代码和Swift风格总是有些偏差， 感觉是在用OC的思想来写Swift代码一样。</p>
+<p>每个语言都有很多自己的风格检测工具，大公司一般会有一套严格的代码风格检测工具，小公司的话可能大部分都是要靠开发者自己来把控这个了。</p>
+<p>有些时候，即使你的代码可以在只有几个warning的状态下流畅的跑起来，但是也并不代表你的代码没有很多风格或者语法上的问题，只是编译器给你放行了而已。</p>
+<h2 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h2><p>围绕这Swift也有很多第三方的代码检测工具，我找了几个烈在这里：</p>
+<ul>
+<li><a href="https://github.com/realm/SwiftLint" target="_blank" rel="external">Swift Lint</a></li>
+<li><a href="https://github.com/nicklockwood/SwiftFormat" target="_blank" rel="external">Swift format</a></li>
+<li><a href="https://github.com/square/spacecommander" target="_blank" rel="external">Space Commander</a></li>
+</ul>
+<h2 id="Swift-Lint"><a href="#Swift-Lint" class="headerlink" title="Swift Lint"></a>Swift Lint</h2><p>其中star最多的就算是Swift Lint了，所以这次我们也直接选择这个作为我们代码风格检测的工具。</p>
+<blockquote>
+<p>SwiftLint hooks into  <a href="http://clang.llvm.org/" target="_blank" rel="external">Clang</a>  and  <a href="http://www.jpsim.com/uncovering-sourcekit" target="_blank" rel="external">SourceKit</a>  to use the  <a href="http://clang.llvm.org/docs/IntroductionToTheClangAST.html" target="_blank" rel="external">AST</a>  representation of your source files for more accurate results.</p>
+</blockquote>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>SwiftLint的安装方法很简单，而且GitHub上也附带了中文的<a href="https://github.com/realm/SwiftLint/blob/master/README_CN.md" target="_blank" rel="external">README</a>。</p>
+<p>简单来说SwiftLint的安装方法分为两种模式</p>
+<ul>
+<li>全局安装：就是在你的电脑中安装SwiftLint，让你所有的项目都可以享受到SwiftLint的监管</li>
+<li>部分安装：就是针对于某一个具体的工程进行安装，不会影响到电脑中的其他项目</li>
+</ul>
+<p>其中全局安装主要就是通过Homebrew来安装，而部分安装主要使用过CocoaPods来安装。</p>
+<p>其中Homebrew安装时，只要运行以下命令即可</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">brew </span><span class="keyword">install </span><span class="keyword">swiftlint</span></div></pre></td></tr></table></figure>
+<p>而使用CocoaPods安装时，只需要和平时一样在Podfile里加入</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod ‘SwiftLint'</div></pre></td></tr></table></figure>
+<p>然后再运行</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod <span class="keyword">install</span></div></pre></td></tr></table></figure>
+<p>就可以了。这里有一个官方的建议：</p>
+<blockquote>
+<p>This will download the SwiftLint binaries and dependencies in Pods/ during your next pod install execution and will allow you to invoke it via ${PODS_ROOT}/SwiftLint/swiftlint in your Script Build Phases.<br>This is the recommended way to install a specific version of SwiftLint since it supports installing a pinned version rather than simply the latest (which is the case with Homebrew).<br>Note that this will add the SwiftLint binaries, its dependencies’ binaries and the Swift binary library distribution to the Pods/ directory, so checking in this directory to SCM such as git is discouraged.<br>—<br>在下一次执行 pod install 时将会把 SwiftLint 的二进制文件和依赖下载到 Pods/ 目录下并且将允许你通过 ${PODS_ROOT}/SwiftLint/swiftlint 在 Script Build Phases 中调用 SwiftLint。<br>自从 SwiftLint 支持安装某个特定版本后，安装一个指定版本的 SwiftLint 是目前推荐的做法相比较于简单地选择最新版本安装的话（比如通过 Homebrew 安装的话）。<br>请注意这会将 SwiftLint 二进制文件、所依赖的二进制文件和 Swift 二进制库安装到 Pods/ 目录下，所以不推荐将此目录添加到版本控制系统（如 git）中进行跟踪。</p>
+</blockquote>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>首先，为了能够让SwiftLint检查出的问题能够更好的显示在IDE上，我们需要在Xcode中配置一个新的脚本。</p>
+<p>配置新脚本的步骤应该不用多少了吧，以防万一我还是把步骤写下来吧，图就不贴了。</p>
+<ol>
+<li>点击Xcode中的项目</li>
+<li>选择Targets下的你的项目名称</li>
+<li>选择Build Phases</li>
+<li>点击左上角“+”</li>
+<li>选择 New Run Script Phase</li>
+<li>将需要添加的内容写到新生成的Shell文本框里就可以了</li>
+</ol>
+<p>如果是使用Homebrew来安装的话，需要添加如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">if which swiftlint &gt;/dev/null; then</div><div class="line">  swiftlint</div><div class="line">else</div><div class="line">  echo “warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint”</div><div class="line">fi</div></pre></td></tr></table></figure>
+<p>而如果使用的是CocoaPods来安装的，只需要声明一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">“$&#123;PODS_ROOT&#125;/SwiftLint/swiftlint”</div></pre></td></tr></table></figure>
+<p>接下来，就可以使用SwiftLint了，在Xcode中使用CMD+b编译试试看，这时候就可以看到满江红了！<br>❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌<br>⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️</p>
+<p>别急着关呐！</p>
+<p>这才是我们使用SwiftLint的原因啊，看着这些报错一点一点消失不是会有很大的成就感吗，而且在这个过程中，你也会学习到很多Swift的语言特性和技巧。</p>
+<h3 id="消除报错"><a href="#消除报错" class="headerlink" title="消除报错"></a>消除报错</h3><p>首先，如果你的项目里引用了很多第三方库，而这些第三方库引起了很多SwiftLint的报错的话，我们是不对他负责的，所以我们首先要把第三方库当中的代码隔离掉。</p>
+<p>这里我们需要新建一个配置文件，这个文件不仅可以隔离掉第三方代码，还可以禁用或启用指定的规则。</p>
+<p>那么接下来，到我们项目的目录下，执行</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">touch <span class="selector-class">.swiftlint</span><span class="selector-class">.yml</span></div></pre></td></tr></table></figure>
+<p>有可能你会发现好像没有什么变化，没关系，因为这个文件是隐藏的，点击cmd+shift+。显示隐藏文件之后，就可以看到他了。</p>
+<p>然后在文件中添加：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attr">excluded:</span> </div><div class="line"><span class="bullet">    -</span> <span class="string">Pods</span></div></pre></td></tr></table></figure>
+<p>这时候就可以把Pods中的文件排除掉了，当然这里你还可以添加任何你想要添加的文件或文件夹。</p>
+<p>除了隔离之外，上述说到的很多功能都可以通过这个配置文件来实现：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="attr">disabled_rules:</span> <span class="comment"># 执行时排除掉的规则</span></div><div class="line"><span class="bullet">  -</span> <span class="string">colon</span></div><div class="line"><span class="bullet">  -</span> <span class="string">comma</span></div><div class="line"><span class="bullet">  -</span> <span class="string">control_statement</span></div><div class="line"><span class="attr">opt_in_rules:</span> <span class="comment"># 一些规则仅仅是可选的</span></div><div class="line"><span class="bullet">  -</span> <span class="string">empty_count</span></div><div class="line"><span class="bullet">  -</span> <span class="string">missing_docs</span></div><div class="line">  <span class="comment"># 可以通过执行如下指令来查找所有可用的规则:</span></div><div class="line">  <span class="comment"># swiftlint rules</span></div><div class="line"><span class="attr">included:</span> <span class="comment"># 执行 linting 时包含的路径。如果出现这个 `—path` 会被忽略。</span></div><div class="line"><span class="bullet">  -</span> <span class="string">Source</span></div><div class="line"><span class="attr">excluded:</span> <span class="comment"># 执行 linting 时忽略的路径。 优先级比 `included` 更高。</span></div><div class="line"><span class="bullet">  -</span> <span class="string">Carthage</span></div><div class="line"><span class="bullet">  -</span> <span class="string">Pods</span></div><div class="line"><span class="bullet">  -</span> <span class="string">Source/ExcludedFolder</span></div><div class="line"><span class="bullet">  -</span> <span class="string">Source/ExcludedFile.swift</span></div><div class="line"></div><div class="line"><span class="comment"># 可配置的规则可以通过这个配置文件来自定义</span></div><div class="line"><span class="comment"># 二进制规则可以设置他们的严格程度</span></div><div class="line"><span class="attr">force_cast:</span> <span class="string">warning</span> <span class="comment"># 隐式</span></div><div class="line"><span class="attr">force_try:</span></div><div class="line"><span class="attr">  severity:</span> <span class="string">warning</span> <span class="comment"># 显式</span></div><div class="line"><span class="comment"># 同时有警告和错误等级的规则，可以只设置它的警告等级</span></div><div class="line"><span class="comment"># 隐式</span></div><div class="line"><span class="attr">line_length:</span> <span class="number">110</span></div><div class="line"><span class="comment"># 可以通过一个数组同时进行隐式设置</span></div><div class="line"><span class="attr">type_body_length:</span></div><div class="line"><span class="bullet">  -</span> <span class="number">300</span> <span class="comment"># warning</span></div><div class="line"><span class="bullet">  -</span> <span class="number">400</span> <span class="comment"># error</span></div><div class="line"><span class="comment"># 或者也可以同时进行显式设置</span></div><div class="line"><span class="attr">file_length:</span></div><div class="line"><span class="attr">  warning:</span> <span class="number">500</span></div><div class="line"><span class="attr">  error:</span> <span class="number">1200</span></div><div class="line"><span class="comment"># 命名规则可以设置最小长度和最大程度的警告/错误</span></div><div class="line"><span class="comment"># 此外它们也可以设置排除在外的名字</span></div><div class="line"><span class="attr">type_name:</span></div><div class="line"><span class="attr">  min_length:</span> <span class="number">4</span> <span class="comment"># 只是警告</span></div><div class="line"><span class="attr">  max_length:</span> <span class="comment"># 警告和错误</span></div><div class="line"><span class="attr">    warning:</span> <span class="number">40</span></div><div class="line"><span class="attr">    error:</span> <span class="number">50</span></div><div class="line"><span class="attr">  excluded:</span> <span class="string">iPhone</span> <span class="comment"># 排除某个名字</span></div><div class="line"><span class="attr">identifier_name:</span></div><div class="line"><span class="attr">  min_length:</span> <span class="comment"># 只有最小长度</span></div><div class="line"><span class="attr">    error:</span> <span class="number">4</span> <span class="comment"># 只有错误</span></div><div class="line"><span class="attr">  excluded:</span> <span class="comment"># 排除某些名字</span></div><div class="line"><span class="bullet">    -</span> <span class="string">id</span></div><div class="line"><span class="bullet">    -</span> <span class="string">URL</span></div><div class="line"><span class="bullet">    -</span> <span class="string">GlobalAPIKey</span></div><div class="line"><span class="attr">reporter:</span> <span class="string">“Xcode”</span> <span class="comment"># 报告类型 (Xcode, json, csv, checkstyle, junit, html, emoji)</span></div></pre></td></tr></table></figure>
+<p>接下来再编译，你会看到报错可能会少了很多，但是还是有很多很多，接下来才是真正的战斗。</p>
+<h3 id="自动更正"><a href="#自动更正" class="headerlink" title="自动更正"></a>自动更正</h3><p>什么？你说你懒得改？没关系，SwiftLint也帮你想到了。</p>
+<p>你可以通过这个命令，来使用SwiftLint帮你自动修正检测到的错误。</p>
+<p><strong>但是一定一定一定要注意</strong>这个命令会覆盖你之前的内容，所以一定要在跑这个命令之前做好备份。好了接下来可以试试这个命令了。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">swiftlint </span>autocorrect</div></pre></td></tr></table></figure>
+<p>跑完之后，你会发现，报错已经被控制在可以接受的范围内了，这时候你就可以去针对代码着手修改你的报错了，比如</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Force Try Violation: Force tries <span class="keyword">should </span><span class="keyword">be </span>avoided. (force_try)</div></pre></td></tr></table></figure>
+<p>这种使用了<code>try!</code>的部分，autocorrect是不会帮你修改的。</p>
+<h3 id="规则"><a href="#规则" class="headerlink" title="规则"></a>规则</h3><p>在修改报错的过程中，我们可以看到每一个报错或者是警告都会写出报错的原因，并且在最后会有一个括号，里边标记了一个词，这个词其实就是SwiftLint的70多条规则的ID，在这个<a href="https://realm.github.io/SwiftLint/rule-directory.html" target="_blank" rel="external">Rule Directory  Reference</a>里，可以直接搜索括号里的内容，这边会详细的写出这个报错的原因，以及这条规则的详细信息，甚至还会给出引起报错和未引起报错的例子。</p>
+<p>那么接下来就去修改你的报错吧！</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>在修改报错的过程中，我觉得对于新入门Swift的人来说，能够学到很多东西，比如有一些强制装换的操作，你也会更深刻的去了解某些方法的使用，此外对于不规范的命名以及过长的函数，SwiftLint也会让你去把它进行解耦。</p>
+<p>本文章仅限个人学习使用，如果有什么不对的欢迎大佬批评指正。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://realm.github.io/SwiftLint/rule-directory.html" target="_blank" rel="external">Rule Directory  Reference</a></p>
+<p><a href="https://www.cnblogs.com/anywherego/p/11152735.html" target="_blank" rel="external">SwiftLint：代码规范检查工具介绍 - 柳云居士 - 博客园</a></p>
+<p><a href="https://www.jianshu.com/p/bb99a2ad5fdb" target="_blank" rel="external">Xcode代码规范之SwiftLint配置 - 简书</a></p>
+<p><a href="https://learnku.com/articles/37145/swift-code-specification" target="_blank" rel="external">Swift 编码规范 | iOS 开发者论坛</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/01/iOS开发-Popover的使用/" rel="next" title="iOS开发-Popover的使用">
+                <i class="fa fa-chevron-left"></i> iOS开发-Popover的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">83</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Swift代码风格检测"><span class="nav-number">1.</span> <span class="nav-text">Swift代码风格检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#工具"><span class="nav-number">1.1.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Swift-Lint"><span class="nav-number">1.2.</span> <span class="nav-text">Swift Lint</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">1.2.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">1.2.2.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消除报错"><span class="nav-number">1.2.3.</span> <span class="nav-text">消除报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动更正"><span class="nav-number">1.2.4.</span> <span class="nav-text">自动更正</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#规则"><span class="nav-number">1.2.5.</span> <span class="nav-text">规则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">1.3.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">1.4.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":100,"height":200},"mobile":{"show":true},"react":{"opacityDefault":1,"opacityOnHover":0.2}});</script></body>
+</html>
