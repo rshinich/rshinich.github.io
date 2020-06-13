@@ -401,7 +401,7 @@
 </ul>
 <h2 id="自定义方法名修饰符"><a href="#自定义方法名修饰符" class="headerlink" title="自定义方法名修饰符"></a>自定义方法名修饰符</h2><p>自定义方法名修饰符通常有两种，getter和setter，使用了之后就不会使用系统自动生成的getter和setter方法了，我们都知道一般使用<code>self.xxx</code>时其实是调用[self.xxx getter]的方法，setter也是一样。</p>
 <p>这个修饰符一般用的比较少，通常用在BOOL类型中的时候，会重新设置getter方法。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">assign</span> , <span class="keyword">getter</span> = isOK ,<span class="keyword">setter</span> = setIsOK:) <span class="built_in">BOOL</span>      ok;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@property (nonatomic ,assign , getter = isOK ,setter = setIsOK:) BOOL      ok;</div></pre></td></tr></table></figure>
 <h2 id="读写性修饰符"><a href="#读写性修饰符" class="headerlink" title="读写性修饰符"></a>读写性修饰符</h2><p>读写性修饰符也有两种，<strong>readonly</strong>和<strong>readwrite</strong>，从名字就看出来一个是只读状态，另一个是读写状态，一般用于防止外部类修改内部变量，可以在<code>.h</code>文件中使用readonly修饰符，在<code>.m</code>文件中使用readwrite修饰，这样外部就只能读取而不能修改变量了。</p>
 <h3 id="readonly"><a href="#readonly" class="headerlink" title="readonly"></a>readonly</h3><p>表示只读属性，只会自动生成getter方法，不会生成setter方法。</p>
 <h3 id="readwrite"><a href="#readwrite" class="headerlink" title="readwrite"></a>readwrite</h3><p>表示读写属性，会生成getter和setter方法。</p>
@@ -541,7 +541,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

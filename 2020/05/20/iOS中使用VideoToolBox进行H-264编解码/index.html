@@ -1,0 +1,865 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="视频编解码简介为什么要对视频进行编码我们为什么要对视频进行编码呢？ 要知道我们看到的视频，无论是大屏幕上的电影，还是手机上的短视频，其实都是由一张张图片组成的，为了让观看者不会感觉到卡顿，一秒钟至少需要有16张图片变换（这个一秒钟多少张图片的变换叫做帧率），一般情况下是30帧。那么按照这个方式算下来，一个1280x720分辨率的视频按照一秒钟的大小就是 1280x720x30 ≈ 420M，这仅仅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS中使用VideoToolBox进行H.264编解码">
+<meta property="og:url" content="http://yoursite.com/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="视频编解码简介为什么要对视频进行编码我们为什么要对视频进行编码呢？ 要知道我们看到的视频，无论是大屏幕上的电影，还是手机上的短视频，其实都是由一张张图片组成的，为了让观看者不会感觉到卡顿，一秒钟至少需要有16张图片变换（这个一秒钟多少张图片的变换叫做帧率），一般情况下是30帧。那么按照这个方式算下来，一个1280x720分辨率的视频按照一秒钟的大小就是 1280x720x30 ≈ 420M，这仅仅">
+<meta property="og:image" content="http://yoursite.com/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/1.png">
+<meta property="og:image" content="http://yoursite.com/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/2.png">
+<meta property="og:image" content="http://yoursite.com/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/3.png">
+<meta property="og:updated_time" content="2020-05-20T15:30:58.321Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS中使用VideoToolBox进行H.264编解码">
+<meta name="twitter:description" content="视频编解码简介为什么要对视频进行编码我们为什么要对视频进行编码呢？ 要知道我们看到的视频，无论是大屏幕上的电影，还是手机上的短视频，其实都是由一张张图片组成的，为了让观看者不会感觉到卡顿，一秒钟至少需要有16张图片变换（这个一秒钟多少张图片的变换叫做帧率），一般情况下是30帧。那么按照这个方式算下来，一个1280x720分辨率的视频按照一秒钟的大小就是 1280x720x30 ≈ 420M，这仅仅">
+<meta name="twitter:image" content="http://yoursite.com/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/"/>
+
+
+
+
+
+  <title> iOS中使用VideoToolBox进行H.264编解码 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS中使用VideoToolBox进行H.264编解码
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-20T23:28:00+08:00">
+                2020-05-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="视频编解码简介"><a href="#视频编解码简介" class="headerlink" title="视频编解码简介"></a>视频编解码简介</h2><h3 id="为什么要对视频进行编码"><a href="#为什么要对视频进行编码" class="headerlink" title="为什么要对视频进行编码"></a>为什么要对视频进行编码</h3><p>我们为什么要对视频进行编码呢？ 要知道我们看到的视频，无论是大屏幕上的电影，还是手机上的短视频，其实都是由一张张图片组成的，为了让观看者不会感觉到卡顿，一秒钟至少需要有16张图片变换（这个一秒钟多少张图片的变换叫做帧率），一般情况下是30帧。那么按照这个方式算下来，一个1280x720分辨率的视频按照一秒钟的大小就是 1280x720x30 ≈ 420M，这仅仅是一秒钟的视频，这么大的数据量别说是在网络上传输了，就连你的硬盘恐怕也都吃不消。</p>
+<p>所以我们需要对视频进行压缩，而压缩的过程中就需要对视频进行编码。</p>
+<h3 id="为什么编码后视频会变小"><a href="#为什么编码后视频会变小" class="headerlink" title="为什么编码后视频会变小"></a>为什么编码后视频会变小</h3><p>那为什么对视频的编码就是压缩呢？仔细想想我们平时看电影的时候，每个镜头或多或少都会有一些一段时间内不变的场景吧？这个时候每一帧都带上这个场景就造成了数据上的冗余，所以在编码过程中，就会去除这些冗余的数据。而在视频信息中一般有三种冗余信息，并且每种冗余信息都才用不同的方式处理：</p>
+<ul>
+<li>空间冗余：采用帧内预测编码压缩</li>
+<li>时间冗余：采用运动搜索和运动补偿压缩</li>
+<li>统计冗余：采用熵编码压缩</li>
+</ul>
+<h3 id="软编码和硬编码"><a href="#软编码和硬编码" class="headerlink" title="软编码和硬编码"></a>软编码和硬编码</h3><p>编码又分为软编码和硬编码</p>
+<ul>
+<li>软编码：使用CPU进行编码</li>
+<li>硬编码：不使用CPU进行编码，使用比如显卡GPU</li>
+</ul>
+<p>那他们有什么区别呢？之前用过一些视频直播平台App的同学有可能会感受到过，使用软编码的App在直播的时候手机会明显的发烫，这就是因为在使用CPU进行软编码的时候，会对CPU的负载影响很大，导致设备发热，但是软编码也有优点，就是低码率下的质量要比直接使用硬编码好一点。不过现在在GPU硬件平台也有移植了一些优秀的软编码算法，提升低码率下硬编码的质量。</p>
+<h2 id="H-264简介"><a href="#H-264简介" class="headerlink" title="H.264简介"></a>H.264简介</h2><p>国际上指定视频编解码技术的组织主要有两个，并且指定了两个主要系列的编解码规则，一个是<strong>国际电联(ITU)</strong>主导的<strong>H.26X</strong>系列，一个是<strong>国际标准组织机构(ISO)</strong>主导的<strong>MPEG</strong>系列。</p>
+<p>而H.264是两个组织的联合视频组(JVT)共同制定的数字视频标准，所以他既是ITU的H.264标准，也是ISO的MPEG-4的第10部分或者叫AVC(Advanced Video Coding)。</p>
+<p>所以在当下H.264还是很牛*的，另外H.265作为H.264的继任者，可以支持最高8K(8192x4320)分辨率的视频编解码，也是未来发展的趋势。</p>
+<h3 id="VCL与NAL分层"><a href="#VCL与NAL分层" class="headerlink" title="VCL与NAL分层"></a>VCL与NAL分层</h3><p>H.264的原始码流(裸流)是由一个接一个的<strong>NALU</strong>组成的，他的功能分为两部分：<strong>VCL</strong>:视频编码层，<strong>NAL</strong>:网络提取层。</p>
+<blockquote>
+<p><strong>VCL：</strong> 视像编码层（<strong>Video Coding Layer</strong>， 简称<strong>VCL</strong>），包括核心压缩引擎和块，宏块和片的语法级别定义，设计目标是尽可能地独立于网络进行高效的编码，对视频原始数据进行压缩。<br><strong>NAL：</strong> 网络抽象层（<strong>Network Abstraction Layer</strong>，简称<strong>NAL</strong>）。在以太网每个包大小是 <strong>1500</strong> 字节，而一帧往往会大于这个值，所以就需要用于按照一定格式，对 <strong>VCL</strong> 视像编码层输出的数据拆成多个包传输，并提供包头（<strong>heade</strong>r）等信息，以在不同速率的网络上传输或进行存储，所有的拆包和组包都是 <strong>NAL</strong> 层去处理的。覆盖了所有片级以上的语法级别。</p>
+<center><img src="/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/1.png" alt="logo"></center> 
+
+<p>VCL数据传输或者存储之前，会被映射到NALU中，H.264数据包含这一个个NALU</p>
+<center><img src="/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/2.png" alt="logo"></center> 
+
+<p>一个<strong>NALU = 一组对应于视频编码的NALU头部信息 + 一个原始字节序列负荷(RBSP,Raw Byte Sequence Payload)</strong></p>
+</blockquote>
+<p>H.264码流第一个NALU是SPS，第二个NALU是PPS，第三个NALU是IDR。</p>
+<blockquote>
+<p><strong>*SPS：</strong> 序列参数集 <strong>SPS(Sequence Parameter Sets)</strong>，存储的是一个序列的信息，包括有多少帧等<br><strong>PPS：</strong> 图像参数集 <strong>PPS(Picture Parameter Sets )</strong>，存储的一帧的信息。 解码的时候必须获取到 <strong>SPS</strong> 和 <strong>PPS</strong> 的信息，才能对后面的数据进行解码。</p>
+</blockquote>
+<h3 id="H-264的三种帧"><a href="#H-264的三种帧" class="headerlink" title="H.264的三种帧"></a>H.264的三种帧</h3><p>在H.264中定义了三种帧：</p>
+<ul>
+<li>I帧：完整编码的帧叫I帧，也是关键帧，上边说到的电影中有不变场景的情况中，这个帧一般是一个全新完整的场景中的</li>
+<li>P帧：参考之前的I帧生成的只包含差异部分编码的帧，也叫向前参考帧，P帧只会保存和之前帧不一样的数据，这样能够让数据大大减少</li>
+<li>B帧：参考前后编码的帧，也叫双向参考帧，压缩时要参考前后两帧，压缩率会更高，但是因为对后一帧也有依赖，所以在直播中应用时需要考虑到网络传输的速度，这时候就不是很适合使用B帧</li>
+</ul>
+<h3 id="H-264的算法"><a href="#H-264的算法" class="headerlink" title="H.264的算法"></a>H.264的算法</h3><p>H.264采用的核心算法是帧内压缩和帧间压缩。</p>
+<ul>
+<li>帧内压缩：生成I帧的算法</li>
+<li>帧间压缩：是生成B帧和P帧的算法</li>
+</ul>
+<p>在编码的过程中，H.264会把几帧图像分为一组，称为<strong>GOP</strong>（Group of Picture）或者<strong>GOF</strong>（Group of Frame）。一般情况下，一个GOP会有一个I帧，并且以这个I帧开头，然后跟随多个P帧以及B帧。</p>
+<center><img src="/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/3.png" alt="logo"></center> 
+
+
+<h2 id="VideoToolBox"><a href="#VideoToolBox" class="headerlink" title="VideoToolBox"></a>VideoToolBox</h2><p>在iOS中，处理视频相关的框架有5个，从顶层开始分别是：</p>
+<ul>
+<li>AVKit</li>
+<li>AVFoundation</li>
+<li>VideoToolBox</li>
+<li>Core Media</li>
+<li>Core Video</li>
+</ul>
+<p>可以看到VideoToolBox是处于中间的位置，算是相对底层的框架，可以直接访问硬件进行硬编解码。</p>
+<h2 id="编码（VTCompressionSession）"><a href="#编码（VTCompressionSession）" class="headerlink" title="编码（VTCompressionSession）"></a>编码（VTCompressionSession）</h2><p>VideoToolBox中使用VTCompressionSession进行编码，从<br><a href="https://developer.apple.com/documentation/videotoolbox/vtcompressionsession?language=objc" target="_blank" rel="external">VTCompressionSession官方文档</a>中可以看出来，使用VTCompressionSession进行编码主要有5个步骤。</p>
+<ol>
+<li>使用 <a href="https://developer.apple.com/documentation/videotoolbox/1428285-vtcompressionsessioncreate?language=objc" target="_blank" rel="external">VTCompressionSessionCreate</a> 创建一个session；</li>
+<li>使用 <a href="https://developer.apple.com/documentation/videotoolbox/1536144-vtsessionsetproperty?language=objc" target="_blank" rel="external">VTSessionSetProperty</a> 或 <a href="https://developer.apple.com/documentation/videotoolbox/1536153-vtsessionsetproperties?language=objc" target="_blank" rel="external">VTSessionSetProperties</a> 对session设置一些属性；</li>
+<li>使用 <a href="https://developer.apple.com/documentation/videotoolbox/1428287-vtcompressionsessionencodeframe?language=objc" target="_blank" rel="external">VTCompressionSessionEncodeFrame</a>  进行编码，输出的内容会在callback中返回；</li>
+<li>使用 <a href="https://developer.apple.com/documentation/videotoolbox/1428303-vtcompressionsessioncompletefram?language=objc" target="_blank" rel="external">VTCompressionSessionCompleteFrames</a> 停止编码；</li>
+<li>使用 <a href="https://developer.apple.com/documentation/videotoolbox/1428295-vtcompressionsessioninvalidate?language=objc" target="_blank" rel="external">VTCompressionSessionInvalidate</a> 和  <a href="https://developer.apple.com/documentation/corefoundation/1521153-cfrelease?language=objc" target="_blank" rel="external">CFRelease</a>  来释放资源。</li>
+</ol>
+<h3 id="创建session"><a href="#创建session" class="headerlink" title="创建session"></a>创建session</h3><p>首先看一下创建session的函数</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">VTCompressionSessionCreate(</div><div class="line">	<span class="built_in">CFAllocatorRef</span>							allocator,</div><div class="line">	int32_t									width,</div><div class="line">	int32_t									height,</div><div class="line">	<span class="built_in">CMVideoCodecType</span>						codecType,</div><div class="line">	<span class="built_in">CFDictionaryRef</span>							encoderSpecification,</div><div class="line">	<span class="built_in">CFDictionaryRef</span>					sourceImageBufferAttributes,</div><div class="line">	<span class="built_in">CFAllocatorRef</span>						compressedDataAllocator,</div><div class="line">	VTCompressionOutputCallback				outputCallback,</div><div class="line">	<span class="keyword">void</span> *									outputCallbackRefCon,</div><div class="line">	VTCompressionSessionRef *	 compressionSessionOut)</div></pre></td></tr></table></figure>
+<p>首先我们来看一下每个参数的作用：</p>
+<ul>
+<li>CFAllocatorRef allocator：内存构造器，传递默认的kCFAllocatorDefault即可</li>
+<li>int32_t width：编码器的宽度，不用多说</li>
+<li>int32_t height：编码器的高度，也不用多说了</li>
+<li>CMVideoCodecType codecType： 编码器的类型，如果使用H264的话，我们选择kCMVideoCodecType_H264就可以了</li>
+<li>CFDictionaryRef encoderSpecification：编码规范，这边我们直接传NULL就可以了；</li>
+<li>CFDictionaryRef sourceImageBufferAttributes：图像缓冲区属性，这里同样传递NULL即可；</li>
+<li>CFAllocatorRef compressedDataAllocator：编码后数据的构造器，传NULL</li>
+<li>VTCompressionOutputCallback outputCallback：编码结束后的回调函数</li>
+<li>void <em>outputCallbackRefCon：回调函数的参数，一般传`(__bridge void </em>)(self)`或者指定的处理回调方法的类</li>
+<li>VTCompressionSessionRef *compressionSessionOut；输出参数，传递一个session</li>
+</ul>
+<h3 id="配置参数"><a href="#配置参数" class="headerlink" title="配置参数"></a>配置参数</h3><p>同样的，先看一下配置参数的方法：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">VTSessionSetProperty(</div><div class="line">  VTSessionRef       session,</div><div class="line">  <span class="built_in">CFStringRef</span>        propertyKey,</div><div class="line">  <span class="built_in">CFTypeRef</span>          propertyValue )</div></pre></td></tr></table></figure>
+<p>这个就好理解多了，</p>
+<ul>
+<li>VTSessionRef session：编码器；</li>
+<li>CFStringRef propertyKey：需要设置的property的key</li>
+<li>CFTypeRef propertyValue：需要设置的property的value</li>
+</ul>
+<p>可以配置的参数有很多，具体的内容都可以参考官方文档<a href="https://developer.apple.com/documentation/videotoolbox/vtcompressionsession/compression_properties?language=objc" target="_blank" rel="external">Compression Properties | Apple Developer Documentation</a>。</p>
+<p>这里简单说几个（当然了，具体使用还是要看你的项目，这里说的是我的项目里用到的）</p>
+<ul>
+<li>kVTCompressionPropertyKey_ProfileLevel 编码比特流的级别</li>
+<li>kVTCompressionPropertyKey_RealTime 是否在运行时实时执行压缩</li>
+<li>kVTCompressionPropertyKey_ExpectedFrameRate 期望的帧率，注意这里的期望并不一定能够达到</li>
+</ul>
+<h3 id="开始编码"><a href="#开始编码" class="headerlink" title="开始编码"></a>开始编码</h3><p>开始编码简单一些，就直接调用方法传递session即可：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">VTCompressionSessionPrepareToEncodeFrames(VTCompressionSessionRef session )</div></pre></td></tr></table></figure>
+<h3 id="回调"><a href="#回调" class="headerlink" title="回调"></a>回调</h3><p>接下来通过回调获取到编码的参数</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> compressionOutCallback(<span class="keyword">void</span> *outputCallbackRefCon,</div><div class="line">                            <span class="keyword">void</span> *sourceFrameRefCon,</div><div class="line">                            OSStatus status,</div><div class="line">                            VTEncodeInfoFlags infoFlags,</div><div class="line">                            <span class="built_in">CMSampleBufferRef</span> sampleBuffer)</div></pre></td></tr></table></figure>
+<p>还是先看一下各个参数：</p>
+<ul>
+<li>void *outputCallbackRefCon 刚刚传递过来的参数，因为是C函数，所以不能直接使用本类中的变量，所以一般通过这个来过渡</li>
+<li>void *sourceFrameRefCon</li>
+<li>OSStatus status 编码的状态，如果为noErr(0)表示没有异常</li>
+<li>VTEncodeInfoFlags infoFlags</li>
+<li>CMSampleBufferRef sampleBuffer 回调的buffer参数</li>
+</ul>
+<p>一般情况下，我们会在这里解析回调的数据，提取出sps和pps，然后循环nalu数据来获取编码后的数据，具体的代码我会写在下边。</p>
+<h3 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h3><p>结束编码之后，记得回调关闭session和释放之前开辟的session</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">VTCompressionSessionCompleteFrames(encodingSession, kCMTimeInvalid);</div><div class="line">VTCompressionSessionInvalidate(encodingSession);</div><div class="line"><span class="built_in">CFRelease</span>(encodingSession);</div><div class="line">encodingSession = <span class="literal">NULL</span>;</div></pre></td></tr></table></figure>
+<h3 id="完整代码："><a href="#完整代码：" class="headerlink" title="完整代码："></a>完整代码：</h3><p>接下来贴下编码部分的完整代码，比较少就不另外写Demo了</p>
+<p>.h：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  TLH264Encoder.h</span></div><div class="line"><span class="comment">//  TeamLink</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  Created by 张忠瑞 on 2020/4/22.</span></div><div class="line"><span class="comment">//  Copyright © 2020 TrackView. All rights reserved.</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;AVFoundation/AVFoundation.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;VideoToolbox/VideoToolbox.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="built_in">NS_ASSUME_NONNULL_BEGIN</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">TLH264EncoderDelegate</span> &lt;<span class="title">NSObject</span>&gt;</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)gotSpsPps:(<span class="built_in">NSData</span> *)sps pps:(<span class="built_in">NSData</span> *)pps;</div><div class="line">- (<span class="keyword">void</span>)gotEncodedData:(<span class="built_in">NSData</span> *)data isKeyFrame:(<span class="built_in">BOOL</span>)isKeyFrame;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TLH264Encoder</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">weak</span>) <span class="keyword">id</span>&lt;TLH264EncoderDelegate&gt; delegate;</div><div class="line"></div><div class="line">- (<span class="keyword">instancetype</span>)initWithWidth:(<span class="keyword">int</span>)width andHeight:(<span class="keyword">int</span>)height andFps:(<span class="keyword">int</span>)fps;</div><div class="line">- (<span class="keyword">void</span>)encodeWithSampleBuffer:(<span class="built_in">CMSampleBufferRef</span>)sampleBuffer;</div><div class="line">- (<span class="keyword">void</span>)stopEncode;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="built_in">NS_ASSUME_NONNULL_END</span></div></pre></td></tr></table></figure></p>
+<p>.m:<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  TLH264Encoder.m</span></div><div class="line"><span class="comment">//  TeamLink</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  Created by 张忠瑞 on 2020/4/22.</span></div><div class="line"><span class="comment">//  Copyright © 2020 TrackView. All rights reserved.</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"><span class="comment">/// Encode 流程：</span></div><div class="line"><span class="comment">/// 1.使用VTCompressionSessionCreate创建session</span></div><div class="line"><span class="comment">/// 2.使用VTSessionSetProperty配置编码器</span></div><div class="line"><span class="comment">/// 3.使用VTCompressionSessionEncodeFrame进行编码，编码好的数据会在compressionOutCallback中回调</span></div><div class="line"><span class="comment">/// 4.使用VTCompressionSessionCompleteFrames完成编码</span></div><div class="line"><span class="comment">/// 5.使用VTCompressionSessionInvalidate来释放资源。</span></div><div class="line"><span class="comment">/// https://developer.apple.com/documentation/videotoolbox/vtcompressionsession?language=objc</span></div><div class="line"><span class="comment">/// Property: https://developer.apple.com/documentation/videotoolbox/vtcompressionsession/compression_properties?language=objc</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"TLH264Encoder.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TLH264Encoder</span> () </span>&#123;</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_queue_t</span> encodeQueue;</div><div class="line">    VTCompressionSessionRef encodingSession;</div><div class="line">&#125;</div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">TLH264Encoder</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">instancetype</span>)initWithWidth:(<span class="keyword">int</span>)width andHeight:(<span class="keyword">int</span>)height andFps:(<span class="keyword">int</span>)fps &#123;</div><div class="line"></div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>) &#123;</div><div class="line"></div><div class="line">        [<span class="keyword">self</span> createSessionWithWidth:width andHeight:height andFps:fps];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)encodeWithSampleBuffer:(<span class="built_in">CMSampleBufferRef</span>)sampleBuffer &#123;</div><div class="line"></div><div class="line">    CVImageBufferRef imageBuffer = (CVImageBufferRef)<span class="built_in">CMSampleBufferGetImageBuffer</span>(sampleBuffer);</div><div class="line">    <span class="built_in">CMTime</span> presentationTimeStamp = <span class="built_in">CMSampleBufferGetPresentationTimeStamp</span>(sampleBuffer);</div><div class="line"></div><div class="line">    VTEncodeInfoFlags flags;</div><div class="line">    OSStatus status = VTCompressionSessionEncodeFrame(encodingSession,</div><div class="line">                                                      imageBuffer,</div><div class="line">                                                      presentationTimeStamp,</div><div class="line">                                                      kCMTimeInvalid,</div><div class="line">                                                      <span class="literal">NULL</span>,</div><div class="line">                                                      <span class="literal">NULL</span>,</div><div class="line">                                                      &amp;flags);</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(status != noErr) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Encode frame failure: status = %d"</span>,(<span class="keyword">int</span>)status);</div><div class="line"></div><div class="line">        <span class="comment">//停止编码</span></div><div class="line">        <span class="keyword">if</span> (encodingSession) &#123;</div><div class="line">            VTCompressionSessionInvalidate(encodingSession);</div><div class="line">            <span class="built_in">CFRelease</span>(encodingSession);</div><div class="line">            encodingSession = <span class="literal">NULL</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"Encode frame success"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)stopEncode &#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(encodingSession) &#123;</div><div class="line">        VTCompressionSessionCompleteFrames(encodingSession, kCMTimeInvalid);</div><div class="line">        VTCompressionSessionInvalidate(encodingSession);</div><div class="line">        <span class="built_in">CFRelease</span>(encodingSession);</div><div class="line">        encodingSession = <span class="literal">NULL</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// MARK: - Private method</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)createSessionWithWidth:(<span class="keyword">int</span>)width andHeight:(<span class="keyword">int</span>)height andFps:(<span class="keyword">int</span>)fps &#123;</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_queue_t</span> encodeQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line">    <span class="built_in">dispatch_async</span>(encodeQueue, ^&#123;</div><div class="line">        OSStatus status = VTCompressionSessionCreate(kCFAllocatorDefault,</div><div class="line">                                                     width, height,</div><div class="line">                                                     kCMVideoCodecType_H264,</div><div class="line">                                                     <span class="literal">NULL</span>,</div><div class="line">                                                     <span class="literal">NULL</span>,</div><div class="line">                                                     <span class="literal">NULL</span>,</div><div class="line">                                                     compressionOutCallback,</div><div class="line">                                                     (__bridge <span class="keyword">void</span> *)(<span class="keyword">self</span>),</div><div class="line">                                                     &amp;<span class="keyword">self</span>-&gt;encodingSession);</div><div class="line"></div><div class="line">        <span class="keyword">if</span>(status != noErr) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"Create session failure: status = %d"</span>,(<span class="keyword">int</span>)status);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Create session success"</span>);</div><div class="line"></div><div class="line">        <span class="comment">//配置session</span></div><div class="line">        <span class="comment">//编码比特流的配置文件和级别</span></div><div class="line">        VTSessionSetProperty(<span class="keyword">self</span>-&gt;encodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);</div><div class="line"></div><div class="line">        <span class="comment">//运行时：建议视频编码实时执行压缩</span></div><div class="line">        VTSessionSetProperty(<span class="keyword">self</span>-&gt;encodingSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue);</div><div class="line"></div><div class="line">        <span class="comment">//设置预期帧率</span></div><div class="line">        <span class="built_in">CFNumberRef</span> fpsRef = <span class="built_in">CFNumberCreate</span>(kCFAllocatorDefault, kCFNumberIntType, &amp;fps);</div><div class="line">        VTSessionSetProperty(<span class="keyword">self</span>-&gt;encodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef);</div><div class="line"></div><div class="line">        <span class="comment">//开始编码</span></div><div class="line">        VTCompressionSessionPrepareToEncodeFrames(<span class="keyword">self</span>-&gt;encodingSession);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// MARK: - Callback</span></div><div class="line"></div><div class="line"><span class="keyword">void</span> compressionOutCallback(<span class="keyword">void</span> *outputCallbackRefCon,</div><div class="line">                            <span class="keyword">void</span> *sourceFrameRefCon,</div><div class="line">                            OSStatus status,</div><div class="line">                            VTEncodeInfoFlags infoFlags,</div><div class="line">                            <span class="built_in">CMSampleBufferRef</span> sampleBuffer) &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"compressionOutCallback status = %d, infoFlags = %d"</span>,(<span class="keyword">int</span>)status,(<span class="keyword">int</span>)infoFlags);</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(status != noErr) &#123;</div><div class="line">        <span class="keyword">return</span>;;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(!<span class="built_in">CMSampleBufferDataIsReady</span>(sampleBuffer)) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"compressionOutCallback sampleBuffer is not ready"</span>);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    TLH264Encoder *encoder = (__bridge TLH264Encoder *)outputCallbackRefCon;</div><div class="line"></div><div class="line">    <span class="comment">//判断是否为关键帧</span></div><div class="line">    <span class="keyword">bool</span> keyframe = !<span class="built_in">CFDictionaryContainsKey</span>( (<span class="built_in">CFArrayGetValueAtIndex</span>(<span class="built_in">CMSampleBufferGetSampleAttachmentsArray</span>(sampleBuffer, <span class="literal">true</span>), <span class="number">0</span>)), kCMSampleAttachmentKey_NotSync);</div><div class="line"></div><div class="line">    <span class="comment">//关键帧获取pps和sps</span></div><div class="line">    <span class="keyword">if</span>(keyframe) &#123;</div><div class="line">        <span class="built_in">CMFormatDescriptionRef</span> format = <span class="built_in">CMSampleBufferGetFormatDescription</span>(sampleBuffer);</div><div class="line">        size_t sparameterSetSize, sparameterSetCount;</div><div class="line">        <span class="keyword">const</span> uint8_t *sparameterSet;</div><div class="line">        OSStatus statusCode = <span class="built_in">CMVideoFormatDescriptionGetH264ParameterSetAtIndex</span>(format, <span class="number">0</span>, &amp;sparameterSet, &amp;sparameterSetSize, &amp;sparameterSetCount, <span class="number">0</span> );</div><div class="line">        <span class="keyword">if</span> (statusCode == noErr)</div><div class="line">        &#123;</div><div class="line">            <span class="comment">// 获得了sps，再获取pps</span></div><div class="line">            size_t pparameterSetSize, pparameterSetCount;</div><div class="line">            <span class="keyword">const</span> uint8_t *pparameterSet;</div><div class="line">            OSStatus statusCode = <span class="built_in">CMVideoFormatDescriptionGetH264ParameterSetAtIndex</span>(format, <span class="number">1</span>, &amp;pparameterSet, &amp;pparameterSetSize, &amp;pparameterSetCount, <span class="number">0</span> );</div><div class="line">            <span class="keyword">if</span> (statusCode == noErr)</div><div class="line">            &#123;</div><div class="line">                <span class="comment">// 获取SPS和PPS data</span></div><div class="line">                <span class="built_in">NSData</span> *sps = [<span class="built_in">NSData</span> dataWithBytes:sparameterSet length:sparameterSetSize];</div><div class="line">                <span class="built_in">NSData</span> *pps = [<span class="built_in">NSData</span> dataWithBytes:pparameterSet length:pparameterSetSize];</div><div class="line">                <span class="keyword">if</span> (encoder.delegate)</div><div class="line">                &#123;</div><div class="line">                    <span class="comment">//回调解码完成的sps和pps数据</span></div><div class="line">                    [encoder.delegate gotSpsPps:sps pps:pps];</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">CMBlockBufferRef</span> dataBuffer = <span class="built_in">CMSampleBufferGetDataBuffer</span>(sampleBuffer);</div><div class="line">    size_t length, totalLength;</div><div class="line">    <span class="keyword">char</span> *dataPointer;</div><div class="line"></div><div class="line">    <span class="comment">//这里获取了数据指针，和NALU的帧总长度，前四个字节里面保存的</span></div><div class="line">    OSStatus statusCodeRet = <span class="built_in">CMBlockBufferGetDataPointer</span>(dataBuffer, <span class="number">0</span>, &amp;length, &amp;totalLength, &amp;dataPointer);</div><div class="line">    <span class="keyword">if</span> (statusCodeRet == noErr) &#123;</div><div class="line">        size_t bufferOffset = <span class="number">0</span>;</div><div class="line">        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> <span class="built_in">AVCCHeaderLength</span> = <span class="number">4</span>; <span class="comment">// 返回的nalu数据前四个字节不是0001的startcode，而是大端模式的帧长度length</span></div><div class="line"></div><div class="line">        <span class="comment">// 循环获取nalu数据</span></div><div class="line">        <span class="keyword">while</span> (bufferOffset &lt; totalLength - <span class="built_in">AVCCHeaderLength</span>) &#123;</div><div class="line">            uint32_t NALUnitLength = <span class="number">0</span>;</div><div class="line">            <span class="comment">// 读取NALU长度的数据</span></div><div class="line">            memcpy(&amp;NALUnitLength, dataPointer + bufferOffset, <span class="built_in">AVCCHeaderLength</span>);</div><div class="line"></div><div class="line">            <span class="comment">// 从大端转系统端</span></div><div class="line">            NALUnitLength = <span class="built_in">CFSwapInt32BigToHost</span>(NALUnitLength);</div><div class="line"></div><div class="line">            <span class="built_in">NSData</span>* data = [[<span class="built_in">NSData</span> alloc] initWithBytes:(dataPointer + bufferOffset + <span class="built_in">AVCCHeaderLength</span>) length:NALUnitLength];</div><div class="line">            <span class="keyword">if</span> (encoder.delegate) &#123;</div><div class="line">                [encoder.delegate gotEncodedData:data isKeyFrame:keyframe];</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 移动到下一个NALU单元</span></div><div class="line">            bufferOffset += <span class="built_in">AVCCHeaderLength</span> + NALUnitLength;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure></p>
+<h2 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h2><p>解码和编码基本没有太大差别，<a href="https://developer.apple.com/documentation/videotoolbox/vtdecompressionsession?language=objc" target="_blank" rel="external">VTDecompressionSession | Apple Developer Documentation</a>官方文档中还是很清楚的写出了基本的几个步骤：</p>
+<ol>
+<li>使用 <a href="https://developer.apple.com/documentation/videotoolbox/1536134-vtdecompressionsessioncreate?language=objc" target="_blank" rel="external">VTDecompressionSessionCreate</a> 创建一个解码器；</li>
+<li>使用 <a href="https://developer.apple.com/documentation/videotoolbox/1536144-vtsessionsetproperty?language=objc" target="_blank" rel="external">VTSessionSetProperty</a> 或 <a href="https://developer.apple.com/documentation/videotoolbox/1536153-vtsessionsetproperties?language=objc" target="_blank" rel="external">VTSessionSetProperties</a> 来配置参数</li>
+<li>调用 <a href="https://developer.apple.com/documentation/videotoolbox/1536071-vtdecompressionsessiondecodefram?language=objc" target="_blank" rel="external">VTDecompressionSessionDecodeFrame</a> 来开始解码</li>
+<li>使用 <a href="https://developer.apple.com/documentation/videotoolbox/1536093-vtdecompressionsessioninvalidate?language=objc" target="_blank" rel="external">VTDecompressionSessionInvalidate</a> 和 <a href="https://developer.apple.com/documentation/corefoundation/1521153-cfrelease?language=objc" target="_blank" rel="external">CFRelease</a> 来释放参数</li>
+</ol>
+<p>接下来还是一步一步来看一下：</p>
+<h3 id="创建解码器"><a href="#创建解码器" class="headerlink" title="创建解码器"></a>创建解码器</h3><p>首先还是来看一下调用的方法：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">VTDecompressionSessionCreate(</div><div class="line">	<span class="built_in">CFAllocatorRef</span>                    allocator,</div><div class="line">	<span class="built_in">CMVideoFormatDescriptionRef</span>		   videoFormatDescription,</div><div class="line">	<span class="built_in">CFDictionaryRef</span>					   videoDecoderSpecification,</div><div class="line">	<span class="built_in">CFDictionaryRef</span>            destinationImageBufferAttributes,</div><div class="line">	<span class="keyword">const</span> VTDecompressionOutputCallbackRecord * outputCallback,</div><div class="line">	VTDecompressionSessionRef * decompressionSessionOut)</div></pre></td></tr></table></figure>
+<p>可以看到解码的参数和编码基本没太大区别：</p>
+<ul>
+<li>CFAllocatorRef allocator：构造器，传默认的即可 kCFAllocatorDefault</li>
+<li>CMVideoFormatDescriptionRef     videoFormatDescription：数据的格式</li>
+<li>CFDictionaryRef  videoDecoderSpecification：解码器规范，同样传递NULL即可</li>
+<li>CFDictionaryRef  destinationImageBufferAttributes：NULL</li>
+<li>const VTDecompressionOutputCallbackRecord * outputCallback：回调函数</li>
+<li>VTDecompressionSessionRef * decompressionSessionOut：session</li>
+</ul>
+<h3 id="配置参数-1"><a href="#配置参数-1" class="headerlink" title="配置参数"></a>配置参数</h3><p>解码器的参数配置和编码器的方法一样，只是可能传递的参数有所不同，这里就不多做介绍，可以直接看<a href="https://developer.apple.com/documentation/videotoolbox/vtdecompressionsession/decompression_properties?language=objc" target="_blank" rel="external">Decompression Properties | Apple Developer Documentation</a></p>
+<h3 id="开始解码"><a href="#开始解码" class="headerlink" title="开始解码"></a>开始解码</h3><p>解码的时候有一点需要注意，我们需要根据传递过来的是否为关键帧或者sps及pps，来做不同的处理，这一块可以等下直接看代码</p>
+<h3 id="解码的回调"><a href="#解码的回调" class="headerlink" title="解码的回调"></a>解码的回调</h3><p>解码的回调中可以收到解码成功的<code>CVPixelBufferRef</code>。</p>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><p>接下来贴下完整的代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  TLH264Decoder.h</span></div><div class="line"><span class="comment">//  TeamLink</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  Created by 张忠瑞 on 2020/4/23.</span></div><div class="line"><span class="comment">//  Copyright © 2020 TrackView. All rights reserved.</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;AVFoundation/AVFoundation.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;VideoToolbox/VideoToolbox.h&gt;</span></span></div><div class="line"></div><div class="line"></div><div class="line"><span class="built_in">NS_ASSUME_NONNULL_BEGIN</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">TLH264DecoderDelegate</span> &lt;<span class="title">NSObject</span>&gt;</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)gotDecodeFrame:(CVImageBufferRef)pixelBuffer andPresentationTimeStamp:(<span class="built_in">CMTime</span>)presentationTimeStamp;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TLH264Decoder</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span> ,<span class="keyword">weak</span>) <span class="keyword">id</span>&lt;TLH264DecoderDelegate&gt; delegate;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)decodeNalu:(uint8_t *)frame size:(uint32_t)frameSize;</div><div class="line">- (<span class="keyword">void</span>)stopDecoder;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="built_in">NS_ASSUME_NONNULL_END</span></div></pre></td></tr></table></figure>
+<p>.m<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div><div class="line">240</div><div class="line">241</div></pre></td><td class="code"><pre><div class="line">//</div><div class="line">//  TLH264Decoder.m</div><div class="line">//  TeamLink</div><div class="line">//</div><div class="line">//  Created by 张忠瑞 on 2020/4/23.</div><div class="line">//  Copyright © 2020 TrackView. All rights reserved.</div><div class="line">//</div><div class="line"></div><div class="line">/// 1.使用 VTDecompressionSessionCreate 方法来创一个解码器</div><div class="line">/// 2.使用 VTSessionSetProperty 或者 VTSessionSetProperties 来对解码器进行配置</div><div class="line">/// 3.使用 VTDecompressionSessionDecodeFrame 来进行数据的解码。</div><div class="line">/// 4.使用 VTDecompressionSessionInvalidate 以及 CFRelease 来对资源的释放</div><div class="line">/// https://developer.apple.com/documentation/videotoolbox/vtdecompressionsession?language=objc</div><div class="line"></div><div class="line">#import &quot;TLH264Decoder.h&quot;</div><div class="line"></div><div class="line">@interface TLH264Decoder () &#123;</div><div class="line"></div><div class="line">    VTDecompressionSessionRef       decodingSession;</div><div class="line">    CMVideoFormatDescriptionRef     decodingFormatDescription;      //解码format，封装sps和pps</div><div class="line"></div><div class="line">    uint8_t *sps;</div><div class="line">    NSInteger spsSize;</div><div class="line"></div><div class="line">    uint8_t *pps;</div><div class="line">    NSInteger ppsSize;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation TLH264Decoder</div><div class="line"></div><div class="line">- (void)decodeNalu:(uint8_t *)frame size:(uint32_t)frameSize &#123;</div><div class="line"></div><div class="line">    int nalu_type = (frame[4] &amp; 0x1F);</div><div class="line">    CVPixelBufferRef pixelBuffer = NULL;</div><div class="line"></div><div class="line">    uint32_t nalSize = (uint32_t)(frameSize-4);</div><div class="line">    uint8_t *pNalSize = (uint8_t *)(&amp;nalSize);</div><div class="line">    frame[0] = *(pNalSize + 3);</div><div class="line">    frame[1] = *(pNalSize + 2);</div><div class="line">    frame[2] = *(pNalSize + 1);</div><div class="line">    frame[3] = *(pNalSize);</div><div class="line"></div><div class="line">    switch (nalu_type) &#123;</div><div class="line">        case 0x05: &#123;</div><div class="line">            //关键帧</div><div class="line">            if([self createH264Decoder]) &#123;</div><div class="line">                pixelBuffer = [self decode:frame size:frameSize];</div><div class="line">            &#125;</div><div class="line">            break;</div><div class="line">        &#125;</div><div class="line">        case 0x07: &#123;</div><div class="line">            //sps(第七位)</div><div class="line">            spsSize = frameSize - 4;</div><div class="line">            sps = malloc(spsSize);</div><div class="line">            memcpy(sps, &amp;frame[4], spsSize);</div><div class="line">            break;</div><div class="line">        &#125;</div><div class="line">        case 0x08: &#123;</div><div class="line">            //pps</div><div class="line">            ppsSize = frameSize - 4;</div><div class="line">            pps = malloc(ppsSize);</div><div class="line">            memcpy(pps, &amp;frame[4], ppsSize);</div><div class="line">            break;</div><div class="line">        &#125;</div><div class="line">        default: &#123;</div><div class="line">            // B/P frame</div><div class="line">            if([self createH264Decoder]) &#123;</div><div class="line">                pixelBuffer = [self decode:frame size:frameSize];</div><div class="line">            &#125;</div><div class="line">            break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)stopDecoder &#123;</div><div class="line"></div><div class="line">    if(decodingSession) &#123;</div><div class="line">        VTDecompressionSessionInvalidate(decodingSession);</div><div class="line">        CFRelease(decodingSession);</div><div class="line">        decodingSession = NULL;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if(decodingFormatDescription) &#123;</div><div class="line">        CFRelease(decodingFormatDescription);</div><div class="line">        decodingFormatDescription = NULL;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (sps) &#123;</div><div class="line">        free(sps);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (pps) &#123;</div><div class="line">        free(pps);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    spsSize = 0;</div><div class="line">    ppsSize = 0;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">// MARK: - Private method</div><div class="line"></div><div class="line">//每次解析数据的时候都要检测一遍</div><div class="line">- (BOOL)createH264Decoder &#123;</div><div class="line">    if(decodingSession) &#123;</div><div class="line">        return YES;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    OSStatus formatDescStatus = [self createFormatDescription];</div><div class="line"></div><div class="line">    if(formatDescStatus != noErr) &#123;</div><div class="line">        NSLog(@&quot;create format description failure, status = %d&quot;,formatDescStatus);</div><div class="line">        return NO;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    OSStatus sessionStatus = [self createSession];</div><div class="line"></div><div class="line">    if(sessionStatus != noErr) &#123;</div><div class="line">        NSLog(@&quot;create session failure, status = %d&quot;,sessionStatus);</div><div class="line">        return NO;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    VTSessionSetProperty(decodingSession, kVTDecompressionPropertyKey_ThreadCount, (__bridge CFTypeRef)[NSNumber numberWithInt:1]);</div><div class="line">    VTSessionSetProperty(decodingSession, kVTDecompressionPropertyKey_RealTime, kCFBooleanTrue);</div><div class="line"></div><div class="line">    return YES;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (OSStatus)createFormatDescription &#123;</div><div class="line"></div><div class="line">    const uint8_t* const parameterSetPointers[2] = &#123; sps, pps &#125;;</div><div class="line">    const size_t parameterSetSizes[2] = &#123; spsSize, ppsSize &#125;;</div><div class="line"></div><div class="line">    OSStatus status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,</div><div class="line">                                                                          2, //param count</div><div class="line">                                                                          parameterSetPointers,</div><div class="line">                                                                          parameterSetSizes,</div><div class="line">                                                                          4, //nal start code size</div><div class="line">                                                                          &amp;decodingFormatDescription);</div><div class="line"></div><div class="line">    return status;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (OSStatus)createSession &#123;</div><div class="line"></div><div class="line">    //TODO: 传递width，height</div><div class="line">    NSDictionary *destinationPixelImageBufferAttributes = @&#123;(id)kCVPixelBufferPixelFormatTypeKey: [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange],</div><div class="line">                                                            (id)kCVPixelBufferWidthKey: [NSNumber numberWithInt:720],</div><div class="line">                                                            (id)kCVPixelBufferHeightKey: [NSNumber numberWithInt:960],</div><div class="line">                                                            (id)kCVPixelBufferOpenGLCompatibilityKey: [NSNumber numberWithBool:YES]&#125;;</div><div class="line"></div><div class="line">    VTDecompressionOutputCallbackRecord callBackRecord;</div><div class="line">    callBackRecord.decompressionOutputCallback = didDecompress;</div><div class="line">    callBackRecord.decompressionOutputRefCon = (__bridge void *)self;</div><div class="line"></div><div class="line"></div><div class="line">    OSStatus status = VTDecompressionSessionCreate(kCFAllocatorDefault,</div><div class="line">                                                   decodingFormatDescription,</div><div class="line">                                                   NULL,</div><div class="line">                                                   (__bridge CFDictionaryRef)destinationPixelImageBufferAttributes,</div><div class="line">                                                   &amp;callBackRecord,</div><div class="line">                                                   &amp;decodingSession);</div><div class="line"></div><div class="line">    return status;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (CVPixelBufferRef)decode:(uint8_t *)frame size:(uint32_t)frameSize &#123;</div><div class="line"></div><div class="line">    CVPixelBufferRef outputPixelBuffer = NULL;</div><div class="line"></div><div class="line">    CMBlockBufferRef blockBuffer = NULL;</div><div class="line"></div><div class="line">    OSStatus status = CMBlockBufferCreateWithMemoryBlock(NULL,</div><div class="line">                                                         (void *)frame,</div><div class="line">                                                         frameSize,</div><div class="line">                                                         kCFAllocatorNull,</div><div class="line">                                                         NULL,</div><div class="line">                                                         0,</div><div class="line">                                                         frameSize,</div><div class="line">                                                         FALSE,</div><div class="line">                                                         &amp;blockBuffer);</div><div class="line"></div><div class="line">    if(status == kCMBlockBufferNoErr) &#123;</div><div class="line">        CMSampleBufferRef sampleBuffer = NULL;</div><div class="line">        const size_t sampleSizeArray[] = &#123;frameSize&#125;;</div><div class="line"></div><div class="line">        status = CMSampleBufferCreateReady(kCFAllocatorDefault,</div><div class="line">                                           blockBuffer,</div><div class="line">                                           decodingFormatDescription,</div><div class="line">                                           1,</div><div class="line">                                           0,</div><div class="line">                                           NULL,</div><div class="line">                                           1,</div><div class="line">                                           sampleSizeArray,</div><div class="line">                                           &amp;sampleBuffer);</div><div class="line"></div><div class="line">        if(status == kCMBlockBufferNoErr &amp;&amp; sampleBuffer) &#123;</div><div class="line">            VTDecodeInfoFlags flagOut = 0;</div><div class="line">            VTDecodeFrameFlags flags = 0;</div><div class="line"></div><div class="line">            OSStatus decodeStatus = VTDecompressionSessionDecodeFrame(decodingSession,</div><div class="line">                                                                      sampleBuffer,</div><div class="line">                                                                      flags,</div><div class="line">                                                                      &amp;outputPixelBuffer,</div><div class="line">                                                                      &amp;flagOut);</div><div class="line"></div><div class="line">            if(decodeStatus == kVTInvalidSessionErr) &#123;</div><div class="line">                NSLog(@&quot;Invalid session, reset decoder session&quot;);</div><div class="line">            &#125; else if(decodeStatus == kVTVideoDecoderBadDataErr) &#123;</div><div class="line">                NSLog(@&quot;Decode failed status=%d(Bad data)&quot;, decodeStatus);</div><div class="line">            &#125; else if(decodeStatus != noErr) &#123;</div><div class="line">                NSLog(@&quot;Decode failed status=%d&quot;, decodeStatus);</div><div class="line">            &#125;</div><div class="line">            CFRelease(sampleBuffer);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        CFRelease(blockBuffer);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return outputPixelBuffer;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// MARK: - Callback</div><div class="line"></div><div class="line">static void didDecompress( void *decompressionOutputRefCon, void *sourceFrameRefCon, OSStatus status, VTDecodeInfoFlags infoFlags, CVImageBufferRef pixelBuffer, CMTime presentationTimeStamp, CMTime presentationDuration )&#123;</div><div class="line"></div><div class="line"></div><div class="line">    CVPixelBufferRef *outputPixelBuffer = (CVPixelBufferRef *)sourceFrameRefCon;</div><div class="line">    //持有pixelBuffer数据，否则会被释放,记得在delegate中使用完release</div><div class="line">    *outputPixelBuffer = CVPixelBufferRetain(pixelBuffer);</div><div class="line"></div><div class="line">    TLH264Decoder *decoder = (__bridge TLH264Decoder *)decompressionOutputRefCon;</div><div class="line">    if (decoder.delegate)</div><div class="line">    &#123;</div><div class="line">        [decoder.delegate gotDecodeFrame:pixelBuffer andPresentationTimeStamp:presentationTimeStamp];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>以上就是iOS中使用VideoToolBox来进行硬编解码的全部内容了，本来是想要在项目中为了避免内存使用过高才使用它（项目中需要在ReplayKit2的Extension中使用，有50M的内存限制），但是发现他<strong>不能在后台运行！</strong>这下就根本没法用了。</p>
+<p>所以也就简单记录一下，没有太多的深入研究，仅供个人学习使用，如果有什么地方写的不对或者有更好的建议，欢迎各位大佬批评指正。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://developer.apple.com/documentation/videotoolbox?language=objc" target="_blank" rel="external">VideoToolbox | Apple Developer Documentation</a><br><a href="http://www.enkichen.com/2018/03/24/videotoolbox/" target="_blank" rel="external">Apple 平台下的 VideoToolBox 框架 | Enki’s Notes</a><br><a href="https://juejin.im/post/5d6373f851882526ea39b59b" target="_blank" rel="external">音视频学习（二）— H.264编码原理 - 掘金</a><br><a href="https://www.cnblogs.com/ziyi--caolu/p/8034367.html" target="_blank" rel="external">直播一：H.264编码基础知识详解 - 紫忆 - 博客园</a><br><a href="https://www.jianshu.com/p/e68d46a2db9d" target="_blank" rel="external">VideoToolbox使用说明 - 简书</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/30/Swift中的可选类型（Optional）/" rel="next" title="Swift中的可选类型（Optional）">
+                <i class="fa fa-chevron-left"></i> Swift中的可选类型（Optional）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">85</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#视频编解码简介"><span class="nav-number">1.</span> <span class="nav-text">视频编解码简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要对视频进行编码"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要对视频进行编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么编码后视频会变小"><span class="nav-number">1.2.</span> <span class="nav-text">为什么编码后视频会变小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软编码和硬编码"><span class="nav-number">1.3.</span> <span class="nav-text">软编码和硬编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#H-264简介"><span class="nav-number">2.</span> <span class="nav-text">H.264简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VCL与NAL分层"><span class="nav-number">2.1.</span> <span class="nav-text">VCL与NAL分层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H-264的三种帧"><span class="nav-number">2.2.</span> <span class="nav-text">H.264的三种帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H-264的算法"><span class="nav-number">2.3.</span> <span class="nav-text">H.264的算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VideoToolBox"><span class="nav-number">3.</span> <span class="nav-text">VideoToolBox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编码（VTCompressionSession）"><span class="nav-number">4.</span> <span class="nav-text">编码（VTCompressionSession）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建session"><span class="nav-number">4.1.</span> <span class="nav-text">创建session</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置参数"><span class="nav-number">4.2.</span> <span class="nav-text">配置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始编码"><span class="nav-number">4.3.</span> <span class="nav-text">开始编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回调"><span class="nav-number">4.4.</span> <span class="nav-text">回调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结束"><span class="nav-number">4.5.</span> <span class="nav-text">结束</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整代码："><span class="nav-number">4.6.</span> <span class="nav-text">完整代码：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解码"><span class="nav-number">5.</span> <span class="nav-text">解码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建解码器"><span class="nav-number">5.1.</span> <span class="nav-text">创建解码器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置参数-1"><span class="nav-number">5.2.</span> <span class="nav-text">配置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始解码"><span class="nav-number">5.3.</span> <span class="nav-text">开始解码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解码的回调"><span class="nav-number">5.4.</span> <span class="nav-text">解码的回调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整代码"><span class="nav-number">5.5.</span> <span class="nav-text">完整代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">6.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">7.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":100,"height":200},"mobile":{"show":true},"react":{"opacityDefault":1,"opacityOnHover":0.2}});</script></body>
+</html>

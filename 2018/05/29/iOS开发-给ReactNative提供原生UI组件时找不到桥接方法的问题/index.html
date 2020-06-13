@@ -393,14 +393,14 @@
 <li>3.实现<code>- (UIView *)view</code>方法返回RN需要的UI样式；</li>
 </ul>
 <p>最多就算你需要传入参数或者回调，也只需要：</p>
-<figure class="highlight lisp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RCT_EXPORT_VIEW_PROPERTY(<span class="name">data</span>, NSString)<span class="comment">;</span></div><div class="line">RCT_EXPORT_VIEW_PROPERTY(<span class="name">onCallBack</span>, RCTBubblingEventBlock)<span class="comment">;</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RCT_EXPORT_VIEW_PROPERTY(data, NSString);</div><div class="line">RCT_EXPORT_VIEW_PROPERTY(onCallBack, RCTBubblingEventBlock);</div></pre></td></tr></table></figure>
 <p>乍看一下其实很简单，其实写起来也很简单。</p>
 <p>RN部分也只需要很简单的代码就可以将这个原生的UI控件引入进来：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// MapView.js</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> &#123; requireNativeComponent &#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</div><div class="line"></div><div class="line"><span class="comment">// requireNativeComponent automatically resolves 'RNTMap' to 'RNTMapManager'</span></div><div class="line"><span class="built_in">module</span>.exports = requireNativeComponent(<span class="string">'RNTMap'</span>, <span class="literal">null</span>);</div><div class="line"></div><div class="line"><span class="comment">// MyApp.js</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> MapView <span class="keyword">from</span> <span class="string">'./MapView.js'</span>;</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">render() &#123;</div><div class="line">  <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">MapView</span> <span class="attr">style</span>=<span class="string">&#123;&#123;</span> <span class="attr">flex:</span> <span class="attr">1</span> &#125;&#125; /&gt;</span>;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">// MapView.js</div><div class="line"></div><div class="line">import &#123; requireNativeComponent &#125; from &apos;react-native&apos;;</div><div class="line"></div><div class="line">// requireNativeComponent automatically resolves &apos;RNTMap&apos; to &apos;RNTMapManager&apos;</div><div class="line">module.exports = requireNativeComponent(&apos;RNTMap&apos;, null);</div><div class="line"></div><div class="line">// MyApp.js</div><div class="line"></div><div class="line">import MapView from &apos;./MapView.js&apos;;</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">render() &#123;</div><div class="line">  return &lt;MapView style=&#123;&#123; flex: 1 &#125;&#125; /&gt;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h2><p>于是我兴致勃勃的创建了一个文件<strong>xxx.m</strong> + <strong>xxx.h</strong>。<br>然后跟RN的小伙伴报告了我的文件名，然后愉快的调试了起来。<br>。<br>。<br>。<br>可是撸完代码之后发现RN这边根本没有显示原生的UI，无论怎么修改位置大小都显示不出来。</p>
 <h2 id="填坑"><a href="#填坑" class="headerlink" title="填坑"></a>填坑</h2><p>最后我们改变了桥接文件：</p>
 <p>将</p>
-<figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">RCT_EXPORT_MODULE()<span class="comment">;</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">RCT_EXPORT_MODULE();</div></pre></td></tr></table></figure>
 <p>改为</p>
 <p>RCT_EXPORT_MODULE(xxx);</p>
 <p>发现可以实现，但是人家官方的例子是没有这个指向的哇，这时候仔细看文档时发现了这样的一句话…</p>
@@ -530,7 +530,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

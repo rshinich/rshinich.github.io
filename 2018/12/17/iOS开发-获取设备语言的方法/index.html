@@ -88,18 +88,18 @@
 
 
 <meta name="description" content="今天遇到一个问题，就是开发时需要获取iOS设备机器设定的语言，找了一下找到了一共下面4个方法用来获取设备本地的语言：
-1234NSString *udfLanguageCode = [[NSUserDefaults standardUserDefaults] objectForKey:@&quot;AppleLanguages&quot;][0];NSString *pfLanguageCode = [NSLocal">
+1234NSString *udfLanguageCode = [[NSUserDefaults standardUserDefaults] objectForKey:@&amp;quot;AppleLanguages&amp;quot;][0];NSString *pfLanguageCode">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS开发-获取设备语言的方法">
 <meta property="og:url" content="http://yoursite.com/2018/12/17/iOS开发-获取设备语言的方法/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
 <meta property="og:description" content="今天遇到一个问题，就是开发时需要获取iOS设备机器设定的语言，找了一下找到了一共下面4个方法用来获取设备本地的语言：
-1234NSString *udfLanguageCode = [[NSUserDefaults standardUserDefaults] objectForKey:@&quot;AppleLanguages&quot;][0];NSString *pfLanguageCode = [NSLocal">
+1234NSString *udfLanguageCode = [[NSUserDefaults standardUserDefaults] objectForKey:@&amp;quot;AppleLanguages&amp;quot;][0];NSString *pfLanguageCode">
 <meta property="og:updated_time" content="2018-12-17T06:27:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发-获取设备语言的方法">
 <meta name="twitter:description" content="今天遇到一个问题，就是开发时需要获取iOS设备机器设定的语言，找了一下找到了一共下面4个方法用来获取设备本地的语言：
-1234NSString *udfLanguageCode = [[NSUserDefaults standardUserDefaults] objectForKey:@&quot;AppleLanguages&quot;][0];NSString *pfLanguageCode = [NSLocal">
+1234NSString *udfLanguageCode = [[NSUserDefaults standardUserDefaults] objectForKey:@&amp;quot;AppleLanguages&amp;quot;][0];NSString *pfLanguageCode">
 
 
 
@@ -375,7 +375,7 @@
 
       
         <p>今天遇到一个问题，就是开发时需要获取iOS设备机器设定的语言，找了一下找到了一共下面4个方法用来获取设备本地的语言：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSString *udfLanguageCode = [<span class="string">[NSUserDefaults standardUserDefaults</span>] objectForKey:@"AppleLanguages"][0];</div><div class="line">NSString *pfLanguageCode = [<span class="string">NSLocale preferredLanguages</span>][<span class="symbol">0</span>];</div><div class="line">NSString *localeLanguageCode = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];</div><div class="line">NSString *language =  [<span class="string">[NSBundle mainBundle</span>] preferredLocalizations][0];</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSString *udfLanguageCode = [[NSUserDefaults standardUserDefaults] objectForKey:@&quot;AppleLanguages&quot;][0];</div><div class="line">NSString *pfLanguageCode = [NSLocale preferredLanguages][0];</div><div class="line">NSString *localeLanguageCode = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];</div><div class="line">NSString *language =  [[NSBundle mainBundle] preferredLocalizations][0];</div></pre></td></tr></table></figure>
 <h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="http://www.hudongdong.com/ios/556.html" target="_blank" rel="external">iOS获取当前系统语言</a></p>
 
       
@@ -497,7 +497,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

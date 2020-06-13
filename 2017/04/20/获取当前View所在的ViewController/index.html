@@ -375,7 +375,7 @@
 
       
         <p>获取当前view所在的viewController</p>
-<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (UIViewController*)viewController</div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span> (UIView* <span class="keyword">next</span> = [<span class="keyword">self</span> superview]; <span class="keyword">next</span>; <span class="keyword">next</span> = <span class="keyword">next</span>.superview) &#123;</div><div class="line">        UIResponder* nextResponder = [<span class="keyword">next</span> nextResponder];</div><div class="line">        <span class="keyword">if</span> ([nextResponder <span class="symbol">isKindOfClass:</span>[UIViewController <span class="class"><span class="keyword">class</span>]]) &#123;</span></div><div class="line">            <span class="keyword">return</span> (UIViewController*)nextResponder;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (UIViewController*)viewController</div><div class="line">&#123;</div><div class="line">    for (UIView* next = [self superview]; next; next = next.superview) &#123;</div><div class="line">        UIResponder* nextResponder = [next nextResponder];</div><div class="line">        if ([nextResponder isKindOfClass:[UIViewController class]]) &#123;</div><div class="line">            return (UIViewController*)nextResponder;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return nil;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -487,7 +487,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

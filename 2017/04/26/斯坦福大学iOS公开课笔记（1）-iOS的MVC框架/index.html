@@ -389,7 +389,7 @@
 </ul>
 <h2 id="通信"><a href="#通信" class="headerlink" title="通信"></a>通信</h2><h3 id="控制器（Controller）与视图（View）"><a href="#控制器（Controller）与视图（View）" class="headerlink" title="控制器（Controller）与视图（View）"></a>控制器（Controller）与视图（View）</h3><h4 id="控制器（Controller）-gt-视图（View）：完全控制"><a href="#控制器（Controller）-gt-视图（View）：完全控制" class="headerlink" title="控制器（Controller） -&gt; 视图（View）：完全控制"></a>控制器（Controller） -&gt; 视图（View）：完全控制</h4><p>控制器可以完全知道视图的所有行为，具有完全控制权。</p>
 <p>这里提到了 <code>outlet</code>，outlet（输出口）是一种特殊的OC属性，用关键字<code>IBOutlet</code>声明，输出口是在控制器类的头文件中声明</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span>  (<span class="keyword">nonatomic</span>,<span class="keyword">retain</span>)    <span class="keyword">IBOutlet</span> <span class="built_in">UIButton</span>    *mybutton;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@property  (nonatomic,retain)    IBOutlet UIButton    *mybutton;</div></pre></td></tr></table></figure>
 <p>上边代码中就声明了一个<code>mybutton</code>的输出口，可以设置它指向IB中的任何一个button，通过<code>mybutton</code>这个对象，我们就可以获得到该button的相关属性。</p>
 <h4 id="视图（View）-gt-控制器（Controller）：盲的通信"><a href="#视图（View）-gt-控制器（Controller）：盲的通信" class="headerlink" title="视图（View） -&gt; 控制器（Controller）：盲的通信"></a>视图（View） -&gt; 控制器（Controller）：盲的通信</h4><p>因为View是通用的，所以他不知道调用他的Controller，所以他只能通过盲通信的方式与Controller通信。</p>
 <ul>
@@ -397,8 +397,8 @@
 <p>控制器本身有一个目标方法（target），然后将这个目标给视图的行为方法（action）,当视图中触发这个行为时，视图会发送消息给控制器的目标告诉控制器有人对他进行了操作。比如按钮的点击事件、滑动条的滑动事件。</p>
 </li>
 </ul>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIButton</span> *myBtn = [[<span class="built_in">UIButton</span> alloc] init];</div><div class="line">[myBtn addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(myBtnClicked) forControlEvents:<span class="built_in">UIControlEventTouchUpInside</span>];</div></pre></td></tr></table></figure>
-<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>myBtnClicked</div><div class="line">&#123;</div><div class="line">    NSLog<span class="params">(@<span class="string">"myBtn clicked"</span>)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">UIButton *myBtn = [[UIButton alloc] init];</div><div class="line">[myBtn addTarget:self action:@selector(myBtnClicked) forControlEvents:UIControlEventTouchUpInside];</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- (void)myBtnClicked</div><div class="line">&#123;</div><div class="line">    NSLog(@&quot;myBtn clicked&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>比如上边两段代码就表示了一个按钮设置target为<code>self</code>，并且设置行为为<code>myBtnClicked</code>,所以当用户点击了这个按钮时，我们就会打印出 myBtn clicked 。</p>
 <ul>
 <li><p><strong>代理（Delegate）与数据源（DataSource）通讯</strong></p>
@@ -411,11 +411,11 @@
 <ul>
 <li><p><strong>通知（Notification）</strong></p>
 <p>一般来说，控制器中会注册成为监听者</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">addObserver:</span>(id)observer <span class="string">selector:</span>(SEL)aSelector <span class="string">name:</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (void)addObserver:(id)observer selector:(SEL)aSelector name:</div></pre></td></tr></table></figure>
 </li>
 </ul>
 <p>当模型中的值发生改变时，模型会发出通知</p>
-<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(void)</span>postNotification:<span class="params">(NSNotification *)</span>notification;</div><div class="line"></div><div class="line">- <span class="params">(void)</span>postNotificationName:<span class="params">(NSString *)</span>aName object:<span class="params">(id)</span>anObject;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- (void)postNotification:(NSNotification *)notification;</div><div class="line"></div><div class="line">- (void)postNotificationName:(NSString *)aName object:(id)anObject;</div></pre></td></tr></table></figure>
 <p>成为监听者的控制器就会接受到来自模型的信号，做出相应的改变。</p>
 <ul>
 <li><p><strong>KVO（键值对观察）</strong></p>
@@ -560,7 +560,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

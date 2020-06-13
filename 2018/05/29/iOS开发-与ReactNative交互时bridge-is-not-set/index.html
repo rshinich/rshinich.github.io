@@ -89,21 +89,21 @@
 
 <meta name="description" content="上次说到了与RN交互时，RN引用原生UI组件时出现的坑，如果说上次的坑是因为没有仔细看官方文档导致的，这次的坑应该算是RN自己的问题了吧。
 这次的问题是当原生端主动向RN(JS)发送请求的时候，会崩溃，报错显示
-123bridge is not set. This is probably because you&apos;ve &quot;&quot;explicitly synthesized the bridge in %">
+123bridge is not set. This is probably because you&amp;apos;ve &amp;quot;&amp;quot;explicitly synthesized">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS开发-与ReactNative交互时bridge is not set.">
 <meta property="og:url" content="http://yoursite.com/2018/05/29/iOS开发-与ReactNative交互时bridge-is-not-set/index.html">
 <meta property="og:site_name" content="zhangzr's blog">
 <meta property="og:description" content="上次说到了与RN交互时，RN引用原生UI组件时出现的坑，如果说上次的坑是因为没有仔细看官方文档导致的，这次的坑应该算是RN自己的问题了吧。
 这次的问题是当原生端主动向RN(JS)发送请求的时候，会崩溃，报错显示
-123bridge is not set. This is probably because you&apos;ve &quot;&quot;explicitly synthesized the bridge in %">
+123bridge is not set. This is probably because you&amp;apos;ve &amp;quot;&amp;quot;explicitly synthesized">
 <meta property="og:image" content="http://yoursite.com/2018/05/29/iOS开发-与ReactNative交互时bridge-is-not-set/example.png">
 <meta property="og:updated_time" content="2018-05-29T14:48:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发-与ReactNative交互时bridge is not set.">
 <meta name="twitter:description" content="上次说到了与RN交互时，RN引用原生UI组件时出现的坑，如果说上次的坑是因为没有仔细看官方文档导致的，这次的坑应该算是RN自己的问题了吧。
 这次的问题是当原生端主动向RN(JS)发送请求的时候，会崩溃，报错显示
-123bridge is not set. This is probably because you&apos;ve &quot;&quot;explicitly synthesized the bridge in %">
+123bridge is not set. This is probably because you&amp;apos;ve &amp;quot;&amp;quot;explicitly synthesized">
 <meta name="twitter:image" content="http://yoursite.com/2018/05/29/iOS开发-与ReactNative交互时bridge-is-not-set/example.png">
 
 
@@ -381,23 +381,23 @@
       
         <p><a href="http://zhangzr.cn/2018/05/29/iOS%E5%BC%80%E5%8F%91-%E7%BB%99ReactNative%E6%8F%90%E4%BE%9B%E5%8E%9F%E7%94%9FUI%E7%BB%84%E4%BB%B6%E6%97%B6%E6%89%BE%E4%B8%8D%E5%88%B0%E6%A1%A5%E6%8E%A5%E6%96%B9%E6%B3%95%E7%9A%84%E9%97%AE%E9%A2%98/" target="_blank" rel="external">上次</a>说到了与RN交互时，RN引用原生UI组件时出现的坑，如果说上次的坑是因为没有仔细看官方文档导致的，这次的坑应该算是RN自己的问题了吧。</p>
 <p>这次的问题是当原生端主动向RN(JS)发送请求的时候，会崩溃，报错显示</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bridge <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">set</span>. This <span class="keyword">is</span> probably because you've <span class="string">"</span></div><div class="line">"explicitly synthesized <span class="keyword">the</span> bridge <span class="keyword">in</span> %@, even though <span class="keyword">it</span>'s inherited <span class="string">"</span></div><div class="line">"<span class="keyword">from</span> RCTEventEmitter.</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bridge is not set. This is probably because you&apos;ve &quot;</div><div class="line">&quot;explicitly synthesized the bridge in %@, even though it&apos;s inherited &quot;</div><div class="line">&quot;from RCTEventEmitter.</div></pre></td></tr></table></figure>
 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>这次的需求是，需要RN方面开启一个<code>NativeEventEmitter</code>，这个东西类似于iOS中的<code>NSNotificationCenter</code>，用于监听通知。当原生部分需要主动跟RN进行通信的时候，就可以发出一个广播，RN方监听到这个广播之后就会做对应的事情。</p>
 <p>还是一样，我们从官方文档入手，官方文档中写的内容也不多，一屏就能显示全：</p>
 <center><img src="/2018/05/29/iOS开发-与ReactNative交互时bridge-is-not-set/example.png" alt="logo"> </center> 
 
 <p>ok，我们也是一样，还是照着官方文档撸代码。</p>
 <p>先写一个继承于<code>RCTEventEmitter</code>的类，然后实现<code>RCTBridgeModule</code>协议。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;React/RCTBridgeModule.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;React/RCTEventEmitter.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CalendarManager</span> : <span class="title">RCTEventEmitter</span> &lt;<span class="title">RCTBridgeModule</span>&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#import &lt;React/RCTBridgeModule.h&gt;</div><div class="line">#import &lt;React/RCTEventEmitter.h&gt;</div><div class="line"></div><div class="line">@interface CalendarManager : RCTEventEmitter &lt;RCTBridgeModule&gt;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
 <p>然后在实现的部分引入<code>RCT_EXPORT_MODULE();</code></p>
 <p>这些都是常规操作。</p>
 <p>这个时候先跑一下试试。。。</p>
 <p>发现。。程序崩溃了，看一下原因，是因为没有实现<code>supportedEvents</code>方法。没关系，这个我们也不用惊讶，毕竟人家官方文档中都写了。那我们就补上这个代码，返回和RN同学商量好的方法名;</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSArray</span>&lt;<span class="built_in">NSString</span> *&gt; *)supportedEvents</div><div class="line">&#123;</div><div class="line">  <span class="keyword">return</span> @[<span class="string">@"EventReminder"</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- (NSArray&lt;NSString *&gt; *)supportedEvents</div><div class="line">&#123;</div><div class="line">  return @[@&quot;EventReminder&quot;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>然后尝试发送一次试试看看能不能实现。</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">calendarEventReminderReceived:</span>(NSNotification *)notification</div><div class="line">&#123;</div><div class="line">  NSString *eventName = notification.userInfo[@<span class="string">"name"</span>];</div><div class="line">  [self <span class="string">sendEventWithName:</span>@<span class="string">"EventReminder"</span> <span class="string">body:</span>@&#123;@<span class="string">"name"</span>: eventName&#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (void)calendarEventReminderReceived:(NSNotification *)notification</div><div class="line">&#123;</div><div class="line">  NSString *eventName = notification.userInfo[@&quot;name&quot;];</div><div class="line">  [self sendEventWithName:@&quot;EventReminder&quot; body:@&#123;@&quot;name&quot;: eventName&#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>结果发现还是崩溃了，这时候提示崩溃的原因就是我们这篇文章的主题</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bridge <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">set</span>. This <span class="keyword">is</span> probably because you've <span class="string">"</span></div><div class="line">"explicitly synthesized <span class="keyword">the</span> bridge <span class="keyword">in</span> %@, even though <span class="keyword">it</span>'s inherited <span class="string">"</span></div><div class="line">"<span class="keyword">from</span> RCTEventEmitter.</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bridge is not set. This is probably because you&apos;ve &quot;</div><div class="line">&quot;explicitly synthesized the bridge in %@, even though it&apos;s inherited &quot;</div><div class="line">&quot;from RCTEventEmitter.</div></pre></td></tr></table></figure>
 <h2 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h2><p>仔细看看这个报错的信息发现是因为这个bridge为空，然后仔细看你会发现，你写的代码和官方文档的没什么区别，只能去google或者查看RN的issue，这时候你会发现你不是一个人，有人会告诉你可以在<code>Appdelegate.m</code>中设置<code>rootView</code>的bridge，跟着老大哥的写法走一遍，发现好像确实没有崩溃，但是。。。</p>
 <p>但是。。</p>
 <p>好像RN这边根本没有办法监听到事件。</p>
@@ -405,7 +405,7 @@
 <h2 id="填坑"><a href="#填坑" class="headerlink" title="填坑"></a>填坑</h2><p>所以这边到底要怎么来解决呢？？</p>
 <p>实际上需要的写法是，这个类必须要使用单例，而且需要用比较优雅的方式实现单例，也就是说也要考虑到alloc init的同学，所以要重写<code>allocWithZone:</code>的方法。</p>
 <p>ok废话不多说，直接在.m文件中重写这个方法</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">+(id)allocWithZone:(NSZone *)zone </div><div class="line">&#123;</div><div class="line">  static RNBridge *<span class="keyword">sharedInstance </span>= nil<span class="comment">;</span></div><div class="line">  static <span class="keyword">dispatch_once_t </span>onceToken<span class="comment">;</span></div><div class="line">  <span class="keyword">dispatch_once(&amp;onceToken, </span>^&#123;</div><div class="line">    <span class="keyword">sharedInstance </span>= [super allocWithZone:zone]<span class="comment">;</span></div><div class="line">  &#125;)<span class="comment">;</span></div><div class="line">  return <span class="keyword">sharedInstance;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">+(id)allocWithZone:(NSZone *)zone </div><div class="line">&#123;</div><div class="line">  static RNBridge *sharedInstance = nil;</div><div class="line">  static dispatch_once_t onceToken;</div><div class="line">  dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">    sharedInstance = [super allocWithZone:zone];</div><div class="line">  &#125;);</div><div class="line">  return sharedInstance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>再运行，你就会发现世界是多么的美好。</p>
 <p>以上就是这个坑的解决方案，如果有大佬有更好的解决方案可以留言或者私信我。</p>
 
@@ -528,7 +528,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

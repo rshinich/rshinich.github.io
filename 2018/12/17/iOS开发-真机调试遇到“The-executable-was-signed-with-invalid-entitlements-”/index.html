@@ -383,7 +383,7 @@
 <p>昨天高高兴兴的完成了新的版本的开发，老大说有了新的Apple账号，需要用新的账号提交App Store，于是登上了新的AppleID，然后创建证书，创建ID，Apple Connect上创建应用，一气呵成，把证书下载下来配置一下，cmd+R，应用顺利的跑起来了，然后打包，上传TestFlight，也是非常顺利，也成功的发布到了TestFlight，然后测试那边报了一个bug给我，一看不是什么大问题么，改好之后用模拟器测试，OK没问题，想想再用真机调试一下吧，于是接上了测试机，cmd+R，然后去接杯水，等着回来看看真机上有没有什么问题，结果接完水回来。。。并不是期待的需要解锁的alert，而是。。。</p>
 <center><img src="/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/error.png" alt="logo"></center>
 
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">The executable was signed <span class="keyword">with</span> invalid entitlements.</div><div class="line"></div><div class="line">Profile The entitlements specified <span class="keyword">in</span> your <span class="built_in">application</span>’s Code Signing Entitlements <span class="built_in">file</span> are invalid, <span class="keyword">not</span> permitted, <span class="keyword">or</span> do <span class="keyword">not</span> match those specified <span class="keyword">in</span> your provisioning profile. (<span class="number">0xE8008016</span>).</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">The executable was signed with invalid entitlements.</div><div class="line"></div><div class="line">Profile The entitlements specified in your application’s Code Signing Entitlements file are invalid, not permitted, or do not match those specified in your provisioning profile. (0xE8008016).</div></pre></td></tr></table></figure>
 <p>看来来好像是Provisioning Profile(pp)的问题，仔细检查了一下，好像没有什么问题么？？不过这个问题看着好像不是什么大问题，结果耗费了我一天多的时间。。。所以准备写下来记录一下。</p>
 <h2 id="可能出现问题的原因"><a href="#可能出现问题的原因" class="headerlink" title="可能出现问题的原因"></a>可能出现问题的原因</h2><p>出现这个报错的原因一般来说是远程Provisioning Profile（以下简称PP）和本地的配置不同造成的问题，细看下来可能有这么几种可能：</p>
 <ul>
@@ -397,7 +397,7 @@
 <p>另外Apple官方也有针对Entitlements出错时的检查方案，地址在这里<a href="https://developer.apple.com/library/archive/technotes/tn2415/_index.html" target="_blank" rel="external">Entitlements Troubleshooting</a>。</p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>OK，大概了解了情况，那就一个一个来检查修改吧。</p>
 <p>对了，先po一个查看Provisioning Profile信息的 shell：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/usr/</span>bin<span class="regexp">/security cms -D -i profile_path/</span>profileName.mobileprovision<span class="string">"</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/usr/bin/security cms -D -i profile_path/profileName.mobileprovision&quot;</div></pre></td></tr></table></figure>
 <h3 id="置空Code-Signing-Entitlements"><a href="#置空Code-Signing-Entitlements" class="headerlink" title="置空Code Signing Entitlements"></a>置空Code Signing Entitlements</h3><p>这个是google和stackoverflow上能搜到比较多的答案，具体的操作为将如下步骤下打开的选项设置为空：</p>
 <p><strong> Project -&gt; Target -&gt; 项目名称 -&gt; Build Settings -&gt; Code Signing Entitlements </strong></p>
 <center><img src="/2018/12/17/iOS开发-真机调试遇到“The-executable-was-signed-with-invalid-entitlements-”/1.png" alt="logo"></center>
@@ -549,7 +549,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

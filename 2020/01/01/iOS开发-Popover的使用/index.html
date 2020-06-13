@@ -419,7 +419,7 @@
 <center><img src="/2020/01/01/iOS开发-Popover的使用/截屏2019-12-28下午4.29.52.png" alt="logo"></center>
 
 <p>发现和正常的present好像没什么区别，那看看iPad的上表现吧，运行起来之后，发现程序崩溃了，仔细看一下崩溃的信息</p>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">*** Terminating app due <span class="built_in">to</span> uncaught exception ‘NSGenericException’, reason: ‘UIPopoverPresentationController (&lt;UIPopoverPresentationController: <span class="number">0x7ffe9c71fcc0</span>&gt;) should have <span class="keyword">a</span> non-nil sourceView <span class="keyword">or</span> barButtonItem <span class="built_in">set</span> <span class="keyword">before</span> <span class="keyword">the</span> presentation occurs.’</div><div class="line">***</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">*** Terminating app due to uncaught exception ‘NSGenericException’, reason: ‘UIPopoverPresentationController (&lt;UIPopoverPresentationController: 0x7ffe9c71fcc0&gt;) should have a non-nil sourceView or barButtonItem set before the presentation occurs.’</div><div class="line">***</div></pre></td></tr></table></figure>
 <p>原来是需要一个sourceView或者barButtonItem，在iPad中使用过UIAlertController应该对这个崩溃信息不陌生。那么除了要设置这个，如果定制一个Popover我们还需要使用些什么呢？</p>
 <p>因为整个Popover基本上都是用于iPad的，并且苹果官方也不太建议在iPhone上使用，所以接下来的部分我们就不涉及在iPhone中使用Popover了，所有的内容都以iPad为标准介绍。</p>
 <h3 id="barButtonItem"><a href="#barButtonItem" class="headerlink" title="barButtonItem"></a>barButtonItem</h3><p>这个属性一般用于点击导航栏的barButtonItem时显示Popover，他会自动设置Popover的SourceView和SourceRect，设定了之后，再在iPad上跑起来，点击导航栏上的Popover按钮，就可以看到，Popover已经弹出来了。</p>
@@ -579,7 +579,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

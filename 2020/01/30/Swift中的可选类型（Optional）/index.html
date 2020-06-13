@@ -390,7 +390,7 @@
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSString</span> *str = <span class="string">@"this is string"</span></div><div class="line">str = <span class="literal">nil</span></div></pre></td></tr></table></figure>
 <p>而在Swift中这样写就会报错：</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> str: <span class="type">String</span> = <span class="string">"this is string"</span></div><div class="line">str = <span class="literal">nil</span></div></pre></td></tr></table></figure>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NULL</span> cannot be assigned <span class="keyword">to</span> <span class="keyword">type</span> ‘<span class="built_in">String</span>’</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NULL cannot be assigned to type ‘String’</div></pre></td></tr></table></figure>
 <p>意思就是nil是不可以被分配给String类型的。</p>
 <p>之前也看到了，可选类型有两种情况，被声明的值或者为nil，Swift对可选类型的定义也可以看到，他其实是一个枚举类型：</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@frozen <span class="class"><span class="keyword">enum</span> <span class="title">Optional</span>&lt;<span class="title">Wrapped</span>&gt;</span></div><div class="line"><span class="title">case</span> <span class="title">some</span>(<span class="title">Wrapped</span>)</div><div class="line"><span class="title">case</span> <span class="title">none</span></div></pre></td></tr></table></figure>
@@ -467,6 +467,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/" rel="prev" title="iOS中使用VideoToolBox进行H.264编解码">
+                iOS中使用VideoToolBox进行H.264编解码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -537,7 +541,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

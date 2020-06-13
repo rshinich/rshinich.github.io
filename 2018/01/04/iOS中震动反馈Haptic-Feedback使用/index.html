@@ -397,7 +397,7 @@
 <p>其实在发布iOS9中的 force touch就是用了这个，只不过当时苹果并没有开放api给开发者使用。</p>
 <p>这不，iOS 10发布之后，苹果果然就把这个接口开放了出来。</p>
 <h2 id="UIFeedbackGenerator"><a href="#UIFeedbackGenerator" class="headerlink" title="UIFeedbackGenerator"></a>UIFeedbackGenerator</h2><p><code>UIFeedbackGenerator</code>是整个震动反馈的核心，它只有一个方法</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="built_in">prepare</span>;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (void)prepare;</div></pre></td></tr></table></figure>
 <p>他的作用就是让响应立刻发生，如果不调用这个方法的话，可能会发生延时，而且多次调用这个方法也没问题，他是安全的。</p>
 <h2 id="UINotificationFeedbackGenerator"><a href="#UINotificationFeedbackGenerator" class="headerlink" title="UINotificationFeedbackGenerator"></a>UINotificationFeedbackGenerator</h2><p><code>UINotificationFeedbackGenerator</code>才是真正需要我们写的东西，其实他里边的东西也不多，只有三个属性</p>
 <ul>
@@ -407,7 +407,7 @@
 </ul>
 <p>分别在成功、警告和错误时调用。</p>
 <p>具体的调用方法就是这样：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+ (<span class="keyword">void</span>)executeSuccessFeedback</div><div class="line">&#123;</div><div class="line">    <span class="built_in">UINotificationFeedbackGenerator</span> *generator = [[<span class="built_in">UINotificationFeedbackGenerator</span> alloc] init];</div><div class="line">    [generator notificationOccurred:<span class="built_in">UINotificationFeedbackTypeSuccess</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+ (void)executeSuccessFeedback</div><div class="line">&#123;</div><div class="line">    UINotificationFeedbackGenerator *generator = [[UINotificationFeedbackGenerator alloc] init];</div><div class="line">    [generator notificationOccurred:UINotificationFeedbackTypeSuccess];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="UIImpactFeedbackGenerator"><a href="#UIImpactFeedbackGenerator" class="headerlink" title="UIImpactFeedbackGenerator"></a>UIImpactFeedbackGenerator</h2><p><code>UIImpactFeedbackGenerator</code>是另外一个类型的震动，同样也拥有三种形式</p>
 <ul>
 <li>UIImpactFeedbackStyleLight</li>
@@ -416,9 +416,9 @@
 </ul>
 <p>分别是轻度、中度和重度。</p>
 <p>调用的方法也很简单：</p>
-<figure class="highlight inform7"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">+ (void)excuteLightFeedback</div><div class="line">&#123;</div><div class="line">    UIImpactFeedbackGenerator *generator = <span class="comment">[<span class="comment">[UIImpactFeedbackGenerator alloc]</span> initWithStyle: UIImpactFeedbackStyleLight]</span>;</div><div class="line">    <span class="comment">[generator prepare]</span>;</div><div class="line">    <span class="comment">[generator impactOccurred]</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">+ (void)excuteLightFeedback</div><div class="line">&#123;</div><div class="line">    UIImpactFeedbackGenerator *generator = [[UIImpactFeedbackGenerator alloc] initWithStyle: UIImpactFeedbackStyleLight];</div><div class="line">    [generator prepare];</div><div class="line">    [generator impactOccurred];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="UISelectionFeedbackGenerator"><a href="#UISelectionFeedbackGenerator" class="headerlink" title="UISelectionFeedbackGenerator"></a>UISelectionFeedbackGenerator</h2><p><code>UISelectionFeedbackGenerator</code>中只有一个类型，是用来模拟选择滚轮一类控件时的震动，比如计时器中的picker滚动时就有这个效果。</p>
-<figure class="highlight inform7"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+ (void)excuteSelectionFeedback</div><div class="line">&#123;</div><div class="line">    UISelectionFeedbackGenerator *generator = <span class="comment">[<span class="comment">[UISelectionFeedbackGenerator alloc]</span> init]</span>;</div><div class="line">    <span class="comment">[generator selectionChanged]</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+ (void)excuteSelectionFeedback</div><div class="line">&#123;</div><div class="line">    UISelectionFeedbackGenerator *generator = [[UISelectionFeedbackGenerator alloc] init];</div><div class="line">    [generator selectionChanged];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h2><p>最后放<a href="https://github.com/rshinich/HapticFeedbackDemo" target="_blank" rel="external">Demo</a>，下载下来用真机跑一下按按就知道什么感觉啦。</p>
 <center><img src="/2018/01/04/iOS中震动反馈Haptic-Feedback使用/demo.png" alt="logo"></center>
 
@@ -543,7 +543,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

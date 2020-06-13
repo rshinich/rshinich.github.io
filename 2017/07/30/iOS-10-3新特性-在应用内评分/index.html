@@ -451,13 +451,13 @@
 <li><p>2.在需要弹出的控制器中引入</p>
 </li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;StoreKit/StoreKit.h&gt;</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#import &lt;StoreKit/StoreKit.h&gt;</div></pre></td></tr></table></figure>
 <ul>
 <li>3.在需要弹出评分弹窗的地方调用方法</li>
 </ul>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="section">[SKStoreReviewController requestReview]</span><span class="comment">;</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[SKStoreReviewController requestReview];</div></pre></td></tr></table></figure>
 <p><strong>注意</strong> 最好在调用之前先判断一下当前系统的版本，大于10.3的系统才弹出提示框</p>
-<figure class="highlight prolog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">if([[[<span class="symbol">UIDevice</span> currentDevice] systemVersion] floatValue] &gt;= <span class="number">10.3</span>)</div><div class="line">&#123;</div><div class="line">    //...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">if([[[UIDevice currentDevice] systemVersion] floatValue] &gt;= 10.3)</div><div class="line">&#123;</div><div class="line">    //...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>以上就是在应用中评分的使用方法，相信如果在合适的时候，比如用户刚刚完成了一项很有成就感的动作之后弹出，App Store中的5星好评率就会蹭蹭蹭的网上上了！</p>
 
       
@@ -579,7 +579,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

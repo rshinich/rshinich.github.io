@@ -383,9 +383,9 @@
 <p>@synthesize修饰的变量表示，如果开发者没有自己实现getter方法和setter方法，编译器会帮助开发者来自动加上getter和setter方法。</p>
 <h2 id="为什么NSMutableArray-NSMutableDictionary-NSMutableString-不能用copy修饰"><a href="#为什么NSMutableArray-NSMutableDictionary-NSMutableString-不能用copy修饰" class="headerlink" title="为什么NSMutableArray(NSMutableDictionary/NSMutableString)不能用copy修饰"></a>为什么NSMutableArray(NSMutableDictionary/NSMutableString)不能用copy修饰</h2><p>因为使用了copy属性之后，当你调用setter方法时，系统会自动copy出一个新的对象，然后释放旧的对象。</p>
 <p>比如这段代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">copy</span>) <span class="built_in">NSMutableArray</span> * a;</div><div class="line"></div><div class="line"><span class="built_in">NSMutableArray</span>* b = [<span class="built_in">NSMutableArray</span> array];</div><div class="line">a = b;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@property (copy) NSMutableArray * a;</div><div class="line"></div><div class="line">NSMutableArray* b = [NSMutableArray array];</div><div class="line">a = b;</div></pre></td></tr></table></figure>
 <p>等同于：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>) <span class="built_in">NSMutableArray</span> * a;</div><div class="line"></div><div class="line"><span class="built_in">NSMutableArray</span>* b = [<span class="built_in">NSMutableArray</span> array];</div><div class="line">a = [b <span class="keyword">copy</span>];</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@property (strong) NSMutableArray * a;</div><div class="line"></div><div class="line">NSMutableArray* b = [NSMutableArray array];</div><div class="line">a = [b copy];</div></pre></td></tr></table></figure>
 <p>这个时候的a数组实际上是一个<strong>NSArray</strong>而不是<strong>NSMutableArray</strong>，所以向他发送一些NSMutableArray的方法比如删除、增加的操作时，就会导致系统找不到方法而崩溃。</p>
 <h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://www.jianshu.com/p/afe4640d75a1" target="_blank" rel="external">@dynamic与@synthesize的区别</a></p>
 <p><a href="https://stackoverflow.com/questions/14856681/why-does-a-copy-nonatomic-nsmutablearray-property-create-nsarrays" target="_blank" rel="external">NSMutableArray copy</a></p>
@@ -509,7 +509,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

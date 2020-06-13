@@ -400,11 +400,11 @@
 </ul>
 <p>其中全局安装主要就是通过Homebrew来安装，而部分安装主要使用过CocoaPods来安装。</p>
 <p>其中Homebrew安装时，只要运行以下命令即可</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">brew </span><span class="keyword">install </span><span class="keyword">swiftlint</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew install swiftlint</div></pre></td></tr></table></figure>
 <p>而使用CocoaPods安装时，只需要和平时一样在Podfile里加入</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod ‘SwiftLint'</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod ‘SwiftLint&apos;</div></pre></td></tr></table></figure>
 <p>然后再运行</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod <span class="keyword">install</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod install</div></pre></td></tr></table></figure>
 <p>就可以了。这里有一个官方的建议：</p>
 <blockquote>
 <p>This will download the SwiftLint binaries and dependencies in Pods/ during your next pod install execution and will allow you to invoke it via ${PODS_ROOT}/SwiftLint/swiftlint in your Script Build Phases.<br>This is the recommended way to install a specific version of SwiftLint since it supports installing a pinned version rather than simply the latest (which is the case with Homebrew).<br>Note that this will add the SwiftLint binaries, its dependencies’ binaries and the Swift binary library distribution to the Pods/ directory, so checking in this directory to SCM such as git is discouraged.<br>—<br>在下一次执行 pod install 时将会把 SwiftLint 的二进制文件和依赖下载到 Pods/ 目录下并且将允许你通过 ${PODS_ROOT}/SwiftLint/swiftlint 在 Script Build Phases 中调用 SwiftLint。<br>自从 SwiftLint 支持安装某个特定版本后，安装一个指定版本的 SwiftLint 是目前推荐的做法相比较于简单地选择最新版本安装的话（比如通过 Homebrew 安装的话）。<br>请注意这会将 SwiftLint 二进制文件、所依赖的二进制文件和 Swift 二进制库安装到 Pods/ 目录下，所以不推荐将此目录添加到版本控制系统（如 git）中进行跟踪。</p>
@@ -429,7 +429,7 @@
 <h3 id="消除报错"><a href="#消除报错" class="headerlink" title="消除报错"></a>消除报错</h3><p>首先，如果你的项目里引用了很多第三方库，而这些第三方库引起了很多SwiftLint的报错的话，我们是不对他负责的，所以我们首先要把第三方库当中的代码隔离掉。</p>
 <p>这里我们需要新建一个配置文件，这个文件不仅可以隔离掉第三方代码，还可以禁用或启用指定的规则。</p>
 <p>那么接下来，到我们项目的目录下，执行</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">touch <span class="selector-class">.swiftlint</span><span class="selector-class">.yml</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">touch .swiftlint.yml</div></pre></td></tr></table></figure>
 <p>有可能你会发现好像没有什么变化，没关系，因为这个文件是隐藏的，点击cmd+shift+。显示隐藏文件之后，就可以看到他了。</p>
 <p>然后在文件中添加：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attr">excluded:</span> </div><div class="line"><span class="bullet">    -</span> <span class="string">Pods</span></div></pre></td></tr></table></figure>
@@ -440,9 +440,9 @@
 <h3 id="自动更正"><a href="#自动更正" class="headerlink" title="自动更正"></a>自动更正</h3><p>什么？你说你懒得改？没关系，SwiftLint也帮你想到了。</p>
 <p>你可以通过这个命令，来使用SwiftLint帮你自动修正检测到的错误。</p>
 <p><strong>但是一定一定一定要注意</strong>这个命令会覆盖你之前的内容，所以一定要在跑这个命令之前做好备份。好了接下来可以试试这个命令了。</p>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">swiftlint </span>autocorrect</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">swiftlint autocorrect</div></pre></td></tr></table></figure>
 <p>跑完之后，你会发现，报错已经被控制在可以接受的范围内了，这时候你就可以去针对代码着手修改你的报错了，比如</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Force Try Violation: Force tries <span class="keyword">should </span><span class="keyword">be </span>avoided. (force_try)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Force Try Violation: Force tries should be avoided. (force_try)</div></pre></td></tr></table></figure>
 <p>这种使用了<code>try!</code>的部分，autocorrect是不会帮你修改的。</p>
 <h3 id="规则"><a href="#规则" class="headerlink" title="规则"></a>规则</h3><p>在修改报错的过程中，我们可以看到每一个报错或者是警告都会写出报错的原因，并且在最后会有一个括号，里边标记了一个词，这个词其实就是SwiftLint的70多条规则的ID，在这个<a href="https://realm.github.io/SwiftLint/rule-directory.html" target="_blank" rel="external">Rule Directory  Reference</a>里，可以直接搜索括号里的内容，这边会详细的写出这个报错的原因，以及这条规则的详细信息，甚至还会给出引起报错和未引起报错的例子。</p>
 <p>那么接下来就去修改你的报错吧！</p>
@@ -572,7 +572,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

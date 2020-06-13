@@ -383,9 +383,9 @@ tags:ipa重签，就是将已经获取到的ipa包，通过已有的证书重新
 <h3 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h3><p>和正常开发发布一样，还是需要在苹果官网下载一系列证书并安装。</p>
 <h3 id="sigh"><a href="#sigh" class="headerlink" title="sigh"></a>sigh</h3><p>这个就是我们这次的重签的主角了。</p>
 <p>sigh的地址在<a href="https://docs.fastlane.tools/actions/sigh/" target="_blank" rel="external">这里</a></p>
-<p>安装sigh首先要安装神器HomeBrew。<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/usr/</span>bin<span class="regexp">/ruby -e "$(curl -fsSL https:/</span><span class="regexp">/raw.githubusercontent.com/</span>Homebrew<span class="regexp">/install/m</span>aster<span class="regexp">/install)"</span></div></pre></td></tr></table></figure></p>
-<p>然后安装ruby<br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">brew </span><span class="keyword">install </span>ruby</div></pre></td></tr></table></figure></p>
-<p>最后安装sigh<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo gem <span class="keyword">install</span> sigh</div></pre></td></tr></table></figure></p>
+<p>安装sigh首先要安装神器HomeBrew。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/usr/bin/ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</div></pre></td></tr></table></figure></p>
+<p>然后安装ruby<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew install ruby</div></pre></td></tr></table></figure></p>
+<p>最后安装sigh<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo gem install sigh</div></pre></td></tr></table></figure></p>
 <h2 id="开始重签"><a href="#开始重签" class="headerlink" title="开始重签"></a>开始重签</h2><p>重签的步骤非常简单，只有三步；</p>
 <ul>
 <li>1.将需要重签的ipa包和刚刚下载下来的<code>embedded.mobileprovison</code>放入同一个文件夹。</li>
@@ -515,7 +515,7 @@ tags:ipa重签，就是将已经获取到的ipa包，通过已有的证书重新
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-count">85</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
