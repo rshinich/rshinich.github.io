@@ -1,0 +1,803 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="屏幕录制及共享就是将屏幕上的内容分享给网络上其他用户的技术。在iOS中实现屏幕录制及共享主要用到的是ReplayKit这个框架。
+
+
+ReplayKit最早是在iOS9（WWDC15）中发布的用于屏幕录制的技术框架。最早是用于苹果的游戏（Game Center）中的直播。后来随着网络环境越来越好，直播也在扩大领域。ReplayKit的功能也越来越强大，直到iOS11（WWDC17）时推出了Repl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS中的屏幕共享（ReplayKit2）- 介绍">
+<meta property="og:url" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/index.html">
+<meta property="og:site_name" content="zhangzr's blog">
+<meta property="og:description" content="屏幕录制及共享就是将屏幕上的内容分享给网络上其他用户的技术。在iOS中实现屏幕录制及共享主要用到的是ReplayKit这个框架。
+
+
+ReplayKit最早是在iOS9（WWDC15）中发布的用于屏幕录制的技术框架。最早是用于苹果的游戏（Game Center）中的直播。后来随着网络环境越来越好，直播也在扩大领域。ReplayKit的功能也越来越强大，直到iOS11（WWDC17）时推出了Repl">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/1.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/2.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/3.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/4.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/5.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/6.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/7.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/8.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/9.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/10.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/11.png">
+<meta property="og:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/12.png">
+<meta property="og:updated_time" content="2020-06-15T13:40:57.229Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS中的屏幕共享（ReplayKit2）- 介绍">
+<meta name="twitter:description" content="屏幕录制及共享就是将屏幕上的内容分享给网络上其他用户的技术。在iOS中实现屏幕录制及共享主要用到的是ReplayKit这个框架。
+
+
+ReplayKit最早是在iOS9（WWDC15）中发布的用于屏幕录制的技术框架。最早是用于苹果的游戏（Game Center）中的直播。后来随着网络环境越来越好，直播也在扩大领域。ReplayKit的功能也越来越强大，直到iOS11（WWDC17）时推出了Repl">
+<meta name="twitter:image" content="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/"/>
+
+
+
+
+
+  <title> iOS中的屏幕共享（ReplayKit2）- 介绍 | zhangzr's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e4d9b18c740ec1cd356179a5fc16e0ba";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zhangzr's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangzr">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhangzr's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS中的屏幕共享（ReplayKit2）- 介绍
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-15T21:35:56+08:00">
+                2020-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>屏幕录制及共享就是将屏幕上的内容分享给网络上其他用户的技术。在iOS中实现屏幕录制及共享主要用到的是ReplayKit这个框架。</p>
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/1.png" alt="logo"></center>
+
+<p><a href="https://developer.apple.com/documentation/replaykit" target="_blank" rel="external">ReplayKit</a>最早是在iOS9（WWDC15）中发布的用于屏幕录制的技术框架。最早是用于苹果的游戏（Game Center）中的直播。后来随着网络环境越来越好，直播也在扩大领域。ReplayKit的功能也越来越强大，直到iOS11（WWDC17）时推出了ReplayKit2，真正的实现了屏幕共享的大部分需求。后边会详细说一下每个iOS版本中ReplayKit的更新。</p>
+<p>当前环境下，屏幕共享主要有以下几个使用场景：</p>
+<ul>
+<li>手游直播</li>
+<li>在线客服或在线协助工具，如TeamViewer</li>
+<li>在线视频会议，如TeamLink，Zoom，钉钉</li>
+</ul>
+<h2 id="各个iOS版本中屏幕分享的特点"><a href="#各个iOS版本中屏幕分享的特点" class="headerlink" title="各个iOS版本中屏幕分享的特点"></a>各个iOS版本中屏幕分享的特点</h2><p>懒得看的同学可以直接放大看这个表格。</p>
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/2.png" alt="logo"></center>
+
+
+<p>还有<a href="https://developer.apple.com/support/app-store/" target="_blank" rel="external">官方统计</a>的iOS版本分布(截止2020年1月27日之前)</p>
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/3.png" alt="logo"></center>
+
+
+<h3 id="iOS-8及之前"><a href="#iOS-8及之前" class="headerlink" title="iOS 8及之前"></a>iOS 8及之前</h3><p>iOS8时，还没有ReplayKit，Apple也没有提供相关的API，有些开发者通过破解AirPlay的方法，使用私有API实现屏幕共享。</p>
+<p>但是使用私有API的弊端还是多多的，比如不知道新版本中会不会修改API，也有可能在AppStore审核的时候就被卡住等等。</p>
+<h3 id="iOS-9"><a href="#iOS-9" class="headerlink" title="iOS 9"></a>iOS 9</h3><p>iOS9中，苹果在<strong>Going Social with ReplayKit and Game Center</strong>中正式介绍了ReplayKit，不过从标题也能看的出这个时候的ReplayKit主要是用作游戏中的屏幕共享。</p>
+<p>并且这时候也不算是实时的屏幕共享，而是通过将App中操作屏幕的过程录制下来，录制之后可以查看、编辑和分享。</p>
+<p>还有一点就是这个时候的ReplayKit也不支持录制手机中其他App的屏幕。</p>
+<p>所以总结下来，就是这个时候的ReplayKit只算的上是有屏幕录制，而没有屏幕共享。</p>
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/4.png" alt="logo"></center>
+
+<h3 id="iOS-10"><a href="#iOS-10" class="headerlink" title="iOS 10"></a>iOS 10</h3><p>iOS10中，新增了用户屏幕共享的Extension</p>
+<ul>
+<li>Broadcast Setup UI Extension</li>
+<li>Broadcast Upload Extension</li>
+</ul>
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/5.png" alt="logo"></center>
+
+
+<p>通过Upload Extension，可以实时的获取屏幕内容，并且开发者可以选择上传到服务器或其他操作。实现了真正意义上的实时屏幕共享，也就是直播。</p>
+<p>通过Setup UI Extension，也提供了一个在开始屏幕共享之前的准备页面，在这里可以让用户选择登陆账户，通过特定的账户分发屏幕共享内容。</p>
+<p>虽然实现了真正意义上的实时屏幕共享，但是iOS10中的ReplayKit依然没有摆脱只能在当前App中使用的限制。所以使用上还是有一些局限性。</p>
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/6.png" alt="logo"></center>
+
+
+<h2 id="iOS-11"><a href="#iOS-11" class="headerlink" title="iOS 11"></a>iOS 11</h2><p>在iOS11中，ReplayKit升级到了ReplayKit2，最大的升级点就是支持了分享当前App之外的屏幕，也就是说当你在屏幕分享时，打开了其他应用，屏幕共享依旧存在。</p>
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/7.png" alt="logo"></center>
+
+<p>在ReplayKit2中，屏幕共享可以在系统层面上实现，参考iOS12（WWDC18）时放出来的iOS11中的ShareKit的实现。</p>
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/8.png" alt="logo"></center>
+
+<p>但是这个时候想要调用系统层级的Broadcast，必须要通过通知中心中的录制按钮。</p>
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/9.png" alt="logo"></center>
+
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/10.png" alt="logo"></center>
+
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/11.png" alt="logo"></center>
+
+<p>这样的操作虽然保证了用户的隐私，即不会被开发者通过代码调用屏幕共享从而窥探到你的屏幕，但是也一定程度上的增大了用户的使用成本，如果在用户的通知中心中，并没有放置这个按钮，那么还需要用户在设置中手动将这个按钮添加到通知中心来。简直不要太麻烦。</p>
+<h3 id="iOS12"><a href="#iOS12" class="headerlink" title="iOS12"></a>iOS12</h3><p>在iOS12中，Apple基于iOS11时发布的ReplayKit2又进行了进一步的提升，解决了前版本中发起录制时过于繁琐的步骤。可以由开发者在应用中通过一个ReplayKit中的按钮发起屏幕分享。</p>
+<center><img src="/2020/06/15/iOS中的屏幕共享（ReplayKit2）-介绍/12.png" alt="logo"></center>
+
+<p>对比上一个版本就能很明显的看出来，在iOS12中的系统层级的直播就会方便很多了。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总体看下来，结合上边看到的目前iOS系统版本分布，从iOS12开始支持屏幕实时分享应该没有什么大的问题，如果对iOS11有强烈的执念，也可以降低到支持iOS11，再早的版本其实也没有什么必要支持了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/20/iOS中使用VideoToolBox进行H-264编解码/" rel="next" title="iOS中使用VideoToolBox进行H.264编解码">
+                <i class="fa fa-chevron-left"></i> iOS中使用VideoToolBox进行H.264编解码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="zhangzr" />
+          <p class="site-author-name" itemprop="name">zhangzr</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#各个iOS版本中屏幕分享的特点"><span class="nav-number">1.</span> <span class="nav-text">各个iOS版本中屏幕分享的特点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS-8及之前"><span class="nav-number">1.1.</span> <span class="nav-text">iOS 8及之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS-9"><span class="nav-number">1.2.</span> <span class="nav-text">iOS 9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS-10"><span class="nav-number">1.3.</span> <span class="nav-text">iOS 10</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iOS-11"><span class="nav-number">2.</span> <span class="nav-text">iOS 11</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS12"><span class="nav-number">2.1.</span> <span class="nav-text">iOS12</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">2.2.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangzr</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"left","width":100,"height":200},"mobile":{"show":true},"react":{"opacityDefault":1,"opacityOnHover":0.2}});</script></body>
+</html>
